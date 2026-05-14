@@ -1,0 +1,2821 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>從接待，到大使 · From Reception to Ambassadorship — GPS Capability Pitch v1.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Serif+TC:wght@400;500;700;900&family=Lato:wght@300;400;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --turquoise: #26A7B0;
+  --turquoise-deep: #1A8088;
+  --turquoise-soft: rgba(38, 167, 176, 0.08);
+  --turquoise-line: rgba(38, 167, 176, 0.25);
+  --copper: #CAC3D2;
+  --brand-black: #0A1A22;
+  --ink: #1A2A33;
+  --ink-soft: #4A5A63;
+  --ink-mute: #8A9298;
+  --paper: #FAFAF7;
+  --paper-deep: #F2F0EA;
+  --line: rgba(10, 26, 34, 0.12);
+  --line-soft: rgba(10, 26, 34, 0.06);
+  --purple: #8C9FCB;
+  --green: #8CC897;
+  --orange: #F6AD90;
+  --serif-en: 'DM Serif Display', serif;
+  --serif-tc: 'Noto Serif TC', serif;
+  --sans: 'Lato', 'Noto Serif TC', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  height: 100%;
+  overflow-y: scroll;
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ==================== SLIDE BASE ==================== */
+.slide {
+  min-height: 100vh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  padding: 8vh 8vw;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border-bottom: 1px solid var(--line-soft);
+  overflow: hidden;
+}
+
+.slide.dark {
+  background: var(--brand-black);
+  color: var(--paper);
+}
+
+.slide-num {
+  position: absolute;
+  bottom: 32px;
+  right: 32px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.15em;
+  font-feature-settings: "tnum";
+}
+
+.slide.dark .slide-num { color: rgba(250, 250, 247, 0.4); }
+
+.slide-tag {
+  position: absolute;
+  top: 32px;
+  left: 8vw;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--turquoise-deep);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.slide.dark .slide-tag { color: var(--turquoise); }
+
+/* Brand mark - only on certain slides */
+.slide-mark {
+  position: absolute;
+  top: 32px;
+  right: 8vw;
+  font-family: var(--serif-en);
+  font-size: 16px;
+  color: var(--brand-black);
+  letter-spacing: 0.08em;
+}
+
+.slide-mark::before {
+  content: '';
+  display: inline-block;
+  width: 12px; height: 12px;
+  background: var(--turquoise);
+  margin-right: 8px;
+  vertical-align: -1px;
+}
+
+.slide.dark .slide-mark { color: var(--paper); }
+
+/* ==================== NAV ==================== */
+.nav-control {
+  position: fixed;
+  bottom: 32px;
+  left: 32px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-progress {
+  width: 200px;
+  height: 2px;
+  background: var(--line);
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-progress-fill {
+  height: 100%;
+  background: var(--turquoise);
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+.nav-counter {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-soft);
+  letter-spacing: 0.1em;
+  font-feature-settings: "tnum";
+  min-width: 60px;
+}
+
+.lang-toggle {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 100;
+  display: flex;
+  background: var(--paper);
+  border: 1px solid var(--brand-black);
+  box-shadow: 2px 2px 0 var(--brand-black);
+}
+
+.lang-toggle button {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  padding: 6px 10px;
+  background: transparent;
+  border: none;
+  color: var(--ink-soft);
+  cursor: pointer;
+  border-right: 1px solid var(--line);
+}
+
+.lang-toggle button:last-child { border-right: none; }
+.lang-toggle button:hover { color: var(--brand-black); background: var(--turquoise-soft); }
+.lang-toggle button.active { color: var(--paper); background: var(--brand-black); }
+
+/* Language mode rules */
+body.mode-tc .lang-en-block,
+body.mode-tc .en-only { display: none !important; }
+
+body.mode-en .lang-tc-block,
+body.mode-en .tc-only { display: none !important; }
+
+/* default bilingual styles per element later */
+
+.help-hint {
+  position: fixed;
+  top: 50%;
+  right: 32px;
+  transform: translateY(-50%);
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink-mute);
+  letter-spacing: 0.15em;
+  text-orientation: mixed;
+  writing-mode: vertical-rl;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* ==================== SLIDE 01 — COVER ==================== */
+.slide-cover {
+  justify-content: space-between;
+  background: var(--paper);
+  position: relative;
+}
+
+.slide-cover::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0;
+  width: 6px; height: 100%;
+  background: var(--turquoise);
+}
+
+.cover-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.cover-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--turquoise-deep);
+}
+
+.cover-mark {
+  font-family: var(--serif-en);
+  font-size: 18px;
+  color: var(--brand-black);
+  letter-spacing: 0.08em;
+}
+
+.cover-mark::before {
+  content: '';
+  display: inline-block;
+  width: 14px; height: 14px;
+  background: var(--turquoise);
+  margin-right: 10px;
+  vertical-align: -1px;
+}
+
+.cover-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4vh 0;
+}
+
+.cover-headline-tc {
+  font-family: var(--serif-tc);
+  font-weight: 900;
+  font-size: clamp(56px, 11vw, 160px);
+  line-height: 1;
+  color: var(--brand-black);
+  letter-spacing: -0.03em;
+  margin-bottom: 16px;
+}
+
+.cover-headline-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(28px, 5vw, 64px);
+  line-height: 1.1;
+  color: var(--ink-soft);
+  letter-spacing: -0.01em;
+  margin-bottom: 48px;
+}
+
+.cover-subtitle {
+  font-family: var(--serif-tc);
+  font-size: clamp(14px, 1.4vw, 18px);
+  color: var(--ink);
+  max-width: 600px;
+  line-height: 1.7;
+}
+
+.cover-subtitle-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: clamp(13px, 1.2vw, 16px);
+  color: var(--ink-soft);
+  max-width: 600px;
+  margin-top: 4px;
+  line-height: 1.6;
+}
+
+.cover-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.15em;
+}
+
+.cover-bottom-right {
+  text-align: right;
+}
+
+/* ==================== SETUP SLIDE (02) ==================== */
+.slide-setup {
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0 8vw;
+}
+
+.setup-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--turquoise-deep);
+  margin-bottom: 48px;
+}
+
+.setup-hero-stat {
+  font-family: var(--serif-en);
+  font-size: clamp(120px, 28vw, 400px);
+  line-height: 0.85;
+  color: var(--brand-black);
+  letter-spacing: -0.05em;
+  margin-bottom: 32px;
+}
+
+.setup-label-tc {
+  font-family: var(--serif-tc);
+  font-size: clamp(20px, 2.4vw, 32px);
+  color: var(--brand-black);
+  margin-bottom: 8px;
+  font-weight: 500;
+  max-width: 700px;
+  line-height: 1.4;
+}
+
+.setup-label-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: clamp(16px, 1.6vw, 22px);
+  color: var(--ink-soft);
+  max-width: 700px;
+  line-height: 1.4;
+  margin-bottom: 48px;
+}
+
+.setup-punchline-tc {
+  font-family: var(--serif-tc);
+  font-size: clamp(20px, 2.2vw, 28px);
+  color: var(--brand-black);
+  max-width: 800px;
+  line-height: 1.5;
+  border-top: 2px solid var(--brand-black);
+  padding-top: 24px;
+  font-weight: 700;
+}
+
+.setup-punchline-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: clamp(16px, 1.5vw, 20px);
+  color: var(--ink-soft);
+  max-width: 800px;
+  line-height: 1.5;
+  margin-top: 12px;
+}
+
+/* ==================== TENSION SLIDE (03) ==================== */
+.slide-tension {
+  justify-content: center;
+}
+
+.tension-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--turquoise-deep);
+  margin-bottom: 32px;
+}
+
+.tension-headline-tc {
+  font-family: var(--serif-tc);
+  font-size: clamp(32px, 4.5vw, 56px);
+  font-weight: 700;
+  color: var(--brand-black);
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.tension-headline-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: clamp(22px, 3vw, 36px);
+  color: var(--ink-soft);
+  margin-bottom: 60px;
+  line-height: 1.2;
+}
+
+.tension-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 32px;
+  align-items: stretch;
+}
+
+.tension-side {
+  padding: 32px 0;
+}
+
+.tension-side h3 {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.tension-side.left h3 { color: var(--copper); }
+.tension-side.right h3 { color: var(--turquoise); }
+
+.tension-side h4 {
+  font-family: var(--serif-tc);
+  font-weight: 700;
+  font-size: clamp(22px, 2.4vw, 30px);
+  color: var(--brand-black);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.tension-side h4-en, .tension-side .h4-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: clamp(15px, 1.4vw, 18px);
+  color: var(--ink-soft);
+  margin-bottom: 24px;
+  display: block;
+  line-height: 1.3;
+}
+
+.tension-side p {
+  font-family: var(--serif-tc);
+  font-size: 16px;
+  color: var(--ink);
+  line-height: 1.7;
+  max-width: 360px;
+  margin-bottom: 12px;
+}
+
+.tension-side .p-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+.tension-divider {
+  width: 2px;
+  background: var(--line);
+  position: relative;
+}
+
+.tension-divider::after {
+  content: '↔';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--paper);
+  padding: 8px 4px;
+  font-family: var(--serif-en);
+  font-size: 24px;
+  color: var(--turquoise);
+}
+
+.tension-conclusion {
+  margin-top: 48px;
+  padding: 24px 32px;
+  border-top: 2px solid var(--brand-black);
+  border-bottom: 2px solid var(--brand-black);
+}
+
+.tension-conclusion-tc {
+  font-family: var(--serif-tc);
+  font-size: clamp(20px, 2vw, 26px);
+  font-weight: 700;
+  color: var(--brand-black);
+  line-height: 1.4;
+}
+
+.tension-conclusion-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: clamp(15px, 1.4vw, 18px);
+  color: var(--ink-soft);
+  margin-top: 8px;
+  line-height: 1.4;
+}
+
+/* ==================== PART DIVIDER ==================== */
+.slide-divider {
+  background: var(--brand-black);
+  color: var(--paper);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 8vw;
+}
+
+.divider-numeral {
+  font-family: var(--serif-en);
+  font-size: clamp(180px, 38vw, 540px);
+  line-height: 0.85;
+  color: var(--turquoise);
+  margin-bottom: 32px;
+  letter-spacing: -0.04em;
+}
+
+.divider-part {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: rgba(250, 250, 247, 0.5);
+  margin-bottom: 16px;
+}
+
+.divider-title-tc {
+  font-family: var(--serif-tc);
+  font-weight: 900;
+  font-size: clamp(40px, 6vw, 88px);
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+  line-height: 1;
+}
+
+.divider-title-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: clamp(24px, 3vw, 40px);
+  color: rgba(250, 250, 247, 0.6);
+  margin-bottom: 40px;
+}
+
+.divider-subhead-tc {
+  font-family: var(--serif-tc);
+  font-size: clamp(15px, 1.6vw, 19px);
+  color: rgba(250, 250, 247, 0.75);
+  max-width: 620px;
+  line-height: 1.6;
+}
+
+.divider-subhead-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: clamp(13px, 1.4vw, 16px);
+  color: rgba(250, 250, 247, 0.55);
+  max-width: 620px;
+  line-height: 1.6;
+  margin-top: 8px;
+}
+
+/* ==================== CONTENT SLIDES ==================== */
+.slide-content {
+  justify-content: flex-start;
+  padding-top: 12vh;
+}
+
+.content-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--turquoise-deep);
+  margin-bottom: 16px;
+}
+
+.content-headline-tc {
+  font-family: var(--serif-tc);
+  font-weight: 700;
+  font-size: clamp(32px, 4.5vw, 56px);
+  color: var(--brand-black);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin-bottom: 4px;
+}
+
+.content-headline-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: clamp(20px, 2.6vw, 32px);
+  color: var(--ink-soft);
+  line-height: 1.15;
+  margin-bottom: 48px;
+}
+
+.content-body { flex: 1; }
+
+/* International Benchmarks (Slide 05) */
+.benchmarks-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-top: 32px;
+}
+
+.benchmark-card {
+  border-top: 2px solid var(--brand-black);
+  padding-top: 24px;
+}
+
+.benchmark-year {
+  font-family: var(--serif-en);
+  font-size: 28px;
+  color: var(--turquoise-deep);
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+.benchmark-name {
+  font-family: var(--serif-tc);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--brand-black);
+  margin-bottom: 2px;
+}
+
+.benchmark-name-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin-bottom: 16px;
+  display: block;
+}
+
+.benchmark-desc {
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.7;
+}
+
+.benchmark-desc-en {
+  font-style: italic;
+  font-family: var(--serif-en), 'Lato', sans-serif;
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-top: 8px;
+  line-height: 1.6;
+  display: block;
+}
+
+/* Gap slide (8→12, 3→10) */
+.slide-gap {
+  justify-content: center;
+}
+
+.gap-display {
+  display: flex;
+  align-items: center;
+  gap: clamp(20px, 4vw, 60px);
+  margin: 32px 0 48px;
+}
+
+.gap-num {
+  font-family: var(--serif-en);
+  font-size: clamp(80px, 16vw, 240px);
+  line-height: 0.85;
+  color: var(--brand-black);
+  letter-spacing: -0.04em;
+}
+
+.gap-num.old { color: var(--ink-mute); position: relative; }
+.gap-num.old::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: -10%;
+  width: 120%; height: 4px;
+  background: var(--orange);
+  transform: rotate(-15deg);
+}
+
+.gap-arrow {
+  font-family: var(--serif-en);
+  font-size: clamp(48px, 8vw, 100px);
+  color: var(--turquoise);
+}
+
+.gap-num.new { color: var(--turquoise-deep); }
+
+.gap-caption-tc {
+  font-family: var(--serif-tc);
+  font-size: clamp(22px, 2.6vw, 32px);
+  color: var(--brand-black);
+  font-weight: 700;
+  max-width: 800px;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.gap-caption-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: clamp(16px, 1.6vw, 20px);
+  color: var(--ink-soft);
+  max-width: 800px;
+  line-height: 1.4;
+  margin-bottom: 40px;
+}
+
+.gap-detail-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.gap-detail-item {
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.gap-detail-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--turquoise);
+  letter-spacing: 0.15em;
+  margin-bottom: 6px;
+}
+
+.gap-detail-name {
+  font-family: var(--serif-tc);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--brand-black);
+  margin-bottom: 2px;
+}
+
+.gap-detail-name-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.gap-detail-conseq {
+  font-size: 11px;
+  color: var(--ink);
+  line-height: 1.6;
+  font-style: italic;
+}
+
+.gap-detail-conseq-en {
+  font-family: var(--serif-en), 'Lato', sans-serif;
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin-top: 6px;
+  line-height: 1.6;
+  display: block;
+}
+
+/* Scenarios gap */
+.scenarios-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.scenario-mini {
+  padding: 16px;
+  background: var(--paper-deep);
+  border-top: 3px solid;
+}
+
+.scenario-mini.a { border-top-color: var(--turquoise); }
+.scenario-mini.b { border-top-color: var(--purple); }
+.scenario-mini.c { border-top-color: var(--orange); }
+.scenario-mini.d { border-top-color: var(--green); }
+
+.scenario-mini-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--ink-mute);
+  margin-bottom: 6px;
+}
+
+.scenario-mini-name {
+  font-family: var(--serif-tc);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--brand-black);
+  margin-bottom: 2px;
+}
+
+.scenario-mini-name-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-bottom: 10px;
+  display: block;
+}
+
+.scenario-mini ul { list-style: none; }
+
+.scenario-mini ul li {
+  font-size: 12px;
+  color: var(--ink);
+  padding: 4px 0;
+  line-height: 1.5;
+}
+
+.scenario-mini ul li .sc-en {
+  display: block;
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 10px;
+  font-family: var(--serif-en), 'Lato', sans-serif;
+}
+
+/* Six-layer overview slide */
+.slide-arch {
+  justify-content: center;
+  padding-top: 8vh;
+}
+
+.arch-stack {
+  display: flex;
+  gap: 20px;
+  align-items: stretch;
+  margin-top: 32px;
+}
+
+.arch-stack-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.arch-row {
+  background: var(--paper-deep);
+  padding: 16px 24px;
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 20px;
+  align-items: center;
+  border-left: 3px solid var(--turquoise-line);
+  transition: all 0.3s ease;
+}
+
+.arch-row:hover { border-left-color: var(--turquoise); background: var(--turquoise-soft); }
+
+.arch-row-num {
+  font-family: var(--serif-en);
+  font-size: 28px;
+  color: var(--turquoise);
+  line-height: 1;
+}
+
+.arch-row-name {
+  font-family: var(--serif-tc);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--brand-black);
+}
+
+.arch-row-name-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: 12px;
+  color: var(--ink-soft);
+  display: block;
+  margin-top: 1px;
+}
+
+.arch-row-q {
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin-top: 4px;
+  font-style: italic;
+  font-family: var(--serif-en), 'Lato', sans-serif;
+}
+
+.arch-side-pitch {
+  width: 220px;
+  background: var(--brand-black);
+  color: var(--paper);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.arch-side-pitch::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: var(--orange);
+}
+
+.arch-side-pitch .label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--orange);
+  letter-spacing: 0.2em;
+  margin-bottom: 12px;
+}
+
+.arch-side-pitch h4 {
+  font-family: var(--serif-tc);
+  font-size: 16px;
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+
+.arch-side-pitch .h4-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: 13px;
+  color: rgba(250, 250, 247, 0.6);
+  display: block;
+  margin-bottom: 16px;
+}
+
+.arch-side-pitch p {
+  font-size: 12px;
+  line-height: 1.7;
+  color: rgba(250, 250, 247, 0.7);
+}
+
+.arch-side-pitch .p-en {
+  font-family: var(--serif-en), 'Lato', sans-serif;
+  font-size: 11px;
+  color: rgba(250, 250, 247, 0.5);
+  font-style: italic;
+  margin-top: 8px;
+  display: block;
+}
+
+/* Layer detail slides */
+.layer-eyebrow-row {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  margin-bottom: 12px;
+}
+
+.layer-bignum {
+  font-family: var(--serif-en);
+  font-size: clamp(64px, 9vw, 120px);
+  line-height: 1;
+  color: var(--turquoise);
+  letter-spacing: -0.03em;
+}
+
+.layer-eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--turquoise-deep);
+  letter-spacing: 0.25em;
+}
+
+.layer-headline-tc {
+  font-family: var(--serif-tc);
+  font-weight: 700;
+  font-size: clamp(28px, 4vw, 48px);
+  color: var(--brand-black);
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+  line-height: 1.2;
+}
+
+.layer-headline-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: clamp(18px, 2.4vw, 28px);
+  color: var(--ink-soft);
+  margin-bottom: 32px;
+  line-height: 1.2;
+}
+
+.layer-key-question {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-soft);
+  padding-left: 16px;
+  border-left: 2px solid var(--turquoise);
+  margin-bottom: 32px;
+}
+
+/* Layer 1 - 3 anchors */
+.anchor-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.anchor-block {
+  background: var(--paper-deep);
+  padding: 28px;
+  border-top: 3px solid var(--turquoise);
+}
+
+.anchor-block .a-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--turquoise-deep);
+  letter-spacing: 0.2em;
+  margin-bottom: 12px;
+}
+
+.anchor-block .a-name {
+  font-family: var(--serif-tc);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--brand-black);
+  margin-bottom: 2px;
+}
+
+.anchor-block .a-name-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin-bottom: 14px;
+  display: block;
+}
+
+.anchor-block .a-desc {
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.7;
+}
+
+.anchor-block .a-desc-en {
+  font-family: var(--serif-en), 'Lato', sans-serif;
+  font-style: italic;
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dotted var(--line);
+  line-height: 1.7;
+  display: block;
+}
+
+/* Layer 2 - capability clusters */
+.clusters-display {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.cluster {
+  border-top: 3px solid;
+  padding-top: 16px;
+}
+
+.cluster.self { border-top-color: var(--purple); }
+.cluster.people { border-top-color: var(--green); }
+.cluster.space { border-top-color: var(--orange); }
+
+.cluster-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  margin-bottom: 4px;
+}
+
+.cluster.self .cluster-label { color: var(--purple); }
+.cluster.people .cluster-label { color: var(--green); }
+.cluster.space .cluster-label { color: var(--orange); }
+
+.cluster-title {
+  font-family: var(--serif-tc);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--brand-black);
+  margin-bottom: 2px;
+}
+
+.cluster-title-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-bottom: 12px;
+  display: block;
+}
+
+.cluster ul { list-style: none; }
+
+.cluster ul li {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line-soft);
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.cluster ul li:last-child { border-bottom: none; }
+
+.cluster ul li .num {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink-mute);
+  padding-top: 1px;
+}
+
+.cluster ul li .name {
+  font-family: var(--serif-tc);
+  font-weight: 500;
+  color: var(--brand-black);
+}
+
+.cluster ul li .name-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 11px;
+  display: block;
+  margin-top: 1px;
+}
+
+.cluster ul li .new {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--turquoise);
+  border: 1px solid var(--turquoise);
+  padding: 1px 4px;
+  margin-left: 4px;
+  vertical-align: 2px;
+}
+
+/* Layer 3 - Maturity track */
+.maturity-display {
+  margin-top: 32px;
+}
+
+.maturity-bar {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  position: relative;
+  margin-bottom: 32px;
+}
+
+.maturity-bar::before {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: 6%;
+  right: 6%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--copper), var(--turquoise));
+  z-index: 0;
+}
+
+.m-node {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.m-dot {
+  width: 28px; height: 28px;
+  background: var(--paper);
+  border: 2px solid var(--turquoise);
+  border-radius: 50%;
+  margin: 0 auto 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--turquoise-deep);
+}
+
+.m-level {
+  font-family: var(--serif-tc);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--brand-black);
+  margin-bottom: 4px;
+}
+
+.m-level-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+}
+
+.m-desc {
+  font-size: 11px;
+  color: var(--ink-mute);
+  line-height: 1.5;
+}
+
+.m-desc-en {
+  font-family: var(--serif-en), 'Lato', sans-serif;
+  font-size: 10px;
+  font-style: italic;
+  color: var(--ink-mute);
+  margin-top: 4px;
+  line-height: 1.5;
+  display: block;
+}
+
+.maturity-insight {
+  background: var(--paper-deep);
+  padding: 20px 28px;
+  border-left: 3px solid var(--turquoise);
+}
+
+.maturity-insight-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--turquoise-deep);
+  letter-spacing: 0.2em;
+  margin-bottom: 8px;
+}
+
+.maturity-insight-text {
+  font-family: var(--serif-tc);
+  font-size: clamp(15px, 1.6vw, 18px);
+  color: var(--brand-black);
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.maturity-insight-text-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: clamp(13px, 1.4vw, 16px);
+  color: var(--ink-soft);
+  margin-top: 4px;
+  line-height: 1.6;
+}
+
+/* Layer 4 - 10 scenarios */
+.scenarios-full-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.sc-cat {
+  background: var(--paper-deep);
+  padding: 20px;
+  border-top: 3px solid;
+}
+
+.sc-cat.a { border-top-color: var(--turquoise); }
+.sc-cat.b { border-top-color: var(--purple); }
+.sc-cat.c { border-top-color: var(--orange); }
+.sc-cat.d { border-top-color: var(--green); }
+
+.sc-cat-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  margin-bottom: 4px;
+}
+
+.sc-cat.a .sc-cat-label { color: var(--turquoise-deep); }
+.sc-cat.b .sc-cat-label { color: var(--purple); }
+.sc-cat.c .sc-cat-label { color: var(--orange); }
+.sc-cat.d .sc-cat-label { color: var(--green); }
+
+.sc-cat-title {
+  font-family: var(--serif-tc);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--brand-black);
+}
+
+.sc-cat-title-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-bottom: 10px;
+  display: block;
+}
+
+.sc-cat-freq {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--ink-mute);
+  letter-spacing: 0.05em;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line-soft);
+  margin-bottom: 10px;
+}
+
+.sc-cat ul { list-style: none; }
+
+.sc-cat ul li {
+  padding: 6px 0;
+  font-size: 12px;
+  color: var(--brand-black);
+  line-height: 1.4;
+}
+
+.sc-cat ul li .sc-code {
+  font-family: var(--mono);
+  color: var(--turquoise-deep);
+  font-size: 10px;
+  margin-right: 6px;
+}
+
+.sc-cat ul li .sc-en {
+  display: block;
+  font-family: var(--serif-en), 'Lato', sans-serif;
+  font-style: italic;
+  font-size: 10px;
+  color: var(--ink-soft);
+  margin-top: 1px;
+  padding-left: 24px;
+}
+
+.d3-callout {
+  padding: 16px 24px;
+  background: var(--brand-black);
+  color: var(--paper);
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 16px;
+  align-items: center;
+}
+
+.d3-callout .star {
+  font-family: var(--serif-en);
+  font-size: 28px;
+  color: var(--orange);
+}
+
+.d3-callout strong {
+  font-family: var(--serif-tc);
+  font-size: 14px;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.d3-callout .strong-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: 12px;
+  color: rgba(250, 250, 247, 0.6);
+  display: block;
+}
+
+/* Layer 5 - Operations */
+.ops-display {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-top: 32px;
+}
+
+.ops-table-pitch {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ops-table-pitch caption {
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--turquoise-deep);
+  letter-spacing: 0.15em;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--turquoise);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.ops-table-pitch th {
+  font-family: var(--serif-tc);
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--brand-black);
+  text-align: left;
+  padding: 8px 6px;
+  border-bottom: 1px solid var(--line);
+}
+
+.ops-table-pitch th .th-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: 9px;
+  color: var(--ink-soft);
+  font-weight: 400;
+  display: block;
+  margin-top: 2px;
+}
+
+.ops-table-pitch td {
+  padding: 10px 6px;
+  font-size: 12px;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line-soft);
+  vertical-align: top;
+}
+
+.ops-table-pitch td .td-en {
+  font-family: var(--serif-en), 'Lato', sans-serif;
+  font-style: italic;
+  font-size: 10px;
+  color: var(--ink-soft);
+  display: block;
+  margin-top: 3px;
+}
+
+.ops-table-pitch .phase {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--turquoise-deep);
+}
+
+/* Layer 6 - Brand anchors + 3-year arc */
+.brand-display {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 32px;
+  margin-top: 24px;
+}
+
+.brand-anchors-pitch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.brand-anchor-pitch {
+  background: var(--paper-deep);
+  padding: 16px;
+  border-left: 3px solid var(--turquoise);
+}
+
+.brand-anchor-pitch .b-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--turquoise-deep);
+  letter-spacing: 0.15em;
+  margin-bottom: 4px;
+}
+
+.brand-anchor-pitch .b-name {
+  font-family: var(--serif-tc);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--brand-black);
+}
+
+.brand-anchor-pitch .b-name-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.brand-anchor-pitch .b-desc {
+  font-size: 11px;
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+.brand-anchor-pitch .b-desc-en {
+  font-family: var(--serif-en), 'Lato', sans-serif;
+  font-style: italic;
+  font-size: 10px;
+  color: var(--ink-soft);
+  margin-top: 6px;
+  line-height: 1.6;
+  display: block;
+}
+
+.brand-arc-pitch {
+  background: var(--brand-black);
+  color: var(--paper);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.brand-arc-pitch .arc-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--turquoise);
+  letter-spacing: 0.2em;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.arc-year-pitch {
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(250, 250, 247, 0.15);
+}
+
+.arc-year-pitch:last-child { border-bottom: none; }
+
+.arc-year-pitch .y {
+  font-family: var(--serif-en);
+  font-size: 20px;
+  color: var(--turquoise);
+  margin-right: 12px;
+}
+
+.arc-year-pitch .y-name {
+  font-family: var(--serif-tc);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--paper);
+}
+
+.arc-year-pitch .y-name-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: 11px;
+  color: rgba(250, 250, 247, 0.6);
+  display: block;
+  margin-top: 2px;
+  margin-left: 32px;
+}
+
+/* Calibration system slide */
+.calibration-display {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 32px;
+}
+
+.cal-loop-pitch {
+  border-left: 3px solid;
+  padding: 16px 24px;
+  background: var(--paper-deep);
+}
+
+.cal-loop-pitch.a { border-left-color: var(--turquoise); }
+.cal-loop-pitch.b { border-left-color: var(--orange); }
+
+.cal-loop-pitch .l-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  margin-bottom: 8px;
+}
+
+.cal-loop-pitch.a .l-label { color: var(--turquoise-deep); }
+.cal-loop-pitch.b .l-label { color: var(--orange); }
+
+.cal-loop-pitch .l-title {
+  font-family: var(--serif-tc);
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--brand-black);
+}
+
+.cal-loop-pitch .l-title-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink-soft);
+  margin-bottom: 16px;
+  display: block;
+}
+
+.cal-loop-pitch p {
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+.cal-loop-pitch .p-en {
+  font-family: var(--serif-en), 'Lato', sans-serif;
+  font-style: italic;
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-top: 8px;
+  line-height: 1.6;
+  display: block;
+}
+
+.cal-sources-pitch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.cal-sources-pitch span {
+  font-size: 10px;
+  padding: 3px 8px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  font-family: var(--mono);
+  color: var(--ink);
+  letter-spacing: 0.02em;
+}
+
+.cal-sources-pitch span .pill-en {
+  display: block;
+  font-style: italic;
+  color: var(--ink-mute);
+  font-size: 9px;
+  margin-top: 1px;
+  font-family: var(--serif-en), 'Lato', sans-serif;
+  letter-spacing: 0;
+}
+
+/* Roadmap */
+.roadmap-display {
+  margin-top: 32px;
+}
+
+.roadmap-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 100px;
+  gap: 24px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line-soft);
+  align-items: center;
+}
+
+.roadmap-row.current {
+  background: var(--turquoise-soft);
+  padding: 16px;
+  margin: 0 -16px;
+  border-bottom: 1px solid var(--turquoise-line);
+}
+
+.roadmap-v {
+  font-family: var(--serif-en);
+  font-size: 24px;
+  color: var(--ink-mute);
+}
+
+.roadmap-row.current .roadmap-v { color: var(--turquoise); }
+
+.roadmap-title {
+  font-family: var(--serif-tc);
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--brand-black);
+}
+
+.roadmap-title-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-top: 4px;
+  display: block;
+}
+
+.roadmap-eta {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-soft);
+  text-align: right;
+  letter-spacing: 0.05em;
+}
+
+/* Decision slide */
+.slide-decision {
+  background: var(--brand-black);
+  color: var(--paper);
+}
+
+.decision-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 84vh;
+}
+
+.decision-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--turquoise);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.decision-headline-tc {
+  font-family: var(--serif-tc);
+  font-weight: 900;
+  font-size: clamp(36px, 5.5vw, 72px);
+  letter-spacing: -0.02em;
+  color: var(--paper);
+  line-height: 1.15;
+  margin-bottom: 8px;
+}
+
+.decision-headline-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: clamp(22px, 3vw, 36px);
+  color: rgba(250, 250, 247, 0.6);
+  line-height: 1.15;
+  margin-bottom: 60px;
+}
+
+.decision-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.action-card {
+  border-top: 2px solid var(--turquoise);
+  padding-top: 24px;
+}
+
+.action-num {
+  font-family: var(--serif-en);
+  font-size: 56px;
+  color: var(--turquoise);
+  line-height: 1;
+  margin-bottom: 16px;
+}
+
+.action-title {
+  font-family: var(--serif-tc);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--paper);
+  margin-bottom: 4px;
+}
+
+.action-title-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: 14px;
+  color: rgba(250, 250, 247, 0.65);
+  margin-bottom: 12px;
+  display: block;
+}
+
+.action-desc {
+  font-size: 13px;
+  color: rgba(250, 250, 247, 0.75);
+  line-height: 1.7;
+}
+
+.action-desc-en {
+  font-family: var(--serif-en), 'Lato', sans-serif;
+  font-style: italic;
+  font-size: 12px;
+  color: rgba(250, 250, 247, 0.5);
+  margin-top: 8px;
+  display: block;
+  line-height: 1.6;
+}
+
+.action-meta {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--turquoise);
+  letter-spacing: 0.15em;
+  margin-top: 16px;
+}
+
+/* Closing slide */
+.slide-closing {
+  background: var(--paper);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 8vw;
+  position: relative;
+}
+
+.slide-closing::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0;
+  width: 6px; height: 100%;
+  background: var(--turquoise);
+}
+
+.closing-mark {
+  margin-bottom: 60px;
+  font-family: var(--serif-en);
+  font-size: 28px;
+  color: var(--brand-black);
+}
+
+.closing-mark::before {
+  content: '';
+  display: inline-block;
+  width: 18px; height: 18px;
+  background: var(--turquoise);
+  margin-right: 14px;
+  vertical-align: -1px;
+}
+
+.closing-quote-tc {
+  font-family: var(--serif-tc);
+  font-weight: 900;
+  font-size: clamp(48px, 9vw, 144px);
+  line-height: 1;
+  color: var(--brand-black);
+  letter-spacing: -0.04em;
+  margin-bottom: 24px;
+}
+
+.closing-quote-en {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-size: clamp(24px, 4vw, 56px);
+  color: var(--ink-soft);
+  margin-bottom: 80px;
+}
+
+.closing-footer {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 1024px) {
+  .slide { padding: 6vh 6vw; }
+  .arch-stack { flex-direction: column; }
+  .arch-side-pitch { width: auto; }
+  .ops-display { grid-template-columns: 1fr; gap: 40px; }
+  .brand-display { grid-template-columns: 1fr; }
+  .brand-anchors-pitch { grid-template-columns: 1fr 1fr; }
+  .calibration-display { grid-template-columns: 1fr; }
+  .decision-actions { grid-template-columns: 1fr; gap: 24px; }
+  .tension-grid { grid-template-columns: 1fr; gap: 24px; }
+  .tension-divider { width: auto; height: 2px; }
+  .tension-divider::after { transform: translate(-50%, -50%) rotate(90deg); }
+  .clusters-display, .scenarios-full-grid, .benchmarks-grid, .scenarios-mini-grid, .gap-detail-list, .anchor-row { grid-template-columns: 1fr 1fr; }
+  .maturity-bar { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .maturity-bar::before { display: none; }
+}
+
+@media (max-width: 640px) {
+  .slide { padding: 80px 24px 60px; }
+  .slide-tag { left: 24px; top: 24px; font-size: 10px; }
+  .slide-mark { right: 24px; top: 24px; font-size: 14px; }
+  .nav-control { bottom: 24px; left: 24px; }
+  .nav-progress { width: 120px; }
+  .lang-toggle { bottom: 24px; right: 24px; }
+  .help-hint { display: none; }
+  .clusters-display, .scenarios-full-grid, .benchmarks-grid, .scenarios-mini-grid, .gap-detail-list, .anchor-row { grid-template-columns: 1fr; }
+  .maturity-bar { grid-template-columns: repeat(2, 1fr); }
+  .gap-display { flex-direction: column; gap: 16px; }
+}
+
+/* Smooth entrance */
+.slide-cover, .slide-content, .slide-divider, .slide-decision, .slide-closing, .slide-setup, .slide-tension, .slide-arch, .slide-gap {
+  opacity: 0;
+  animation: fadeIn 0.6s ease forwards;
+}
+
+@keyframes fadeIn { to { opacity: 1; } }
+</style>
+</head>
+<body class="mode-bi">
+
+<!-- Navigation -->
+<div class="nav-control">
+  <div class="nav-counter"><span id="nav-current">01</span> / <span id="nav-total">18</span></div>
+  <div class="nav-progress"><div class="nav-progress-fill" id="nav-fill"></div></div>
+</div>
+
+<div class="lang-toggle">
+  <button data-mode="tc">繁中</button>
+  <button data-mode="bi" class="active">雙語</button>
+  <button data-mode="en">EN</button>
+</div>
+
+<div class="help-hint">↓ SCROLL or PRESS → · ↓ 滾動 或 →</div>
+
+<!-- ==================== SLIDE 01 — COVER ==================== -->
+<section class="slide slide-cover">
+  <div class="cover-top">
+    <div class="cover-eyebrow">GPS · Capability Architecture · v1.1</div>
+    <div class="cover-mark">GPS</div>
+  </div>
+  <div class="cover-center">
+    <h1 class="cover-headline-tc">從接待，<br>到大使。</h1>
+    <h2 class="cover-headline-en">From Reception<br>to Ambassadorship.</h2>
+    <p class="cover-subtitle">詢問台導覽解說能力架構提案</p>
+    <p class="cover-subtitle-en">A Capability Architecture Proposal for the Information Desk</p>
+  </div>
+  <div class="cover-bottom">
+    <div>FOR GPS STRATEGY &amp; TRANSFORMATION<br>2026 · 05</div>
+    <div class="cover-bottom-right">PROPOSED BY R. LIN<br>VERSION 1.1</div>
+  </div>
+  <div class="slide-num">01 / 18</div>
+</section>
+
+<!-- ==================== SLIDE 02 — THE SETUP ==================== -->
+<section class="slide slide-setup">
+  <div class="slide-tag">02 / Why this matters</div>
+  <p class="setup-eyebrow">為什麼這件事重要 · The Setup</p>
+  <div class="setup-hero-stat">50–200</div>
+  <p class="setup-label-tc">詢問台同仁每天接觸訪客的次數。</p>
+  <p class="setup-label-en">Daily visitor contacts per information desk staff member.</p>
+  <p class="setup-punchline-tc">這比所有海報、Newsletter、Intranet 文章加起來都要多。<br>他們是 GPS 最高頻次的品牌大使。</p>
+  <p class="setup-punchline-en">More brand touchpoints than every poster, newsletter, and intranet article combined.<br>They are GPS's highest-frequency brand ambassadors.</p>
+  <div class="slide-num">02 / 18</div>
+</section>
+
+<!-- ==================== SLIDE 03 — THE TENSION ==================== -->
+<section class="slide slide-tension">
+  <div class="slide-tag">03 / The Tension</div>
+  <p class="tension-eyebrow">但有個落差 · But There's a Gap</p>
+  <h2 class="tension-headline-tc">最高頻的接觸點，<br>卻沒有對應的能力架構。</h2>
+  <h2 class="tension-headline-en">The highest-frequency touchpoint<br>has no matching capability architecture.</h2>
+
+  <div class="tension-grid">
+    <div class="tension-side left">
+      <h3>當前狀態 / Current State</h3>
+      <h4>L0–L1</h4>
+      <span class="h4-en">Clerk to Explainer</span>
+      <p>接收問題、給出答案、引導到正確窗口。資訊正確即可，沒有品牌實踐的維度。</p>
+      <p class="p-en">Receive questions, give answers, route to the right window. Accuracy is enough; brand practice is absent.</p>
+    </div>
+
+    <div class="tension-divider"></div>
+
+    <div class="tension-side right">
+      <h3>品牌承諾 / Brand Promise</h3>
+      <h4>L3+</h4>
+      <span class="h4-en">Considerate Partner</span>
+      <p>「在您需要之前」。體貼的夥伴，主動聆聽、預先規劃。需要 L3 以上的解說能力才能呈現。</p>
+      <p class="p-en">"Before you need it." The Considerate Partner who listens actively and prepares in advance. Requires L3+ interpretation capability.</p>
+    </div>
+  </div>
+
+  <div class="tension-conclusion">
+    <p class="tension-conclusion-tc">沒有架構連接日常實踐與品牌承諾。這就是 v1.1 要解決的事。</p>
+    <p class="tension-conclusion-en">No architecture connects daily practice to brand promise. That is what v1.1 sets out to solve.</p>
+  </div>
+
+  <div class="slide-num">03 / 18</div>
+</section>
+
+<!-- ==================== SLIDE 04 — PART I DIVIDER ==================== -->
+<section class="slide slide-divider">
+  <div class="divider-numeral">I</div>
+  <p class="divider-part">PART ONE · 第一部</p>
+  <h2 class="divider-title-tc">洞察</h2>
+  <h3 class="divider-title-en">The Insight</h3>
+  <p class="divider-subhead-tc">解說作為一門專業，有 70 年的方法論積累。<br>大部分內部訓練計畫忽略了它。</p>
+  <p class="divider-subhead-en">Interpretation has been a profession for 70 years.<br>Most internal training programs ignore it.</p>
+  <div class="slide-num">04 / 18</div>
+</section>
+
+<!-- ==================== SLIDE 05 — INTERNATIONAL BENCHMARKS ==================== -->
+<section class="slide slide-content">
+  <div class="slide-tag">05 / Insight 1</div>
+  <p class="content-eyebrow">站在巨人肩膀上 · Standing on Giants' Shoulders</p>
+  <h2 class="content-headline-tc">解說職能有 70 年積累，<br>不需要從零發明。</h2>
+  <h2 class="content-headline-en">Seventy years of accumulated practice.<br>We don't need to reinvent.</h2>
+
+  <div class="content-body">
+    <div class="benchmarks-grid">
+      <div class="benchmark-card">
+        <div class="benchmark-year">1957</div>
+        <div class="benchmark-name">Tilden 六原則</div>
+        <span class="benchmark-name-en">Six Principles of Interpretation</span>
+        <p class="benchmark-desc">解說作為獨立專業的根基。「資訊不是解說，目的是觸發、不是教導。」</p>
+        <span class="benchmark-desc-en">The foundation of interpretation as a profession. "Information is not interpretation; the goal is provocation, not instruction."</span>
+      </div>
+      <div class="benchmark-card">
+        <div class="benchmark-year">1992</div>
+        <div class="benchmark-name">Sam Ham TORE</div>
+        <span class="benchmark-name-en">TORE Model</span>
+        <p class="benchmark-desc">最實用的規劃工具。每段解說要 Thematic / Organized / Relevant / Enjoyable。</p>
+        <span class="benchmark-desc-en">The most practical planning tool. Every interpretation should be Thematic, Organized, Relevant, Enjoyable.</span>
+      </div>
+      <div class="benchmark-card">
+        <div class="benchmark-year">NAI</div>
+        <div class="benchmark-name">解說協會四級認證</div>
+        <span class="benchmark-name-en">Four-tier Certification</span>
+        <p class="benchmark-desc">CIH 接待者 → CIG 導覽員 → CIM 經理 → CIT 訓練師。可直接對照 L0-L5。</p>
+        <span class="benchmark-desc-en">CIH Host → CIG Guide → CIM Manager → CIT Trainer. Maps directly to our L0-L5.</span>
+      </div>
+      <div class="benchmark-card">
+        <div class="benchmark-year">WFTGA</div>
+        <div class="benchmark-name">國際導遊聯合會</div>
+        <span class="benchmark-name-en">World Federation</span>
+        <p class="benchmark-desc">把嗓音管理、突發應變列為核心職能。這是專業導遊與業餘解說的真實分水嶺。</p>
+        <span class="benchmark-desc-en">Lists voice management and crisis response as core competencies — the real dividing line between pros and amateurs.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-num">05 / 18</div>
+</section>
+
+<!-- ==================== SLIDE 06 — 8 → 12 ==================== -->
+<section class="slide slide-gap">
+  <div class="slide-tag">06 / Insight 2</div>
+  <p class="content-eyebrow">我們在 v1.0 漏掉了什麼 · What v1.0 Missed</p>
+
+  <div class="gap-display">
+    <div class="gap-num old">8</div>
+    <div class="gap-arrow">→</div>
+    <div class="gap-num new">12</div>
+  </div>
+
+  <p class="gap-caption-tc">缺的這 4 項不是錦上添花。<br>沒有它們，會發生專業失誤。</p>
+  <p class="gap-caption-en">The four missing capabilities are not nice-to-haves.<br>Without them, professional malpractice occurs.</p>
+
+  <div class="gap-detail-list">
+    <div class="gap-detail-item">
+      <div class="gap-detail-num">+ 02</div>
+      <div class="gap-detail-name">主題提煉力</div>
+      <span class="gap-detail-name-en">Theme Crafting</span>
+      <p class="gap-detail-conseq">沒有：訪客記不住任何重點。</p>
+      <span class="gap-detail-conseq-en">Without it: visitors remember nothing.</span>
+    </div>
+    <div class="gap-detail-item">
+      <div class="gap-detail-num">+ 03</div>
+      <div class="gap-detail-name">嗓音與體能管理</div>
+      <span class="gap-detail-name-en">Voice & Stamina</span>
+      <p class="gap-detail-conseq">沒有：真實的職業傷害。</p>
+      <span class="gap-detail-conseq-en">Without it: real occupational injury.</span>
+    </div>
+    <div class="gap-detail-item">
+      <div class="gap-detail-num">+ 08</div>
+      <div class="gap-detail-name">跨文化敏感度</div>
+      <span class="gap-detail-name-en">Cross-cultural Sensitivity</span>
+      <p class="gap-detail-conseq">沒有：JP / DE / CN 子公司信任受損。</p>
+      <span class="gap-detail-conseq-en">Without it: trust with JP/DE/CN subsidiaries damaged.</span>
+    </div>
+    <div class="gap-detail-item">
+      <div class="gap-detail-num">+ 09</div>
+      <div class="gap-detail-name">服務恢復力</div>
+      <span class="gap-detail-name-en">Service Recovery</span>
+      <p class="gap-detail-conseq">沒有：小失誤升級為品牌傷害。</p>
+      <span class="gap-detail-conseq-en">Without it: small mistakes become brand damage.</span>
+    </div>
+  </div>
+
+  <div class="slide-num">06 / 18</div>
+</section>
+
+<!-- ==================== SLIDE 07 — 3 → 10 ==================== -->
+<section class="slide slide-gap">
+  <div class="slide-tag">07 / Insight 3</div>
+  <p class="content-eyebrow">場景盤點不足 · Inadequate Scenario Inventory</p>
+
+  <div class="gap-display">
+    <div class="gap-num old">3</div>
+    <div class="gap-arrow">→</div>
+    <div class="gap-num new">10</div>
+  </div>
+
+  <p class="gap-caption-tc">原本只盤點 3 個場景。誠實檢視後是 10 個，分 4 大類。</p>
+  <p class="gap-caption-en">Only 3 scenarios were originally listed. An honest inventory reveals 10, across 4 categories.</p>
+
+  <div class="scenarios-mini-grid">
+    <div class="scenario-mini a">
+      <div class="scenario-mini-label">CAT A · 高頻</div>
+      <div class="scenario-mini-name">一般接待</div>
+      <span class="scenario-mini-name-en">Standard</span>
+      <ul>
+        <li>A1 路引／微導覽<span class="sc-en">Wayfinding & Micro-tour</span></li>
+        <li>A2 完整陪同導覽<span class="sc-en">Full Companion Tour</span></li>
+      </ul>
+    </div>
+    <div class="scenario-mini b">
+      <div class="scenario-mini-label">CAT B · 高品質</div>
+      <div class="scenario-mini-name">特殊接待</div>
+      <span class="scenario-mini-name-en">Special</span>
+      <ul>
+        <li>B1 VIP 接待<span class="sc-en">VIP Reception</span></li>
+        <li>B2 群體接待<span class="sc-en">Group Reception</span></li>
+      </ul>
+    </div>
+    <div class="scenario-mini c">
+      <div class="scenario-mini-label">CAT C · 高風險</div>
+      <div class="scenario-mini-name">例外處理</div>
+      <span class="scenario-mini-name-en">Exception</span>
+      <ul>
+        <li>C1 服務恢復<span class="sc-en">Service Recovery</span></li>
+        <li>C2 異常／緊急<span class="sc-en">Incident & Emergency</span></li>
+      </ul>
+    </div>
+    <div class="scenario-mini d">
+      <div class="scenario-mini-label">CAT D · 連續性</div>
+      <div class="scenario-mini-name">接觸前後</div>
+      <span class="scenario-mini-name-en">Pre & Post</span>
+      <ul>
+        <li>D1 預備接待<span class="sc-en">Pre-arrival</span></li>
+        <li>D2 離場送別<span class="sc-en">Departure</span></li>
+        <li>D3 訪客回饋蒐集<span class="sc-en">Feedback Collection</span></li>
+        <li>D4 跨班交接<span class="sc-en">Shift Handover</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="slide-num">07 / 18</div>
+</section>
+
+<!-- ==================== SLIDE 08 — PART II DIVIDER ==================== -->
+<section class="slide slide-divider">
+  <div class="divider-numeral">II</div>
+  <p class="divider-part">PART TWO · 第二部</p>
+  <h2 class="divider-title-tc">架構</h2>
+  <h3 class="divider-title-en">The Architecture</h3>
+  <p class="divider-subhead-tc">六層由下而上，從「為什麼」回答到「如何整合」。<br>並由雙向校準系統保持自我演化。</p>
+  <p class="divider-subhead-en">Six layers from bottom to top — from <em>why</em> to <em>how it integrates</em>.<br>A dual calibration system keeps it self-evolving.</p>
+  <div class="slide-num">08 / 18</div>
+</section>
+
+<!-- ==================== SLIDE 09 — SIX-LAYER STACK ==================== -->
+<section class="slide slide-arch">
+  <div class="slide-tag">09 / The Stack</div>
+  <p class="content-eyebrow">六層架構總覽 · The Six-Layer Stack</p>
+  <h2 class="content-headline-tc">每一層回答一個不同的問題，<br>下層支撐上層。</h2>
+  <h2 class="content-headline-en">Each layer answers a different question.<br>Lower supports upper.</h2>
+
+  <div class="arch-stack">
+    <div class="arch-stack-main">
+      <div class="arch-row">
+        <div class="arch-row-num">06</div>
+        <div>
+          <div class="arch-row-name">品牌整合層 <span class="arch-row-name-en">Brand Integration</span></div>
+          <div class="arch-row-q">如何與品牌一致？ / How it aligns with the brand.</div>
+        </div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-row-num">05</div>
+        <div>
+          <div class="arch-row-name">訓練與認證層 <span class="arch-row-name-en">Operations</span></div>
+          <div class="arch-row-q">怎麼學會、怎麼驗證？ / How they learn, how we verify.</div>
+        </div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-row-num">04</div>
+        <div>
+          <div class="arch-row-name">應用情境層 <span class="arch-row-name-en">Application</span></div>
+          <div class="arch-row-q">在哪些場景用？ / Where it gets used.</div>
+        </div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-row-num">03</div>
+        <div>
+          <div class="arch-row-name">成熟度層 <span class="arch-row-name-en">Maturity</span></div>
+          <div class="arch-row-q">能練到哪一階？ / How far each develops.</div>
+        </div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-row-num">02</div>
+        <div>
+          <div class="arch-row-name">能力模型層 <span class="arch-row-name-en">Capability</span></div>
+          <div class="arch-row-q">要練哪些能力？ / What to develop.</div>
+        </div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-row-num">01</div>
+        <div>
+          <div class="arch-row-name">哲學基底層 <span class="arch-row-name-en">Philosophy</span></div>
+          <div class="arch-row-q">為什麼解說？ / Why we interpret.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arch-side-pitch">
+      <div class="label">EXTERNAL CALIBRATION</div>
+      <h4>訪客回饋系統</h4>
+      <span class="h4-en">External Feedback Loop</span>
+      <p>外部回饋從架構右側進入，可影響任一層的設計。
+        <span class="p-en">External feedback enters from the side and can influence any layer.</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="slide-num">09 / 18</div>
+</section>
+
+<!-- ==================== SLIDE 10 — LAYER 1 PHILOSOPHY ==================== -->
+<section class="slide slide-content">
+  <div class="slide-tag">10 / Layer 01</div>
+  <div class="layer-eyebrow-row">
+    <div class="layer-bignum">01</div>
+    <div class="layer-eyebrow">PHILOSOPHY · 哲學基底層</div>
+  </div>
+  <h2 class="layer-headline-tc">為什麼解說，為什麼這樣解說。</h2>
+  <h2 class="layer-headline-en">Why we interpret — and why this way.</h2>
+  <div class="layer-key-question">"This layer is neither trained nor assessed — but it determines every design choice in the layers above."</div>
+
+  <div class="content-body">
+    <div class="anchor-row">
+      <div class="anchor-block">
+        <div class="a-num">A · 1957</div>
+        <div class="a-name">Tilden 解說六原則</div>
+        <span class="a-name-en">Tilden's Six Principles</span>
+        <p class="a-desc">資訊不是解說。<br>目的是觸發，不是教導。</p>
+        <span class="a-desc-en">Information is not interpretation. The goal is provocation, not instruction.</span>
+      </div>
+      <div class="anchor-block">
+        <div class="a-num">B · 環境設計</div>
+        <div class="a-name">CPTED 哲學</div>
+        <span class="a-name-en">CPTED Philosophy</span>
+        <p class="a-desc">透過環境主動設計，<br>讓安全感成為內建狀態。</p>
+        <span class="a-desc-en">Deliberate environmental design makes safety a built-in state.</span>
+      </div>
+      <div class="anchor-block">
+        <div class="a-num">C · Brand v3.6</div>
+        <div class="a-name">「在您需要之前」</div>
+        <span class="a-name-en">"Before You Need It."</span>
+        <p class="a-desc">詢問台是這句品牌主張<br>最高頻次的具體實踐。</p>
+        <span class="a-desc-en">The information desk is this brand idea's highest-frequency concrete practice.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-num">10 / 18</div>
+</section>
+
+<!-- ==================== SLIDE 11 — LAYER 2 CAPABILITY ==================== -->
+<section class="slide slide-content">
+  <div class="slide-tag">11 / Layer 02</div>
+  <div class="layer-eyebrow-row">
+    <div class="layer-bignum">02</div>
+    <div class="layer-eyebrow">CAPABILITY · 能力模型層</div>
+  </div>
+  <h2 class="layer-headline-tc">12 項能力，按「發生時機」分為 3 組。</h2>
+  <h2 class="layer-headline-en">Twelve capabilities, grouped by <em>when they happen</em>.</h2>
+  <div class="layer-key-question">"Training modules design by group, not by individual capability — far more efficient."</div>
+
+  <div class="content-body">
+    <div class="clusters-display">
+      <div class="cluster self">
+        <div class="cluster-label">CLUSTER A · SELF-READINESS</div>
+        <div class="cluster-title">內在準備組</div>
+        <span class="cluster-title-en">Self-Readiness — when no one's there</span>
+        <ul>
+          <li><span class="num">01</span><div><span class="name">內容理解力</span><span class="name-en">Content Mastery</span></div></li>
+          <li><span class="num">02</span><div><span class="name">主題提煉力<span class="new">NEW</span></span><span class="name-en">Theme Crafting</span></div></li>
+          <li><span class="num">03</span><div><span class="name">嗓音與體能管理<span class="new">NEW</span></span><span class="name-en">Voice & Stamina</span></div></li>
+          <li><span class="num">04</span><div><span class="name">敘事設計力</span><span class="name-en">Narrative Design</span></div></li>
+        </ul>
+      </div>
+      <div class="cluster people">
+        <div class="cluster-label">CLUSTER B · PEOPLE-FACING</div>
+        <div class="cluster-title">對人互動組</div>
+        <span class="cluster-title-en">People-Facing — at the moment of contact</span>
+        <ul>
+          <li><span class="num">05</span><div><span class="name">觀眾判讀力</span><span class="name-en">Audience Reading</span></div></li>
+          <li><span class="num">06</span><div><span class="name">即時轉譯力</span><span class="name-en">Real-time Translation</span></div></li>
+          <li><span class="num">07</span><div><span class="name">互動應變力</span><span class="name-en">Interactive Adaptation</span></div></li>
+          <li><span class="num">08</span><div><span class="name">跨文化敏感度<span class="new">NEW</span></span><span class="name-en">Cross-cultural Sensitivity</span></div></li>
+          <li><span class="num">09</span><div><span class="name">服務恢復力<span class="new">NEW</span></span><span class="name-en">Service Recovery</span></div></li>
+        </ul>
+      </div>
+      <div class="cluster space">
+        <div class="cluster-label">CLUSTER C · SPACE & EXPERIENCE</div>
+        <div class="cluster-title">場域與體驗組</div>
+        <span class="cluster-title-en">Space & Experience — environment & impression</span>
+        <ul>
+          <li><span class="num">10</span><div><span class="name">接觸點設計力<span class="new">RE</span></span><span class="name-en">Touchpoint Design</span></div></li>
+          <li><span class="num">11</span><div><span class="name">現場表達力</span><span class="name-en">On-site Presence</span></div></li>
+          <li><span class="num">12</span><div><span class="name">體驗收束力</span><span class="name-en">Experience Closure</span></div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-num">11 / 18</div>
+</section>
+
+<!-- ==================== SLIDE 12 — LAYER 3 MATURITY ==================== -->
+<section class="slide slide-content">
+  <div class="slide-tag">12 / Layer 03</div>
+  <div class="layer-eyebrow-row">
+    <div class="layer-bignum">03</div>
+    <div class="layer-eyebrow">MATURITY · 成熟度層</div>
+  </div>
+  <h2 class="layer-headline-tc">每項能力，從 L0 到 L5。</h2>
+  <h2 class="layer-headline-en">Each capability, from L0 to L5.</h2>
+  <div class="layer-key-question">"Maturity is per-capability, not per-person. A single score hides what a radar chart reveals."</div>
+
+  <div class="content-body">
+    <div class="maturity-display">
+      <div class="maturity-bar">
+        <div class="m-node">
+          <div class="m-dot">L0</div>
+          <div class="m-level">應對者</div>
+          <div class="m-level-en">Clerk</div>
+          <div class="m-desc">正確回答<span class="m-desc-en">Correct answers</span></div>
+        </div>
+        <div class="m-node">
+          <div class="m-dot">L1</div>
+          <div class="m-level">說明者</div>
+          <div class="m-level-en">Explainer</div>
+          <div class="m-desc">完整講述<span class="m-desc-en">Complete delivery</span></div>
+        </div>
+        <div class="m-node">
+          <div class="m-dot">L2</div>
+          <div class="m-level">導覽者</div>
+          <div class="m-level-en">Guide</div>
+          <div class="m-desc">讀懂聽眾<span class="m-desc-en">Reads audience</span></div>
+        </div>
+        <div class="m-node">
+          <div class="m-dot">L3</div>
+          <div class="m-level">解說者</div>
+          <div class="m-level-en">Interpreter</div>
+          <div class="m-desc">建立意義<span class="m-desc-en">Builds meaning</span></div>
+        </div>
+        <div class="m-node">
+          <div class="m-dot">L4</div>
+          <div class="m-level">體驗設計者</div>
+          <div class="m-level-en">Designer</div>
+          <div class="m-desc">整合旅程<span class="m-desc-en">Integrates journey</span></div>
+        </div>
+        <div class="m-node">
+          <div class="m-dot">L5</div>
+          <div class="m-level">文化大使</div>
+          <div class="m-level-en">Ambassador</div>
+          <div class="m-desc">訓練他人<span class="m-desc-en">Trains others</span></div>
+        </div>
+      </div>
+
+      <div class="maturity-insight">
+        <div class="maturity-insight-label">CORE STRUCTURE</div>
+        <p class="maturity-insight-text">12 項能力 × 6 級 = <strong style="color: var(--turquoise-deep); font-family: var(--mono);">72</strong> 個可觀察的 BARS 行為描述。這是評估與認證的核心資料結構。</p>
+        <p class="maturity-insight-text-en">12 capabilities × 6 levels = <strong style="color: var(--turquoise-deep); font-family: var(--mono);">72</strong> observable BARS behavior descriptions. The core data structure for assessment and certification.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-num">12 / 18</div>
+</section>
+
+<!-- ==================== SLIDE 13 — LAYER 4 APPLICATION ==================== -->
+<section class="slide slide-content">
+  <div class="slide-tag">13 / Layer 04</div>
+  <div class="layer-eyebrow-row">
+    <div class="layer-bignum">04</div>
+    <div class="layer-eyebrow">APPLICATION · 應用情境層</div>
+  </div>
+  <h2 class="layer-headline-tc">10 個場景，4 大類，<br>覆蓋詢問台的全部接觸面。</h2>
+  <h2 class="layer-headline-en">Ten scenarios in four categories.<br>Full coverage of the information desk surface.</h2>
+
+  <div class="content-body">
+    <div class="scenarios-full-grid">
+      <div class="sc-cat a">
+        <div class="sc-cat-label">CAT A · 高頻 / High Frequency</div>
+        <div class="sc-cat-title">一般接待</div>
+        <span class="sc-cat-title-en">Standard Reception</span>
+        <div class="sc-cat-freq">日均 50–200 次 / Daily</div>
+        <ul>
+          <li><span class="sc-code">A1</span>路引／微導覽<span class="sc-en">Wayfinding & Micro-tour</span></li>
+          <li><span class="sc-code">A2</span>完整陪同導覽<span class="sc-en">Full Companion Tour</span></li>
+        </ul>
+      </div>
+      <div class="sc-cat b">
+        <div class="sc-cat-label">CAT B · 高品質 / High Quality</div>
+        <div class="sc-cat-title">特殊接待</div>
+        <span class="sc-cat-title-en">Special Reception</span>
+        <div class="sc-cat-freq">週均數次 / Weekly</div>
+        <ul>
+          <li><span class="sc-code">B1</span>VIP 接待<span class="sc-en">VIP Reception</span></li>
+          <li><span class="sc-code">B2</span>群體接待<span class="sc-en">Group Reception</span></li>
+        </ul>
+      </div>
+      <div class="sc-cat c">
+        <div class="sc-cat-label">CAT C · 高風險 / High Risk</div>
+        <div class="sc-cat-title">例外處理</div>
+        <span class="sc-cat-title-en">Exception Handling</span>
+        <div class="sc-cat-freq">月均數次 / Monthly</div>
+        <ul>
+          <li><span class="sc-code">C1</span>服務恢復<span class="sc-en">Service Recovery</span></li>
+          <li><span class="sc-code">C2</span>異常／緊急<span class="sc-en">Incident & Emergency</span></li>
+        </ul>
+      </div>
+      <div class="sc-cat d">
+        <div class="sc-cat-label">CAT D · 連續性 / Continuity</div>
+        <div class="sc-cat-title">接觸前後</div>
+        <span class="sc-cat-title-en">Pre & Post-encounter</span>
+        <div class="sc-cat-freq">連續性管理 / Continuous</div>
+        <ul>
+          <li><span class="sc-code">D1</span>預備接待<span class="sc-en">Pre-arrival</span></li>
+          <li><span class="sc-code">D2</span>離場送別<span class="sc-en">Departure</span></li>
+          <li><span class="sc-code">D3</span>訪客回饋蒐集<span class="sc-en">Feedback Collection</span></li>
+          <li><span class="sc-code">D4</span>跨班交接<span class="sc-en">Shift Handover</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="d3-callout">
+      <div class="star">★</div>
+      <div>
+        <strong>D3 訪客回饋蒐集既是場景，也是校準源頭。</strong>
+        <span class="strong-en">D3 Visitor Feedback is both a scenario and a calibration source.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-num">13 / 18</div>
+</section>
+
+<!-- ==================== SLIDE 14 — LAYER 5 OPERATIONS ==================== -->
+<section class="slide slide-content">
+  <div class="slide-tag">14 / Layer 05</div>
+  <div class="layer-eyebrow-row">
+    <div class="layer-bignum">05</div>
+    <div class="layer-eyebrow">OPERATIONS · 訓練與認證層</div>
+  </div>
+  <h2 class="layer-headline-tc">訓練、評估、認證形成閉環。</h2>
+  <h2 class="layer-headline-en">Training, assessment, certification: a closed loop.</h2>
+
+  <div class="content-body">
+    <div class="ops-display">
+      <div>
+        <table class="ops-table-pitch">
+          <caption>訓練架構 / Training · Vita Pattern</caption>
+          <thead>
+            <tr>
+              <th>階段<span class="th-en">Phase</span></th>
+              <th>對應<span class="th-en">Maps To</span></th>
+              <th>目標<span class="th-en">Target</span></th>
+              <th>模組<span class="th-en">Modules</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="phase">階段一</td>
+              <td>Explorer<br><span class="td-en">4 weeks</span></td>
+              <td>L0 → L1</td>
+              <td>TORE 入門<span class="td-en">TORE basics</span></td>
+            </tr>
+            <tr>
+              <td class="phase">階段二</td>
+              <td>Builder<br><span class="td-en">8 weeks</span></td>
+              <td>L1 → L3</td>
+              <td>主題提煉、跨文化<span class="td-en">Theme & Culture</span></td>
+            </tr>
+            <tr>
+              <td class="phase">階段三</td>
+              <td>Architect<br><span class="td-en">Ongoing</span></td>
+              <td>L3 → L5</td>
+              <td>微體驗、訓練他人<span class="td-en">Design & Train</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div>
+        <table class="ops-table-pitch">
+          <caption>評估機制 / Assessment · 四種並用</caption>
+          <thead>
+            <tr>
+              <th>機制<span class="th-en">Mechanism</span></th>
+              <th>用途<span class="th-en">Purpose</span></th>
+              <th>頻率<span class="th-en">Frequency</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="phase">BARS</td>
+              <td>客觀依據<span class="td-en">Objective basis</span></td>
+              <td>季<span class="td-en">Q</span></td>
+            </tr>
+            <tr>
+              <td class="phase">神秘訪客<span class="td-en">Mystery</span></td>
+              <td>跨身分驗證<span class="td-en">Cross-identity</span></td>
+              <td>季<span class="td-en">Q</span></td>
+            </tr>
+            <tr>
+              <td class="phase">訪客 NPS</td>
+              <td>即時回饋<span class="td-en">Real-time</span></td>
+              <td>持續<span class="td-en">Continuous</span></td>
+            </tr>
+            <tr>
+              <td class="phase">同儕觀察<span class="td-en">Peer</span></td>
+              <td>交叉校準<span class="td-en">Cross-cal</span></td>
+              <td>月<span class="td-en">M</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-num">14 / 18</div>
+</section>
+
+<!-- ==================== SLIDE 15 — LAYER 6 BRAND ==================== -->
+<section class="slide slide-content">
+  <div class="slide-tag">15 / Layer 06</div>
+  <div class="layer-eyebrow-row">
+    <div class="layer-bignum">06</div>
+    <div class="layer-eyebrow">BRAND INTEGRATION · 品牌整合層</div>
+  </div>
+  <h2 class="layer-headline-tc">這不是孤立的訓練計畫，<br>是「體貼的夥伴」的營運化身。</h2>
+  <h2 class="layer-headline-en">Not an isolated training plan —<br>the operational embodiment of <em>Considerate Partner</em>.</h2>
+
+  <div class="content-body">
+    <div class="brand-display">
+      <div class="brand-anchors-pitch">
+        <div class="brand-anchor-pitch">
+          <div class="b-label">BRAND IDEA</div>
+          <div class="b-name">在您需要之前</div>
+          <span class="b-name-en">Before You Need It.</span>
+          <p class="b-desc">每次微導覽預先準備好，而非被動回應。</p>
+          <span class="b-desc-en">Every micro-tour prepared, not reactive.</span>
+        </div>
+        <div class="brand-anchor-pitch">
+          <div class="b-label">PILLAR 02</div>
+          <div class="b-name">Journey Protection</div>
+          <span class="b-name-en">Journey Protection</span>
+          <p class="b-desc">詢問台是訪客旅程的第一守護點。</p>
+          <span class="b-desc-en">First guardianship point of the visitor journey.</span>
+        </div>
+        <div class="brand-anchor-pitch">
+          <div class="b-label">POSITIONING</div>
+          <div class="b-name">體貼的夥伴</div>
+          <span class="b-name-en">Considerate Partner</span>
+          <p class="b-desc">同仁是品牌最高頻次的具體化身。</p>
+          <span class="b-desc-en">Staff are the brand's highest-frequency embodiment.</span>
+        </div>
+        <div class="brand-anchor-pitch">
+          <div class="b-label">PHILOSOPHY</div>
+          <div class="b-name">CPTED</div>
+          <span class="b-name-en">CPTED</span>
+          <p class="b-desc">櫃台物理設計即 CPTED 在接觸點的實踐。</p>
+          <span class="b-desc-en">Desk design itself is CPTED at the touchpoint.</span>
+        </div>
+      </div>
+
+      <div class="brand-arc-pitch">
+        <div class="arc-label">三年敘事弧線<br>Three-Year Arc</div>
+        <div>
+          <div class="arc-year-pitch">
+            <div><span class="y">2026</span><span class="y-name">建立信任</span></div>
+            <span class="y-name-en">Building Trust · L0 → L1</span>
+          </div>
+          <div class="arc-year-pitch">
+            <div><span class="y">2027</span><span class="y-name">守護的延伸</span></div>
+            <span class="y-name-en">Extending Guardianship · L1 → L3</span>
+          </div>
+          <div class="arc-year-pitch">
+            <div><span class="y">2028</span><span class="y-name">事前設計</span></div>
+            <span class="y-name-en">Anticipatory Design · L3 → L5</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-num">15 / 18</div>
+</section>
+
+<!-- ==================== SLIDE 16 — DUAL CALIBRATION ==================== -->
+<section class="slide slide-content">
+  <div class="slide-tag">16 / Calibration</div>
+  <p class="content-eyebrow">架構不是靜態 · The Architecture is Not Static</p>
+  <h2 class="content-headline-tc">雙向校準，讓架構自我演化。</h2>
+  <h2 class="content-headline-en">Dual calibration. A self-evolving architecture.</h2>
+
+  <div class="content-body">
+    <div class="calibration-display">
+      <div class="cal-loop-pitch a">
+        <div class="l-label">LOOP A · INTERNAL</div>
+        <div class="l-title">內部校準迴路</div>
+        <span class="l-title-en">Internal Calibration Loop</span>
+        <p>實務與訓練的反證，回頭質疑能力定義與成熟度標準的合理性。
+          <span class="p-en">Evidence from practice and training questions capability definitions and maturity standards.</span>
+        </p>
+        <div class="cal-sources-pitch">
+          <span>場景使用<span class="pill-en">Scenario use</span></span>
+          <span>學習成效<span class="pill-en">Learning outcomes</span></span>
+          <span>BARS<span class="pill-en">BARS</span></span>
+        </div>
+      </div>
+      <div class="cal-loop-pitch b">
+        <div class="l-label">LOOP B · EXTERNAL</div>
+        <div class="l-title">外部校準迴路</div>
+        <span class="l-title-en">External Calibration Loop</span>
+        <p>訪客的真實聲音。比任何內部回饋更具權威——他們才是體驗的最終裁判。
+          <span class="p-en">The authentic voice of visitors. More authoritative than any internal signal — they are the final arbiters.</span>
+        </p>
+        <div class="cal-sources-pitch">
+          <span>NPS<span class="pill-en">NPS</span></span>
+          <span>神秘訪客<span class="pill-en">Mystery visitor</span></span>
+          <span>申訴<span class="pill-en">Complaint</span></span>
+          <span>深度訪談<span class="pill-en">Interview</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-num">16 / 18</div>
+</section>
+
+<!-- ==================== SLIDE 17 — ROADMAP ==================== -->
+<section class="slide slide-content">
+  <div class="slide-tag">17 / The Path</div>
+  <p class="content-eyebrow">演化路徑 · Evolution Path</p>
+  <h2 class="content-headline-tc">v1.1 → v3.0，<br>每步都通過校準系統檢視。</h2>
+  <h2 class="content-headline-en">v1.1 → v3.0. Every step passes calibration review.</h2>
+
+  <div class="content-body">
+    <div class="roadmap-display">
+      <div class="roadmap-row">
+        <div class="roadmap-v">v1.0</div>
+        <div>
+          <div class="roadmap-title">線性框架 + 8 大能力</div>
+          <span class="roadmap-title-en">Linear framework + 8 capabilities</span>
+        </div>
+        <div class="roadmap-eta">已完成 / 2026-05</div>
+      </div>
+      <div class="roadmap-row current">
+        <div class="roadmap-v">v1.1</div>
+        <div>
+          <div class="roadmap-title">六層架構 + 12 能力 + L0-L5 + 雙向校準 + 10 場景</div>
+          <span class="roadmap-title-en">Six layers + 12 capabilities + L0-L5 + dual calibration + 10 scenarios</span>
+        </div>
+        <div class="roadmap-eta">本提案 / 2026-05</div>
+      </div>
+      <div class="roadmap-row">
+        <div class="roadmap-v">v1.2</div>
+        <div>
+          <div class="roadmap-title">30 秒微導覽腳本庫（20 個高頻情境）</div>
+          <span class="roadmap-title-en">30-second micro-tour script library (20 scenarios)</span>
+        </div>
+        <div class="roadmap-eta">2-3 週 / Q2</div>
+      </div>
+      <div class="roadmap-row">
+        <div class="roadmap-v">v1.3</div>
+        <div>
+          <div class="roadmap-title">完整 BARS 矩陣（72 個行為描述）</div>
+          <span class="roadmap-title-en">Complete BARS matrix (72 descriptions)</span>
+        </div>
+        <div class="roadmap-eta">4-6 週 / Q3</div>
+      </div>
+      <div class="roadmap-row">
+        <div class="roadmap-v">v2.0</div>
+        <div>
+          <div class="roadmap-title">完整訓練教材包 + 認證流程上線</div>
+          <span class="roadmap-title-en">Full training pack + certification launch</span>
+        </div>
+        <div class="roadmap-eta">6 個月 / Q4</div>
+      </div>
+      <div class="roadmap-row">
+        <div class="roadmap-v">v3.0</div>
+        <div>
+          <div class="roadmap-title">跨子公司版本（JP / DE / CN / US-AZ 文化校準）</div>
+          <span class="roadmap-title-en">Cross-subsidiary version (cultural calibration)</span>
+        </div>
+        <div class="roadmap-eta">12 個月 / 2027</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-num">17 / 18</div>
+</section>
+
+<!-- ==================== SLIDE 18 — THE DECISION ==================== -->
+<section class="slide slide-decision">
+  <div class="slide-tag">18 / The Ask</div>
+  <div class="decision-content">
+    <p class="decision-eyebrow">需要的決定 · The Decision Needed</p>
+    <h2 class="decision-headline-tc">三個立即可推進的下一步。</h2>
+    <h2 class="decision-headline-en">Three immediate next moves.</h2>
+
+    <div class="decision-actions">
+      <div class="action-card">
+        <div class="action-num">01</div>
+        <div class="action-title">採納 v1.1 架構</div>
+        <span class="action-title-en">Endorse v1.1 Architecture</span>
+        <p class="action-desc">核可這份能力架構作為詢問台同仁培訓的官方依據。</p>
+        <span class="action-desc-en">Approve this architecture as the official basis for information desk training.</span>
+        <div class="action-meta">DECISION POINT · 本週</div>
+      </div>
+      <div class="action-card">
+        <div class="action-num">02</div>
+        <div class="action-title">啟動 v1.2 腳本庫</div>
+        <span class="action-title-en">Launch v1.2 Script Library</span>
+        <p class="action-desc">投入資源建立 20 個高頻情境的雙語腳本庫。讓架構在 3 週內可用。</p>
+        <span class="action-desc-en">Resource the 20 high-frequency bilingual script library. Architecture becomes usable in 3 weeks.</span>
+        <div class="action-meta">RESOURCE · 2-3 週</div>
+      </div>
+      <div class="action-card">
+        <div class="action-num">03</div>
+        <div class="action-title">確認試點據點</div>
+        <span class="action-title-en">Confirm Pilot Site</span>
+        <p class="action-desc">選定一個據點作為 v2.0 認證流程的試點。優先建議：HQ-TW 主接待區。</p>
+        <span class="action-desc-en">Select one site to pilot the v2.0 certification flow. Suggested: HQ-TW main reception.</span>
+        <div class="action-meta">SITE · 6 個月內</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">18 / 18</div>
+</section>
+
+<!-- ==================== CLOSING ==================== -->
+<section class="slide slide-closing">
+  <div class="closing-mark">GPS</div>
+  <h2 class="closing-quote-tc">在您需要之前。</h2>
+  <h3 class="closing-quote-en">Before you need it.</h3>
+  <div class="closing-footer">END OF PITCH · v1.1 · 2026-05</div>
+</section>
+
+<script>
+(function() {
+  // Language toggle
+  var langButtons = document.querySelectorAll('.lang-toggle button');
+  var body = document.body;
+  function setMode(mode) {
+    body.classList.remove('mode-tc', 'mode-en', 'mode-bi');
+    body.classList.add('mode-' + mode);
+    langButtons.forEach(function(b) {
+      b.classList.toggle('active', b.dataset.mode === mode);
+    });
+  }
+  langButtons.forEach(function(btn) {
+    btn.addEventListener('click', function() { setMode(btn.dataset.mode); });
+  });
+
+  // Navigation
+  var slides = document.querySelectorAll('.slide');
+  var totalSlides = slides.length;
+  document.getElementById('nav-total').textContent = String(totalSlides).padStart(2, '0');
+  var navFill = document.getElementById('nav-fill');
+  var navCurrent = document.getElementById('nav-current');
+
+  function getCurrentSlide() {
+    var scrollY = window.scrollY;
+    var viewportH = window.innerHeight;
+    var center = scrollY + viewportH / 2;
+    for (var i = 0; i < slides.length; i++) {
+      var rect = slides[i].getBoundingClientRect();
+      var top = rect.top + scrollY;
+      var bottom = top + rect.height;
+      if (center >= top && center < bottom) return i;
+    }
+    return Math.min(Math.floor(scrollY / viewportH), slides.length - 1);
+  }
+
+  function updateNav() {
+    var idx = getCurrentSlide();
+    var pct = ((idx + 1) / totalSlides) * 100;
+    navFill.style.width = pct + '%';
+    navCurrent.textContent = String(idx + 1).padStart(2, '0');
+  }
+
+  window.addEventListener('scroll', updateNav, { passive: true });
+  window.addEventListener('resize', updateNav);
+  updateNav();
+
+  // Keyboard navigation
+  document.addEventListener('keydown', function(e) {
+    var idx = getCurrentSlide();
+    var target = idx;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+      e.preventDefault();
+      target = Math.min(idx + 1, slides.length - 1);
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault();
+      target = Math.max(idx - 1, 0);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      target = 0;
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      target = slides.length - 1;
+    } else if (e.key === 'f' || e.key === 'F') {
+      e.preventDefault();
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(function(){});
+      } else {
+        document.exitFullscreen().catch(function(){});
+      }
+      return;
+    } else {
+      return;
+    }
+    if (target !== idx) {
+      slides[target].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
