@@ -56,6 +56,7 @@ html {
   scroll-behavior: smooth;
   height: 100%;
   overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 body {
@@ -63,6 +64,8 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-size: 15px;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
   line-height: 1.55;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
@@ -79,6 +82,8 @@ body {
   word-break: keep-all;
   overflow-wrap: break-word;
 }
+
+img, video, svg { max-width: 100%; height: auto; }
 
 em { font-style: italic; }
 strong { font-weight: 600; }
@@ -115,6 +120,7 @@ button:focus-visible, a:focus-visible {
 /* ==================== SLIDE BASE ==================== */
 .slide {
   min-height: 100vh;
+  min-height: 100svh;
   scroll-snap-align: start;
   scroll-snap-stop: always;
   padding: 10vh 8vw 12vh;
@@ -253,6 +259,8 @@ button:focus-visible, a:focus-visible {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
 .cover-eyebrow {
@@ -1863,6 +1871,7 @@ button:focus-visible, a:focus-visible {
   flex-direction: column;
   justify-content: center;
   min-height: 84vh;
+  min-height: 84svh;
 }
 
 .decision-eyebrow {
@@ -1971,7 +1980,7 @@ button:focus-visible, a:focus-visible {
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 0 8vw;
+  padding: 80px 8vw;
   position: relative;
 }
 
@@ -2031,8 +2040,17 @@ button:focus-visible, a:focus-visible {
 }
 
 /* ==================== RESPONSIVE ==================== */
+/* ============================================================
+   RWD — 3-tier breakpoint system
+   • Desktop (default): >1024px
+   • Tablet: 768-1024px
+   • Phone: <768px
+   • Small phone: <380px
+   ============================================================ */
+
+/* TABLET — 768 to 1024px */
 @media (max-width: 1024px) {
-  .slide { padding: 6vh 6vw; }
+  .slide { padding: 8vh 6vw 10vh; min-height: 100svh; min-height: 100vh; }
   .arch-stack { flex-direction: column; }
   .arch-side-pitch { width: auto; }
   .ops-display { grid-template-columns: 1fr; gap: 40px; }
@@ -2040,24 +2058,279 @@ button:focus-visible, a:focus-visible {
   .brand-anchors-pitch { grid-template-columns: 1fr 1fr; }
   .calibration-display { grid-template-columns: 1fr; }
   .decision-actions { grid-template-columns: 1fr; gap: 24px; }
-  .tension-grid { grid-template-columns: 1fr; gap: 24px; }
-  .tension-divider { width: auto; height: 2px; }
-  .tension-divider::after { transform: translate(-50%, -50%) rotate(90deg); }
-  .clusters-display, .scenarios-full-grid, .benchmarks-grid, .scenarios-mini-grid, .gap-detail-list, .anchor-row { grid-template-columns: 1fr 1fr; }
+  .tension-grid { grid-template-columns: 1fr; gap: 32px; }
+  .tension-divider { width: auto; height: 1px; }
+  .clusters-display, .scenarios-full-grid, .benchmarks-grid, .gap-detail-list, .anchor-row { grid-template-columns: 1fr 1fr; }
+  .scenarios-mini-grid { grid-template-columns: 1fr 1fr; }
   .maturity-bar { grid-template-columns: repeat(3, 1fr); gap: 16px; }
   .maturity-bar::before { display: none; }
+  .roadmap-row { grid-template-columns: 80px 1fr 100px; gap: 20px; }
+  .layer-chapter { gap: 24px; }
 }
 
-@media (max-width: 640px) {
-  .slide { padding: 80px 24px 60px; }
-  .slide-tag { left: 24px; top: 24px; font-size: 10px; }
-  .slide-mark { right: 24px; top: 24px; font-size: 14px; }
-  .nav-control { bottom: 24px; left: 24px; }
-  .nav-progress { width: 120px; }
+/* PHONE — below 768px */
+@media (max-width: 768px) {
+  html {
+    scroll-snap-type: y proximity;
+  }
+  .slide {
+    min-height: 100svh;
+    min-height: 100vh;
+    padding: 80px 22px 64px;
+    scroll-snap-stop: normal;
+  }
+  body { font-size: 14px; line-height: 1.55; }
+
+  /* Chrome */
+  .slide-tag { left: 22px; top: 22px; font-size: 9.5px; letter-spacing: 0.18em; }
+  .slide-num { right: 22px; bottom: 22px; font-size: 9.5px; }
+  .nav-control { bottom: 16px; left: 16px; padding: 7px 11px; gap: 10px; }
+  .nav-progress { width: 90px; }
+  .nav-counter { font-size: 9.5px; min-width: 46px; }
   .help-hint { display: none; }
-  .clusters-display, .scenarios-full-grid, .benchmarks-grid, .scenarios-mini-grid, .gap-detail-list, .anchor-row { grid-template-columns: 1fr; }
-  .maturity-bar { grid-template-columns: repeat(2, 1fr); }
-  .gap-display { flex-direction: column; gap: 16px; }
+
+  /* Cover */
+  .slide-cover { padding: 0; }
+  .cover-top, .cover-bottom { padding: 22px 22px; flex-wrap: wrap; gap: 8px; }
+  .cover-center { padding: 0 22px; }
+  .cover-headline-tc { font-size: clamp(40px, 13vw, 64px); line-height: 0.95; }
+  .cover-headline-en { font-size: clamp(20px, 6.5vw, 30px); }
+  .cover-subtitle { font-size: 14px; padding-top: 16px; margin-top: 18px; }
+  .cover-subtitle-en { font-size: 12.5px; }
+  .cover-bottom { font-size: 9.5px; letter-spacing: 0.15em; }
+
+  /* Setup */
+  .slide-setup { padding: 14vh 22px; }
+  .setup-hero-stat { font-size: clamp(96px, 32vw, 180px); margin-bottom: 32px; }
+  .setup-hero-stat::after { display: none; }
+  .setup-label-tc { font-size: 18px; }
+  .setup-label-en { font-size: 13px; margin-bottom: 32px; }
+  .setup-punchline-tc { font-size: 17px; }
+  .setup-punchline-en { font-size: 13px; }
+
+  /* Tension */
+  .tension-headline-tc { font-size: clamp(28px, 8vw, 40px); }
+  .tension-headline-en { font-size: clamp(16px, 4.5vw, 22px); margin-bottom: 48px; }
+  .tension-state { font-size: clamp(36px, 11vw, 56px); }
+  .tension-side h4 { font-size: 20px; }
+  .tension-side .h4-en { font-size: 14px; margin-bottom: 16px; }
+  .tension-side p { font-size: 14px; line-height: 1.65; }
+  .tension-side .p-en { font-size: 12.5px; }
+  .tension-conclusion { margin-top: 40px; }
+  .tension-conclusion-tc { font-size: 17px; }
+  .tension-conclusion-en { font-size: 13px; }
+
+  /* Part divider */
+  .slide-divider { padding: 22px 22px; grid-template-rows: 0.5fr auto 0.5fr; }
+  .divider-content { gap: 32px; }
+  .divider-numeral { font-size: clamp(72px, 22vw, 120px); }
+  .divider-part { font-size: 9.5px; letter-spacing: 0.24em; }
+  .divider-title-tc { font-size: clamp(40px, 12vw, 64px); }
+  .divider-title-en { font-size: clamp(20px, 6vw, 32px); }
+  .divider-subhead-tc { font-size: 14px; line-height: 1.7; }
+  .divider-subhead-en { font-size: 12.5px; }
+
+  /* Content slides */
+  .slide-content, .slide-arch, .slide-gap { padding-top: 14vh; }
+  .content-headline-tc { font-size: clamp(28px, 8vw, 40px); margin-bottom: 4px; }
+  .content-headline-en { font-size: clamp(16px, 4.5vw, 22px); margin-bottom: 32px; }
+
+  /* Layer chapter mark — stack vertically on phone */
+  .layer-chapter {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+  }
+  .layer-bignum { font-size: clamp(56px, 16vw, 96px); }
+  .layer-rule { font-size: 9.5px; letter-spacing: 0.22em; }
+  .layer-headline-tc { font-size: clamp(22px, 6.5vw, 32px); }
+  .layer-headline-en { font-size: clamp(14px, 4vw, 20px); }
+
+  /* Grids → single column */
+  .clusters-display, .scenarios-full-grid, .benchmarks-grid,
+  .scenarios-mini-grid, .gap-detail-list, .anchor-row {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  /* Benchmark cards on phone */
+  .benchmark-card { padding-top: 16px; }
+  .benchmark-year { font-size: 26px; margin-bottom: 12px; }
+  .benchmark-name { font-size: 16px; }
+  .benchmark-name-en { font-size: 13px; margin-bottom: 12px; }
+  .benchmark-desc { font-size: 13px; line-height: 1.7; }
+  .benchmark-desc-en { font-size: 11.5px; }
+
+  /* Six-layer stack mobile */
+  .arch-stack-main { gap: 1px; }
+  .arch-row { padding: 14px 16px; grid-template-columns: 40px 1fr; gap: 14px; }
+  .arch-row-num { font-size: 24px; }
+  .arch-row-name { font-size: 14px; }
+  .arch-row-name-en { font-size: 11.5px; }
+  .arch-row-q { font-size: 11px; margin-top: 4px; }
+
+  /* External feedback panel mobile */
+  .arch-side-pitch { padding: 20px; }
+  .arch-side-pitch h4 { font-size: 15px; }
+  .arch-side-pitch .h4-en { font-size: 12px; margin-bottom: 16px; }
+  .arch-side-pitch p { font-size: 12.5px; }
+  .arch-side-pitch .p-en { font-size: 11px; }
+
+  /* Capability clusters */
+  .cluster { padding-top: 12px; }
+  .cluster-title { font-size: 17px; }
+  .cluster-title-en { font-size: 13px; margin-bottom: 16px; }
+  .cluster ul li { padding: 10px 0; }
+  .cluster ul li .name { font-size: 13.5px; }
+  .cluster ul li .name-en { font-size: 11.5px; }
+
+  /* Maturity bar — vertical timeline on phone */
+  .maturity-bar {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    position: relative;
+    padding-left: 36px;
+  }
+  .maturity-bar::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 12px; bottom: 12px;
+    left: 14px;
+    width: 1px;
+    background: linear-gradient(180deg, var(--copper) 0%, var(--turquoise) 100%);
+  }
+  .m-node {
+    text-align: left;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 12px;
+    align-items: center;
+    padding: 4px 0;
+  }
+  .m-dot {
+    margin: 0;
+    position: relative;
+    left: -36px;
+  }
+  .m-node > div:not(.m-dot) { margin-left: -36px; }
+  .m-level { font-size: 14px; display: inline-block; margin-right: 8px; margin-bottom: 0; }
+  .m-level-en { font-size: 11.5px; display: inline-block; margin-bottom: 0; }
+  .m-desc { font-size: 11px; }
+  .m-desc-en { font-size: 10.5px; }
+  .maturity-insight { padding: 20px; margin-top: 32px; }
+  .maturity-insight-text { font-size: 14px; }
+  .maturity-insight-text-en { font-size: 12px; }
+
+  /* Scenario cards */
+  .sc-cat { padding: 18px; }
+  .sc-cat-title { font-size: 16px; }
+  .sc-cat-title-en { font-size: 12.5px; }
+  .sc-cat ul li { font-size: 13px; }
+  .sc-cat ul li .sc-en { font-size: 11px; padding-left: 22px; }
+
+  /* D3 callout */
+  .d3-callout { padding: 14px 16px; grid-template-columns: 28px 1fr; gap: 12px; }
+  .d3-callout .star { font-size: 22px; }
+  .d3-callout strong { font-size: 13px; }
+  .d3-callout .strong-en { font-size: 11px; }
+
+  /* Ops tables */
+  .ops-display { gap: 32px; }
+  .ops-table-pitch caption { font-size: 9.5px; letter-spacing: 0.18em; }
+  .ops-table-pitch th { font-size: 10.5px; padding: 6px; }
+  .ops-table-pitch th .th-en { font-size: 9px; }
+  .ops-table-pitch td { font-size: 11.5px; padding: 10px 6px; }
+  .ops-table-pitch td .td-en { font-size: 9.5px; }
+
+  /* Brand anchors → single column on small phones */
+  .brand-anchors-pitch { grid-template-columns: 1fr; gap: 10px; }
+  .brand-anchor-pitch { padding: 14px 18px; }
+  .brand-anchor-pitch .b-name { font-size: 14px; }
+  .brand-anchor-pitch .b-name-en { font-size: 12px; }
+  .brand-anchor-pitch .b-desc { font-size: 12px; }
+  .brand-anchor-pitch .b-desc-en { font-size: 10.5px; }
+  .brand-arc-pitch { padding: 20px; }
+  .arc-year-pitch .y { font-size: 18px; }
+  .arc-year-pitch .y-name { font-size: 13px; }
+  .arc-year-pitch .y-name-en { font-size: 11px; margin-left: 28px; }
+
+  /* Calibration loops */
+  .cal-loop-pitch { padding: 18px 20px; }
+  .cal-loop-pitch .l-title { font-size: 18px; }
+  .cal-loop-pitch .l-title-en { font-size: 13.5px; margin-bottom: 16px; }
+  .cal-loop-pitch p { font-size: 13px; }
+  .cal-loop-pitch .p-en { font-size: 11px; }
+
+  /* Roadmap — restructure on phone: stack within row */
+  .roadmap-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 16px 0;
+  }
+  .roadmap-row.current {
+    padding-left: 16px;
+    padding-right: 16px;
+    margin: 0 -16px;
+  }
+  .roadmap-v { font-size: 20px; }
+  .roadmap-title { font-size: 14px; }
+  .roadmap-title-en { font-size: 11.5px; }
+  .roadmap-eta {
+    text-align: left;
+    font-size: 10.5px;
+    color: var(--ink-mute);
+    border-top: 1px dashed var(--line);
+    padding-top: 6px;
+    margin-top: 4px;
+  }
+
+  /* Decision slide */
+  .decision-headline-tc { font-size: clamp(32px, 10vw, 56px); }
+  .decision-headline-en { font-size: clamp(18px, 5.5vw, 28px); margin-bottom: 48px; }
+  .action-num { font-size: 44px; margin-bottom: 16px; }
+  .action-title { font-size: 17px; }
+  .action-title-en { font-size: 13px; margin-bottom: 12px; }
+  .action-desc { font-size: 13px; }
+  .action-desc-en { font-size: 11.5px; }
+  .action-meta { font-size: 9.5px; margin-top: 16px; }
+
+  /* Closing */
+  .closing-mark { font-size: 18px; margin-bottom: 56px; }
+  .closing-quote-tc { font-size: clamp(40px, 13vw, 64px); margin-bottom: 16px; }
+  .closing-quote-en { font-size: clamp(20px, 6.5vw, 32px); margin-bottom: 56px; }
+  .closing-footer { font-size: 9.5px; letter-spacing: 0.2em; }
+
+  /* Source links — better URL wrapping on mobile */
+  .source-link {
+    font-size: 10.5px;
+    word-break: normal;
+    overflow-wrap: anywhere;
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+  .source-link a {
+    display: inline-block;
+    padding: 2px 0;
+    min-height: 24px;
+  }
+}
+
+/* SMALL PHONE — below 380px (older devices, narrow viewports) */
+@media (max-width: 380px) {
+  .slide { padding: 72px 18px 56px; }
+  .slide-tag { left: 18px; top: 18px; }
+  .slide-num { right: 18px; bottom: 18px; }
+  .cover-top, .cover-bottom { padding: 18px; }
+  .cover-center { padding: 0 18px; }
+  .cover-headline-tc { font-size: clamp(36px, 12vw, 52px); }
+  .setup-hero-stat { font-size: clamp(80px, 30vw, 140px); }
+  .nav-control { bottom: 12px; left: 12px; }
+  .nav-progress { width: 70px; }
+  .arch-row { grid-template-columns: 36px 1fr; gap: 12px; padding: 12px 14px; }
+  .arch-row-num { font-size: 22px; }
+  .closing-quote-tc { font-size: clamp(36px, 14vw, 56px); }
 }
 
 
@@ -2072,7 +2345,8 @@ button:focus-visible, a:focus-visible {
   letter-spacing: 0.04em;
   color: var(--ink-mute);
   line-height: 1.6;
-  word-break: break-all;
+  overflow-wrap: anywhere;
+  word-break: normal;
   font-feature-settings: "tnum";
 }
 
@@ -2081,6 +2355,8 @@ button:focus-visible, a:focus-visible {
   text-decoration: none;
   border-bottom: 1px solid var(--turquoise-line);
   transition: color var(--t-quick), border-color var(--t-quick);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(31, 156, 165, 0.15);
 }
 
 .source-link a:hover {
