@@ -1860,6 +1860,41 @@ button:focus-visible, a:focus-visible {
 
 .roadmap-row.current .roadmap-eta { color: var(--turquoise-deep); }
 
+/* Roadmap cadence note — risk-mitigation framing */
+.cadence-note {
+  margin-top: 32px;
+  padding: 18px 24px;
+  background: var(--paper-deep);
+  border-left: 2px solid var(--orange);
+  max-width: 880px;
+}
+
+.cadence-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--orange);
+  margin-bottom: 8px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.cadence-text-tc {
+  font-family: var(--serif-tc);
+  font-size: 14px;
+  color: var(--brand-black);
+  line-height: 1.7;
+  margin-bottom: 4px;
+}
+
+.cadence-text-en {
+  font-family: var(--serif-en), 'Inter', sans-serif;
+  font-style: italic;
+  font-size: 12px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
 /* Decision slide */
 .slide-decision {
   background: var(--brand-black);
@@ -2285,6 +2320,9 @@ button:focus-visible, a:focus-visible {
     padding-top: 6px;
     margin-top: 4px;
   }
+  .cadence-note { padding: 16px 18px; margin-top: 24px; }
+  .cadence-text-tc { font-size: 13px; }
+  .cadence-text-en { font-size: 11px; }
 
   /* Decision slide */
   .decision-headline-tc { font-size: clamp(32px, 10vw, 56px); }
@@ -3028,7 +3066,7 @@ button:focus-visible, a:focus-visible {
         </div>
         <div class="brand-anchor-pitch">
           <div class="b-label">PILLAR 02</div>
-          <div class="b-name">Journey Protection</div>
+          <div class="b-name">旅程守護</div>
           <span class="b-name-en">Journey Protection</span>
           <p class="b-desc">詢問台是訪客旅程的第一守護點。</p>
           <span class="b-desc-en">First guardianship point of the visitor journey.</span>
@@ -3042,7 +3080,7 @@ button:focus-visible, a:focus-visible {
         </div>
         <div class="brand-anchor-pitch">
           <div class="b-label">PHILOSOPHY</div>
-          <div class="b-name">CPTED</div>
+          <div class="b-name">環境設計犯罪預防</div>
           <span class="b-name-en">CPTED</span>
           <p class="b-desc">櫃台物理設計即 CPTED 在接觸點的實踐。</p>
           <span class="b-desc-en">Desk design itself is CPTED at the touchpoint.</span>
@@ -3124,35 +3162,41 @@ button:focus-visible, a:focus-visible {
       <div class="roadmap-row current">
         <div class="roadmap-v">本季</div>
         <div>
-          <div class="roadmap-title">三十秒微導覽腳本庫（二十個高頻情境）</div>
-          <span class="roadmap-title-en">30-second micro-tour script library, 20 high-frequency scenarios</span>
+          <div class="roadmap-title">三十秒微導覽腳本庫（二十個高頻情境）<br>＋ 三日急救入職模組（保底訓練）</div>
+          <span class="roadmap-title-en">30-second micro-tour script library + 3-day rapid onboarding sprint</span>
         </div>
         <div class="roadmap-eta">Q2 · 2026</div>
       </div>
       <div class="roadmap-row">
         <div class="roadmap-v">下季</div>
         <div>
-          <div class="roadmap-title">完整 BARS 行為描述矩陣（十二能力 × 六級）</div>
-          <span class="roadmap-title-en">Complete BARS matrix, 12 capabilities × 6 levels</span>
+          <div class="roadmap-title">L0—L2 BARS 矩陣（Cluster B、Cluster C 優先）<br>＋ HQ-TW NPS 基線蒐集</div>
+          <span class="roadmap-title-en">L0—L2 BARS rubric (Cluster B+C first) ＋ HQ-TW NPS baseline</span>
         </div>
         <div class="roadmap-eta">Q3 · 2026</div>
       </div>
       <div class="roadmap-row">
         <div class="roadmap-v">年底</div>
         <div>
-          <div class="roadmap-title">訓練教材包與內部認證流程上線</div>
-          <span class="roadmap-title-en">Training materials and internal certification launch</span>
+          <div class="roadmap-title">訓練教材包與內部認證流程於 HQ-TW 試點上線</div>
+          <span class="roadmap-title-en">Training pack and internal certification piloted at HQ-TW</span>
         </div>
         <div class="roadmap-eta">Q4 · 2026</div>
       </div>
       <div class="roadmap-row">
         <div class="roadmap-v">明年</div>
         <div>
-          <div class="roadmap-title">跨地區文化校準（JP / DE / CN / US-AZ 共版）</div>
-          <span class="roadmap-title-en">Cross-region cultural calibration (JP / DE / CN / US-AZ)</span>
+          <div class="roadmap-title">L3—L5 BARS 開發 ＋ 跨地區文化校準（JP / DE / CN / US-AZ）</div>
+          <span class="roadmap-title-en">L3—L5 BARS development + cross-region calibration (JP / DE / CN / US-AZ）</span>
         </div>
         <div class="roadmap-eta">2027</div>
       </div>
+    </div>
+
+    <div class="cadence-note">
+      <div class="cadence-label">節奏設計 · Cadence Design</div>
+      <p class="cadence-text-tc">L0—L2 在 2026 完成驗證，L3—L5 留待 2027 跨地區階段。避免 72 個行為描述同時部署造成的稀釋與失準。</p>
+      <p class="cadence-text-en">L0—L2 validated in 2026; L3—L5 deferred to the 2027 cross-region phase. Prevents the dilution risk of building all 72 behavior descriptions simultaneously.</p>
     </div>
   </div>
 
