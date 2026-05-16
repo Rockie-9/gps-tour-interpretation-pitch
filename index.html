@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>從接待，到大使 · From Reception to Ambassadorship — GPS Capability Pitch v1.1</title>
+<title>從接待，到大使 · From Reception to Ambassadorship</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Serif+TC:wght@200;300;400;500;600;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -108,7 +108,7 @@ button:focus-visible, a:focus-visible {
     animation: none;
     opacity: 1;
   }
-  .nav-control, .lang-toggle { display: none; }
+  .nav-control { display: none; }
   .slide.dark { background: #08161C !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
 
@@ -223,42 +223,12 @@ button:focus-visible, a:focus-visible {
   min-width: 60px;
 }
 
-.lang-toggle {
-  position: fixed;
-  bottom: 32px;
-  right: 32px;
-  z-index: 100;
-  display: flex;
-  background: rgba(248, 246, 241, 0.85);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid var(--line);
-}
 
-.lang-toggle button {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  padding: 7px 12px;
-  background: transparent;
-  border: none;
-  color: var(--ink-soft);
-  cursor: pointer;
-  border-right: 1px solid var(--line-soft);
-  transition: all var(--t-quick);
-  font-weight: 500;
-}
 
-.lang-toggle button:last-child { border-right: none; }
-.lang-toggle button:hover { color: var(--brand-black); background: var(--turquoise-soft); }
-.lang-toggle button.active { color: var(--paper); background: var(--brand-black); }
+
 
 /* Language mode rules */
-body.mode-tc .lang-en-block,
-body.mode-tc .en-only { display: none !important; }
 
-body.mode-en .lang-tc-block,
-body.mode-en .tc-only { display: none !important; }
 
 /* default bilingual styles per element later */
 
@@ -2084,7 +2054,6 @@ body.mode-en .tc-only { display: none !important; }
   .slide-mark { right: 24px; top: 24px; font-size: 14px; }
   .nav-control { bottom: 24px; left: 24px; }
   .nav-progress { width: 120px; }
-  .lang-toggle { bottom: 24px; right: 24px; }
   .help-hint { display: none; }
   .clusters-display, .scenarios-full-grid, .benchmarks-grid, .scenarios-mini-grid, .gap-detail-list, .anchor-row { grid-template-columns: 1fr; }
   .maturity-bar { grid-template-columns: repeat(2, 1fr); }
@@ -2096,7 +2065,7 @@ body.mode-en .tc-only { display: none !important; }
 @keyframes fadeIn { to { opacity: 1; } }
 </style>
 </head>
-<body class="mode-bi">
+<body>
 
 <!-- Navigation -->
 <div class="nav-control">
@@ -2104,16 +2073,10 @@ body.mode-en .tc-only { display: none !important; }
   <div class="nav-progress"><div class="nav-progress-fill" id="nav-fill"></div></div>
 </div>
 
-<div class="lang-toggle">
-  <button data-mode="tc">繁中</button>
-  <button data-mode="bi" class="active">雙語</button>
-  <button data-mode="en">EN</button>
-</div>
-
 <!-- ==================== SLIDE 01 — COVER ==================== -->
 <section class="slide slide-cover">
   <div class="cover-top">
-    <div class="cover-eyebrow">GPS · Capability Architecture · v1.1</div>
+    <div class="cover-eyebrow">GPS · Capability Architecture</div>
     <div class="cover-mark">GPS</div>
   </div>
   <div class="cover-center">
@@ -2896,30 +2859,11 @@ body.mode-en .tc-only { display: none !important; }
   <div class="closing-mark">GPS</div>
   <h2 class="closing-quote-tc">在您需要之前<span class="accent">。</span></h2>
   <h3 class="closing-quote-en">Before you need it.</h3>
-  <div class="closing-footer">v1.1 · 2026.05</div>
+  <div class="closing-footer">v1.2 · 2026.05</div>
 </section>
 
 <script>
 (function() {
-  // Language toggle
-  var langButtons = document.querySelectorAll('.lang-toggle button');
-  var body = document.body;
-  function setMode(mode) {
-    body.classList.remove('mode-tc', 'mode-en', 'mode-bi');
-    body.classList.add('mode-' + mode);
-    langButtons.forEach(function(b) {
-      b.classList.toggle('active', b.dataset.mode === mode);
-    });
-    try { localStorage.setItem('pitchLangMode', mode); } catch(e) {}
-  }
-  try {
-    var saved = localStorage.getItem('pitchLangMode');
-    if (saved && ['tc', 'en', 'bi'].indexOf(saved) >= 0) setMode(saved);
-  } catch(e) {}
-  langButtons.forEach(function(btn) {
-    btn.addEventListener('click', function() { setMode(btn.dataset.mode); });
-  });
-
   // Navigation
   var slides = document.querySelectorAll('.slide:not(.slide-closing)');
   var totalSlides = slides.length;
