@@ -2060,6 +2060,50 @@ button:focus-visible, a:focus-visible {
   .gap-display { flex-direction: column; gap: 16px; }
 }
 
+
+/* Official source link — footnote style */
+.source-link {
+  display: block;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line-soft);
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  color: var(--ink-mute);
+  line-height: 1.6;
+  word-break: break-all;
+  font-feature-settings: "tnum";
+}
+
+.source-link a {
+  color: var(--turquoise-deep);
+  text-decoration: none;
+  border-bottom: 1px solid var(--turquoise-line);
+  transition: color var(--t-quick), border-color var(--t-quick);
+}
+
+.source-link a:hover {
+  color: var(--turquoise);
+  border-bottom-color: var(--turquoise);
+}
+
+.source-link .src-label {
+  color: var(--ink-mute);
+  text-transform: uppercase;
+  margin-right: 6px;
+}
+
+.slide.dark .source-link {
+  color: rgba(248, 246, 241, 0.45);
+  border-top-color: rgba(248, 246, 241, 0.12);
+}
+
+.slide.dark .source-link a {
+  color: var(--turquoise);
+  border-bottom-color: rgba(31, 156, 165, 0.4);
+}
+
 /* Entrance — fade only, no transforms for cleaner editorial feel */
 .slide { opacity: 0; animation: fadeIn 500ms cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 @keyframes fadeIn { to { opacity: 1; } }
@@ -2087,7 +2131,7 @@ button:focus-visible, a:focus-visible {
   </div>
   <div class="cover-bottom">
     <div>GPS STRATEGY &amp; TRANSFORMATION · 2026.05</div>
-    <div class="cover-bottom-right">VERSION 1.1</div>
+    
   </div>
   <div class="slide-num">01 / 17</div>
 </section>
@@ -2172,29 +2216,49 @@ button:focus-visible, a:focus-visible {
         <div class="benchmark-year">1957</div>
         <div class="benchmark-name">Tilden 六原則</div>
         <span class="benchmark-name-en">Six Principles of Interpretation</span>
-        <p class="benchmark-desc">解說作為獨立專業的根基。「資訊不是解說，目的是觸發、不是教導。」</p>
+        <p class="benchmark-desc">解說作為獨立專業的根基。「資訊不是解說；目的是觸發，不是教導。」</p>
         <span class="benchmark-desc-en">The foundation of interpretation as a profession. "Information is not interpretation; the goal is provocation, not instruction."</span>
+        <div class="source-link">
+          <span class="src-label">Source</span><br>
+          Tilden, F. (1957). <em>Interpreting Our Heritage</em>. UNC Press.<br>
+          <a href="https://www.nps.gov/people/freeman-tilden.htm" target="_blank" rel="noopener">nps.gov/people/freeman-tilden</a>
+        </div>
       </div>
       <div class="benchmark-card">
-        <div class="benchmark-year">1992</div>
-        <div class="benchmark-name">Sam Ham TORE</div>
+        <div class="benchmark-year">2013</div>
+        <div class="benchmark-name">Sam Ham TORE 模型</div>
         <span class="benchmark-name-en">TORE Model</span>
-        <p class="benchmark-desc">最實用的規劃工具。每段解說要 Thematic / Organized / Relevant / Enjoyable。</p>
+        <p class="benchmark-desc">最實用的規劃工具。每段解說應為 Thematic、Organized、Relevant、Enjoyable。</p>
         <span class="benchmark-desc-en">The most practical planning tool. Every interpretation should be Thematic, Organized, Relevant, Enjoyable.</span>
+        <div class="source-link">
+          <span class="src-label">Source</span><br>
+          Ham, S. H. (2013). <em>Interpretation—Making a Difference on Purpose</em>. Fulcrum.<br>
+          <a href="https://www.fulcrumbooks.com/ham" target="_blank" rel="noopener">fulcrumbooks.com/ham</a>
+        </div>
       </div>
       <div class="benchmark-card">
         <div class="benchmark-year">NAI</div>
-        <div class="benchmark-name">解說協會四級認證</div>
-        <span class="benchmark-name-en">Four-tier Certification</span>
-        <p class="benchmark-desc">CIH 接待者 → CIG 導覽員 → CIM 經理 → CIT 訓練師。可直接對照 L0-L5。</p>
-        <span class="benchmark-desc-en">CIH Host → CIG Guide → CIM Manager → CIT Trainer. Maps directly to our L0-L5.</span>
+        <div class="benchmark-name">兩階六級專業認證</div>
+        <span class="benchmark-name-en">Two-tier Certification</span>
+        <p class="benchmark-desc">培訓階 CIH、CIG，專業階 CHI、CIP、CIM、CIT。可直接對照本架構的 L0–L5。</p>
+        <span class="benchmark-desc-en">Training-level CIH, CIG plus professional-level CHI, CIP, CIM, CIT. Maps to our L0–L5.</span>
+        <div class="source-link">
+          <span class="src-label">Source</span><br>
+          National Association for Interpretation (501(c)(3))<br>
+          <a href="https://www.interpnet.com/NAI/nai/_certification/Professional_Certifications.aspx" target="_blank" rel="noopener">interpnet.com / certification</a>
+        </div>
       </div>
       <div class="benchmark-card">
-        <div class="benchmark-year">WFTGA</div>
-        <div class="benchmark-name">國際導遊聯合會</div>
-        <span class="benchmark-name-en">World Federation</span>
-        <p class="benchmark-desc">把嗓音管理、突發應變列為核心職能。這是專業導遊與業餘解說的真實分水嶺。</p>
-        <span class="benchmark-desc-en">Lists voice management and crisis response as core competencies — the real dividing line between pros and amateurs.</span>
+        <div class="benchmark-year">2008</div>
+        <div class="benchmark-name">WFTGA · EN 15565</div>
+        <span class="benchmark-name-en">Global Minimum Standard</span>
+        <p class="benchmark-desc">採用 EN 15565:2008 為全球最低訓練標準，明列簡報技巧、溝通技巧、群體管理為必備能力。</p>
+        <span class="benchmark-desc-en">Adopts EN 15565:2008 as the global minimum, listing presentation, communication, and group management as required competencies.</span>
+        <div class="source-link">
+          <span class="src-label">Source</span><br>
+          World Federation of Tourist Guide Associations<br>
+          <a href="https://wftga.org/training/" target="_blank" rel="noopener">wftga.org/training</a>
+        </div>
       </div>
     </div>
   </div>
@@ -2332,7 +2396,7 @@ button:focus-visible, a:focus-visible {
 
 <!-- ==================== SLIDE 10 — LAYER 1 PHILOSOPHY ==================== -->
 <section class="slide slide-content">
-  <div class="slide-tag">09 / Layer 01</div>
+  <div class="slide-tag">09 · Layer 01</div>
   <div class="layer-chapter">
     <div class="layer-bignum">01</div>
     <div class="layer-chapter-meta">
@@ -2348,22 +2412,31 @@ button:focus-visible, a:focus-visible {
         <div class="a-num">A · 1957</div>
         <div class="a-name">Tilden 解說六原則</div>
         <span class="a-name-en">Tilden's Six Principles</span>
-        <p class="a-desc">資訊不是解說。<br>目的是觸發，不是教導。</p>
-        <span class="a-desc-en">Information is not interpretation. The goal is provocation, not instruction.</span>
+        <p class="a-desc">資訊不是解說；目的是觸發，不是教導。</p>
+        <span class="a-desc-en">Information is not interpretation; the goal is provocation, not instruction.</span>
+        <div class="source-link">
+          <a href="https://www.nps.gov/people/freeman-tilden.htm" target="_blank" rel="noopener">nps.gov/people/freeman-tilden</a>
+        </div>
       </div>
       <div class="anchor-block">
-        <div class="a-num">B · 環境設計</div>
-        <div class="a-name">CPTED 哲學</div>
-        <span class="a-name-en">CPTED Philosophy</span>
-        <p class="a-desc">透過環境主動設計，<br>讓安全感成為內建狀態。</p>
+        <div class="a-num">B · 1971</div>
+        <div class="a-name">CPTED 環境設計犯罪預防</div>
+        <span class="a-name-en">Crime Prevention Through Environmental Design</span>
+        <p class="a-desc">透過環境的主動設計，讓安全感成為內建狀態。</p>
         <span class="a-desc-en">Deliberate environmental design makes safety a built-in state.</span>
+        <div class="source-link">
+          <a href="https://www.cpted.net/" target="_blank" rel="noopener">cpted.net · International CPTED Association</a>
+        </div>
       </div>
       <div class="anchor-block">
-        <div class="a-num">C · Brand v3.6</div>
+        <div class="a-num">C · GPS Brand</div>
         <div class="a-name">「在您需要之前」</div>
         <span class="a-name-en">"Before You Need It."</span>
-        <p class="a-desc">詢問台是這句品牌主張<br>最高頻次的具體實踐。</p>
+        <p class="a-desc">詢問台是這句品牌主張最高頻次的具體實踐。</p>
         <span class="a-desc-en">The information desk is this brand idea's highest-frequency concrete practice.</span>
+        <div class="source-link">
+          <span class="src-label">Internal · GPS Brand Framework</span>
+        </div>
       </div>
     </div>
   </div>
@@ -2373,7 +2446,7 @@ button:focus-visible, a:focus-visible {
 
 <!-- ==================== SLIDE 11 — LAYER 2 CAPABILITY ==================== -->
 <section class="slide slide-content">
-  <div class="slide-tag">10 / Layer 02</div>
+  <div class="slide-tag">10 · Layer 02</div>
   <div class="layer-chapter">
     <div class="layer-bignum">02</div>
     <div class="layer-chapter-meta">
@@ -2426,7 +2499,7 @@ button:focus-visible, a:focus-visible {
 
 <!-- ==================== SLIDE 12 — LAYER 3 MATURITY ==================== -->
 <section class="slide slide-content">
-  <div class="slide-tag">11 / Layer 03</div>
+  <div class="slide-tag">11 · Layer 03</div>
   <div class="layer-chapter">
     <div class="layer-bignum">03</div>
     <div class="layer-chapter-meta">
@@ -2481,6 +2554,11 @@ button:focus-visible, a:focus-visible {
         <div class="maturity-insight-label">CORE STRUCTURE</div>
         <p class="maturity-insight-text">12 項能力 × 6 級 = <strong style="color: var(--turquoise-deep); font-family: var(--mono);">72</strong> 個可觀察的 BARS 行為描述。這是評估與認證的核心資料結構。</p>
         <p class="maturity-insight-text-en">12 capabilities × 6 levels = <strong style="color: var(--turquoise-deep); font-family: var(--mono);">72</strong> observable BARS behavior descriptions. The core data structure for assessment and certification.</p>
+        <div class="source-link" style="border-top-color: rgba(8, 22, 28, 0.08); margin-top: 16px; padding-top: 14px;">
+          <span class="src-label">BARS Method</span><br>
+          Smith, P. C., &amp; Kendall, L. M. (1963). <em>Journal of Applied Psychology</em>, 47(2), 149–155.<br>
+          <a href="https://doi.org/10.1037/h0047060" target="_blank" rel="noopener">doi.org/10.1037/h0047060</a>
+        </div>
       </div>
     </div>
   </div>
@@ -2490,7 +2568,7 @@ button:focus-visible, a:focus-visible {
 
 <!-- ==================== SLIDE 13 — LAYER 4 APPLICATION ==================== -->
 <section class="slide slide-content">
-  <div class="slide-tag">12 / Layer 04</div>
+  <div class="slide-tag">12 · Layer 04</div>
   <div class="layer-chapter">
     <div class="layer-bignum">04</div>
     <div class="layer-chapter-meta">
@@ -2560,7 +2638,7 @@ button:focus-visible, a:focus-visible {
 
 <!-- ==================== SLIDE 14 — LAYER 5 OPERATIONS ==================== -->
 <section class="slide slide-content">
-  <div class="slide-tag">13 / Layer 05</div>
+  <div class="slide-tag">13 · Layer 05</div>
   <div class="layer-chapter">
     <div class="layer-bignum">05</div>
     <div class="layer-chapter-meta">
@@ -2641,6 +2719,10 @@ button:focus-visible, a:focus-visible {
         </table>
       </div>
     </div>
+    <div class="source-link" style="margin-top: 32px; max-width: 640px;">
+      <span class="src-label">Vita Pattern</span>Internal GPS framework, applied across GSM training programmes.<br>
+      <span class="src-label">BARS</span>Smith &amp; Kendall (1963). <a href="https://doi.org/10.1037/h0047060" target="_blank" rel="noopener">doi.org/10.1037/h0047060</a>
+    </div>
   </div>
 
   <div class="slide-num">13 / 17</div>
@@ -2648,7 +2730,7 @@ button:focus-visible, a:focus-visible {
 
 <!-- ==================== SLIDE 15 — LAYER 6 BRAND ==================== -->
 <section class="slide slide-content">
-  <div class="slide-tag">14 / Layer 06</div>
+  <div class="slide-tag">14 · Layer 06</div>
   <div class="layer-chapter">
     <div class="layer-bignum">06</div>
     <div class="layer-chapter-meta">
@@ -2755,61 +2837,45 @@ button:focus-visible, a:focus-visible {
   <div class="slide-num">15 / 17</div>
 </section>
 
-<!-- ==================== SLIDE 17 — ROADMAP ==================== -->
+<!-- ==================== SLIDE 16 — DELIVERABLE PATH ==================== -->
 <section class="slide slide-content">
   <div class="slide-tag">16</div>
-  <h2 class="content-headline-tc">v1.1 → v3.0。</h2>
-  <h2 class="content-headline-en">From v1.1 to v3.0.</h2>
+  <h2 class="content-headline-tc">從架構，到落地。</h2>
+  <h2 class="content-headline-en">From architecture to ground.</h2>
 
   <div class="content-body">
     <div class="roadmap-display">
-      <div class="roadmap-row done">
-        <div class="roadmap-v">v1.0</div>
-        <div>
-          <div class="roadmap-title">線性框架 + 8 大能力</div>
-          <span class="roadmap-title-en">Linear framework + 8 capabilities</span>
-        </div>
-        <div class="roadmap-eta">已完成 / 2026-05</div>
-      </div>
       <div class="roadmap-row current">
-        <div class="roadmap-v">v1.1</div>
+        <div class="roadmap-v">本季</div>
         <div>
-          <div class="roadmap-title">六層架構 + 12 能力 + L0-L5 + 雙向校準 + 10 場景</div>
-          <span class="roadmap-title-en">Six layers + 12 capabilities + L0-L5 + dual calibration + 10 scenarios</span>
+          <div class="roadmap-title">三十秒微導覽腳本庫（二十個高頻情境）</div>
+          <span class="roadmap-title-en">30-second micro-tour script library, 20 high-frequency scenarios</span>
         </div>
-        <div class="roadmap-eta">本提案 / 2026-05</div>
+        <div class="roadmap-eta">Q2 · 2026</div>
       </div>
       <div class="roadmap-row">
-        <div class="roadmap-v">v1.2</div>
+        <div class="roadmap-v">下季</div>
         <div>
-          <div class="roadmap-title">30 秒微導覽腳本庫（20 個高頻情境）</div>
-          <span class="roadmap-title-en">30-second micro-tour script library (20 scenarios)</span>
+          <div class="roadmap-title">完整 BARS 行為描述矩陣（十二能力 × 六級）</div>
+          <span class="roadmap-title-en">Complete BARS matrix, 12 capabilities × 6 levels</span>
         </div>
-        <div class="roadmap-eta">2-3 週 / Q2</div>
+        <div class="roadmap-eta">Q3 · 2026</div>
       </div>
       <div class="roadmap-row">
-        <div class="roadmap-v">v1.3</div>
+        <div class="roadmap-v">年底</div>
         <div>
-          <div class="roadmap-title">完整 BARS 矩陣（72 個行為描述）</div>
-          <span class="roadmap-title-en">Complete BARS matrix (72 descriptions)</span>
+          <div class="roadmap-title">訓練教材包與內部認證流程上線</div>
+          <span class="roadmap-title-en">Training materials and internal certification launch</span>
         </div>
-        <div class="roadmap-eta">4-6 週 / Q3</div>
+        <div class="roadmap-eta">Q4 · 2026</div>
       </div>
       <div class="roadmap-row">
-        <div class="roadmap-v">v2.0</div>
+        <div class="roadmap-v">明年</div>
         <div>
-          <div class="roadmap-title">完整訓練教材包 + 認證流程上線</div>
-          <span class="roadmap-title-en">Full training pack + certification launch</span>
+          <div class="roadmap-title">跨地區文化校準（JP / DE / CN / US-AZ 共版）</div>
+          <span class="roadmap-title-en">Cross-region cultural calibration (JP / DE / CN / US-AZ)</span>
         </div>
-        <div class="roadmap-eta">6 個月 / Q4</div>
-      </div>
-      <div class="roadmap-row">
-        <div class="roadmap-v">v3.0</div>
-        <div>
-          <div class="roadmap-title">跨子公司版本（JP / DE / CN / US-AZ 文化校準）</div>
-          <span class="roadmap-title-en">Cross-subsidiary version (cultural calibration)</span>
-        </div>
-        <div class="roadmap-eta">12 個月 / 2027</div>
+        <div class="roadmap-eta">2027</div>
       </div>
     </div>
   </div>
@@ -2827,16 +2893,16 @@ button:focus-visible, a:focus-visible {
     <div class="decision-actions">
       <div class="action-card">
         <div class="action-num">01</div>
-        <div class="action-title">採納 v1.1 架構</div>
-        <span class="action-title-en">Endorse v1.1 Architecture</span>
+        <div class="action-title">採納能力架構</div>
+        <span class="action-title-en">Endorse the capability architecture</span>
         <p class="action-desc">核可這份能力架構作為詢問台同仁培訓的官方依據。</p>
         <span class="action-desc-en">Approve this architecture as the official basis for information desk training.</span>
         <div class="action-meta">本週 · THIS WEEK</div>
       </div>
       <div class="action-card">
         <div class="action-num">02</div>
-        <div class="action-title">啟動 v1.2 腳本庫</div>
-        <span class="action-title-en">Launch v1.2 Script Library</span>
+        <div class="action-title">啟動腳本庫建置</div>
+        <span class="action-title-en">Launch the script library</span>
         <p class="action-desc">投入資源建立 20 個高頻情境的雙語腳本庫。讓架構在 3 週內可用。</p>
         <span class="action-desc-en">Resource the 20 high-frequency bilingual script library. Architecture becomes usable in 3 weeks.</span>
         <div class="action-meta">2-3 週 · 2-3 WEEKS</div>
@@ -2845,8 +2911,8 @@ button:focus-visible, a:focus-visible {
         <div class="action-num">03</div>
         <div class="action-title">確認試點據點</div>
         <span class="action-title-en">Confirm Pilot Site</span>
-        <p class="action-desc">選定一個據點作為 v2.0 認證流程的試點。優先建議：HQ-TW 主接待區。</p>
-        <span class="action-desc-en">Select one site to pilot the v2.0 certification flow. Suggested: HQ-TW main reception.</span>
+        <p class="action-desc">選定一個據點作為內部認證流程的試點。優先建議：HQ-TW 主接待區。</p>
+        <span class="action-desc-en">Select one site to pilot the internal certification flow. Suggested: HQ-TW main reception.</span>
         <div class="action-meta">6 個月內 · WITHIN 6 MONTHS</div>
       </div>
     </div>
@@ -2859,7 +2925,7 @@ button:focus-visible, a:focus-visible {
   <div class="closing-mark">GPS</div>
   <h2 class="closing-quote-tc">在您需要之前<span class="accent">。</span></h2>
   <h3 class="closing-quote-en">Before you need it.</h3>
-  <div class="closing-footer">v1.2 · 2026.05</div>
+  <div class="closing-footer">GPS Strategy &amp; Transformation · 2026.05</div>
 </section>
 
 <script>
