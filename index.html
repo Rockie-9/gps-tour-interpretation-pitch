@@ -6,29 +6,47 @@
 <title>從接待，到大使 · From Reception to Ambassadorship — GPS Capability Pitch v1.1</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Serif+TC:wght@400;500;700;900&family=Lato:wght@300;400;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Serif+TC:wght@200;300;400;500;600;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --turquoise: #26A7B0;
-  --turquoise-deep: #1A8088;
-  --turquoise-soft: rgba(38, 167, 176, 0.08);
-  --turquoise-line: rgba(38, 167, 176, 0.25);
+  /* COLOR — editorial palette */
+  --turquoise: #1F9CA5;
+  --turquoise-deep: #16767D;
+  --turquoise-soft: rgba(31, 156, 165, 0.06);
+  --turquoise-line: rgba(31, 156, 165, 0.18);
   --copper: #CAC3D2;
-  --brand-black: #0A1A22;
-  --ink: #1A2A33;
-  --ink-soft: #4A5A63;
-  --ink-mute: #8A9298;
-  --paper: #FAFAF7;
-  --paper-deep: #F2F0EA;
-  --line: rgba(10, 26, 34, 0.12);
-  --line-soft: rgba(10, 26, 34, 0.06);
-  --purple: #8C9FCB;
-  --green: #8CC897;
-  --orange: #F6AD90;
-  --serif-en: 'DM Serif Display', serif;
-  --serif-tc: 'Noto Serif TC', serif;
-  --sans: 'Lato', 'Noto Serif TC', sans-serif;
-  --mono: 'JetBrains Mono', monospace;
+  --brand-black: #08161C;
+  --ink: #1A262C;
+  --ink-soft: #4F5A60;
+  --ink-mute: #94999D;
+  --paper: #F8F6F1;
+  --paper-deep: #EFEBE3;
+  --paper-cool: #ECECE7;
+  --line: rgba(8, 22, 28, 0.10);
+  --line-soft: rgba(8, 22, 28, 0.05);
+  --rule: #08161C;
+  --purple: #7B91C0;
+  --green: #7EBA8C;
+  --orange: #E89B7E;
+  /* TYPE — Inter replaces Lato */
+  --serif-en: 'DM Serif Display', 'Source Serif Pro', Georgia, serif;
+  --serif-tc: 'Noto Serif TC', 'Source Han Serif TC', 'PMingLiU', serif;
+  --sans: 'Inter', 'Noto Serif TC', -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  /* SPACING — 8pt grid */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+  /* TIMING */
+  --t-quick: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --t-smooth: 400ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -44,9 +62,54 @@ body {
   font-family: var(--sans);
   background: var(--paper);
   color: var(--ink);
-  line-height: 1.5;
+  font-size: 15px;
+  line-height: 1.55;
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  font-feature-settings: "kern", "liga", "calt";
+  font-variant-numeric: tabular-nums;
+}
+
+::selection { background: var(--turquoise); color: var(--paper); }
+
+:lang(zh-Hant), :lang(zh) {
+  font-feature-settings: "kern";
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+em { font-style: italic; }
+strong { font-weight: 600; }
+
+button:focus-visible, a:focus-visible {
+  outline: 2px solid var(--turquoise);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  html { scroll-snap-type: none; overflow: visible; }
+  body { background: white; color: black; }
+  .slide {
+    page-break-after: always;
+    break-after: page;
+    min-height: auto;
+    height: 100vh;
+    border: none !important;
+    animation: none;
+    opacity: 1;
+  }
+  .nav-control, .lang-toggle { display: none; }
+  .slide.dark { background: #08161C !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
 
 /* ==================== SLIDE BASE ==================== */
@@ -54,13 +117,16 @@ body {
   min-height: 100vh;
   scroll-snap-align: start;
   scroll-snap-stop: always;
-  padding: 8vh 8vw;
+  padding: 10vh 8vw 12vh;
   display: flex;
   flex-direction: column;
   position: relative;
-  border-bottom: 1px solid var(--line-soft);
   overflow: hidden;
+  isolation: isolate;
 }
+
+.slide + .slide { border-top: 1px solid var(--line-soft); }
+.slide.dark + .slide:not(.dark) { border-top: none; }
 
 .slide.dark {
   background: var(--brand-black);
@@ -78,20 +144,22 @@ body {
   font-feature-settings: "tnum";
 }
 
-.slide.dark .slide-num { color: rgba(250, 250, 247, 0.4); }
+.slide.dark .slide-num { color: rgba(248, 246, 241, 0.35); }
 
 .slide-tag {
   position: absolute;
   top: 32px;
   left: 8vw;
   font-family: var(--mono);
-  font-size: 11px;
-  color: var(--turquoise-deep);
-  letter-spacing: 0.2em;
+  font-size: 10px;
+  color: var(--ink-mute);
+  letter-spacing: 0.22em;
   text-transform: uppercase;
+  font-weight: 500;
+  z-index: 5;
 }
 
-.slide.dark .slide-tag { color: var(--turquoise); }
+.slide.dark .slide-tag { color: rgba(248, 246, 241, 0.45); }
 
 /* Brand mark - only on certain slides */
 .slide-mark {
@@ -123,12 +191,17 @@ body {
   z-index: 100;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
+  background: rgba(248, 246, 241, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  padding: 8px 14px;
+  border: 1px solid var(--line);
 }
 
 .nav-progress {
-  width: 200px;
-  height: 2px;
+  width: 180px;
+  height: 1px;
   background: var(--line);
   position: relative;
   overflow: hidden;
@@ -136,9 +209,9 @@ body {
 
 .nav-progress-fill {
   height: 100%;
-  background: var(--turquoise);
+  background: var(--brand-black);
   width: 0%;
-  transition: width 0.3s ease;
+  transition: width 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .nav-counter {
@@ -156,21 +229,24 @@ body {
   right: 32px;
   z-index: 100;
   display: flex;
-  background: var(--paper);
-  border: 1px solid var(--brand-black);
-  box-shadow: 2px 2px 0 var(--brand-black);
+  background: rgba(248, 246, 241, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--line);
 }
 
 .lang-toggle button {
   font-family: var(--mono);
   font-size: 10px;
-  letter-spacing: 0.08em;
-  padding: 6px 10px;
+  letter-spacing: 0.1em;
+  padding: 7px 12px;
   background: transparent;
   border: none;
   color: var(--ink-soft);
   cursor: pointer;
-  border-right: 1px solid var(--line);
+  border-right: 1px solid var(--line-soft);
+  transition: all var(--t-quick);
+  font-weight: 500;
 }
 
 .lang-toggle button:last-child { border-right: none; }
@@ -186,21 +262,7 @@ body.mode-en .tc-only { display: none !important; }
 
 /* default bilingual styles per element later */
 
-.help-hint {
-  position: fixed;
-  top: 50%;
-  right: 32px;
-  transform: translateY(-50%);
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--ink-mute);
-  letter-spacing: 0.15em;
-  text-orientation: mixed;
-  writing-mode: vertical-rl;
-  z-index: 50;
-  pointer-events: none;
-  opacity: 0.5;
-}
+.help-hint { display: none; }
 
 /* ==================== SLIDE 01 — COVER ==================== */
 .slide-cover {
@@ -225,10 +287,11 @@ body.mode-en .tc-only { display: none !important; }
 
 .cover-eyebrow {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: var(--turquoise-deep);
+  color: var(--ink-soft);
+  font-weight: 500;
 }
 
 .cover-mark {
@@ -257,12 +320,17 @@ body.mode-en .tc-only { display: none !important; }
 
 .cover-headline-tc {
   font-family: var(--serif-tc);
-  font-weight: 900;
-  font-size: clamp(56px, 11vw, 160px);
-  line-height: 1;
+  font-weight: 700;
+  font-size: clamp(48px, 10vw, 128px);
+  line-height: 0.95;
   color: var(--brand-black);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
   margin-bottom: 16px;
+}
+
+.cover-headline-tc .tc-comma {
+  color: var(--turquoise);
+  font-weight: 400;
 }
 
 .cover-headline-en {
@@ -278,10 +346,14 @@ body.mode-en .tc-only { display: none !important; }
 
 .cover-subtitle {
   font-family: var(--serif-tc);
-  font-size: clamp(14px, 1.4vw, 18px);
+  font-size: clamp(15px, 1.4vw, 18px);
   color: var(--ink);
   max-width: 600px;
-  line-height: 1.7;
+  line-height: 1.65;
+  font-weight: 500;
+  border-top: 1px solid var(--rule);
+  padding-top: 24px;
+  margin-top: 24px;
 }
 
 .cover-subtitle-en {
@@ -326,11 +398,28 @@ body.mode-en .tc-only { display: none !important; }
 
 .setup-hero-stat {
   font-family: var(--serif-en);
-  font-size: clamp(120px, 28vw, 400px);
+  font-size: clamp(120px, 22vw, 320px);
   line-height: 0.85;
   color: var(--brand-black);
-  letter-spacing: -0.05em;
-  margin-bottom: 32px;
+  letter-spacing: -0.055em;
+  margin-bottom: 48px;
+  position: relative;
+  display: inline-block;
+}
+
+.setup-hero-stat::after {
+  content: 'PER DAY · 每日';
+  position: absolute;
+  top: 0.4em;
+  right: -120px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: var(--ink-mute);
+  font-weight: 500;
+  font-feature-settings: normal;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
 }
 
 .setup-label-tc {
@@ -355,12 +444,13 @@ body.mode-en .tc-only { display: none !important; }
 
 .setup-punchline-tc {
   font-family: var(--serif-tc);
-  font-size: clamp(20px, 2.2vw, 28px);
+  font-size: clamp(20px, 2vw, 26px);
   color: var(--brand-black);
-  max-width: 800px;
+  max-width: 760px;
   line-height: 1.5;
-  border-top: 2px solid var(--brand-black);
+  border-top: 2px solid var(--rule);
   padding-top: 24px;
+  margin-top: 16px;
   font-weight: 700;
 }
 
@@ -429,6 +519,17 @@ body.mode-en .tc-only { display: none !important; }
 .tension-side.left h3 { color: var(--copper); }
 .tension-side.right h3 { color: var(--turquoise); }
 
+.tension-state {
+  font-family: var(--serif-en);
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  margin-bottom: 12px;
+}
+
+.tension-side.left .tension-state { color: var(--ink-mute); }
+.tension-side.right .tension-state { color: var(--brand-black); }
+
 .tension-side h4 {
   font-family: var(--serif-tc);
   font-weight: 700;
@@ -466,22 +567,9 @@ body.mode-en .tc-only { display: none !important; }
 }
 
 .tension-divider {
-  width: 2px;
+  width: 1px;
   background: var(--line);
   position: relative;
-}
-
-.tension-divider::after {
-  content: '↔';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: var(--paper);
-  padding: 8px 4px;
-  font-family: var(--serif-en);
-  font-size: 24px;
-  color: var(--turquoise);
 }
 
 .tension-conclusion {
@@ -512,45 +600,84 @@ body.mode-en .tc-only { display: none !important; }
 .slide-divider {
   background: var(--brand-black);
   color: var(--paper);
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 0 8vw;
+  display: grid;
+  grid-template-rows: 1fr auto 1fr;
+  padding: 32px 8vw;
+  position: relative;
+  text-align: left;
+  align-items: stretch;
+}
+
+.slide-divider::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 8vw;
+  width: 60px; height: 1px;
+  background: var(--turquoise);
+}
+
+.slide-divider::after {
+  content: '';
+  position: absolute;
+  bottom: 0; right: 8vw;
+  width: 60px; height: 1px;
+  background: var(--turquoise);
+}
+
+.divider-content {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  max-width: 900px;
+  justify-self: start;
+  align-self: center;
+}
+
+.divider-top-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+}
+
+.divider-subhead {
+  border-top: 1px solid rgba(248, 246, 241, 0.18);
+  padding-top: 24px;
+  max-width: 640px;
 }
 
 .divider-numeral {
   font-family: var(--serif-en);
-  font-size: clamp(180px, 38vw, 540px);
-  line-height: 0.85;
+  font-size: clamp(80px, 14vw, 200px);
+  line-height: 0.8;
   color: var(--turquoise);
-  margin-bottom: 32px;
   letter-spacing: -0.04em;
 }
 
 .divider-part {
   font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.4em;
+  font-size: 10px;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: rgba(250, 250, 247, 0.5);
-  margin-bottom: 16px;
+  color: rgba(248, 246, 241, 0.5);
+  font-weight: 500;
 }
 
 .divider-title-tc {
   font-family: var(--serif-tc);
   font-weight: 900;
-  font-size: clamp(40px, 6vw, 88px);
-  letter-spacing: -0.02em;
+  font-size: clamp(48px, 8vw, 120px);
+  letter-spacing: -0.04em;
+  line-height: 0.95;
   margin-bottom: 8px;
-  line-height: 1;
 }
 
 .divider-title-en {
   font-family: var(--serif-en);
   font-style: italic;
-  font-size: clamp(24px, 3vw, 40px);
-  color: rgba(250, 250, 247, 0.6);
-  margin-bottom: 40px;
+  font-size: clamp(24px, 3.5vw, 48px);
+  color: rgba(248, 246, 241, 0.6);
+  letter-spacing: -0.01em;
+  line-height: 1.05;
 }
 
 .divider-subhead-tc {
@@ -616,8 +743,10 @@ body.mode-en .tc-only { display: none !important; }
 }
 
 .benchmark-card {
-  border-top: 2px solid var(--brand-black);
+  border-top: 1px solid var(--rule);
   padding-top: 24px;
+  display: flex;
+  flex-direction: column;
 }
 
 .benchmark-year {
@@ -848,21 +977,32 @@ body.mode-en .tc-only { display: none !important; }
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
+  background: var(--line);
 }
 
 .arch-row {
-  background: var(--paper-deep);
+  background: var(--paper);
   padding: 16px 24px;
   display: grid;
-  grid-template-columns: 60px 1fr;
-  gap: 20px;
+  grid-template-columns: 56px 1fr;
+  gap: 24px;
   align-items: center;
-  border-left: 3px solid var(--turquoise-line);
-  transition: all 0.3s ease;
+  position: relative;
+  transition: background var(--t-quick);
 }
 
-.arch-row:hover { border-left-color: var(--turquoise); background: var(--turquoise-soft); }
+.arch-row::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0;
+  width: 2px; height: 100%;
+  background: transparent;
+  transition: background var(--t-quick);
+}
+
+.arch-row:hover { background: var(--paper-deep); }
+.arch-row:hover::before { background: var(--turquoise); }
 
 .arch-row-num {
   font-family: var(--serif-en);
@@ -953,6 +1093,40 @@ body.mode-en .tc-only { display: none !important; }
 }
 
 /* Layer detail slides */
+.layer-chapter {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 32px;
+  align-items: center;
+  margin-bottom: 48px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--line);
+}
+
+.layer-bignum {
+  font-family: var(--serif-en);
+  font-size: clamp(72px, 9vw, 120px);
+  line-height: 0.85;
+  color: var(--turquoise);
+  letter-spacing: -0.04em;
+}
+
+.layer-chapter-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.layer-rule {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  color: var(--turquoise-deep);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
 .layer-eyebrow-row {
   display: flex;
   align-items: baseline;
@@ -960,17 +1134,9 @@ body.mode-en .tc-only { display: none !important; }
   margin-bottom: 12px;
 }
 
-.layer-bignum {
-  font-family: var(--serif-en);
-  font-size: clamp(64px, 9vw, 120px);
-  line-height: 1;
-  color: var(--turquoise);
-  letter-spacing: -0.03em;
-}
-
 .layer-eyebrow {
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 11px;
   color: var(--turquoise-deep);
   letter-spacing: 0.25em;
 }
@@ -980,29 +1146,21 @@ body.mode-en .tc-only { display: none !important; }
   font-weight: 700;
   font-size: clamp(28px, 4vw, 48px);
   color: var(--brand-black);
-  letter-spacing: -0.02em;
-  margin-bottom: 4px;
+  letter-spacing: -0.025em;
+  margin-bottom: 2px;
   line-height: 1.2;
 }
 
 .layer-headline-en {
   font-family: var(--serif-en);
   font-style: italic;
-  font-size: clamp(18px, 2.4vw, 28px);
+  font-size: clamp(18px, 2.2vw, 26px);
   color: var(--ink-soft);
-  margin-bottom: 32px;
   line-height: 1.2;
+  letter-spacing: -0.005em;
 }
 
-.layer-key-question {
-  font-family: var(--serif-en);
-  font-style: italic;
-  font-size: 14px;
-  color: var(--ink-soft);
-  padding-left: 16px;
-  border-left: 2px solid var(--turquoise);
-  margin-bottom: 32px;
-}
+.layer-key-question { display: none; }
 
 /* Layer 1 - 3 anchors */
 .anchor-row {
@@ -1168,10 +1326,10 @@ body.mode-en .tc-only { display: none !important; }
   content: '';
   position: absolute;
   top: 14px;
-  left: 6%;
-  right: 6%;
-  height: 2px;
-  background: linear-gradient(90deg, var(--copper), var(--turquoise));
+  left: 8%;
+  right: 8%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--copper) 0%, var(--turquoise) 100%);
   z-index: 0;
 }
 
@@ -1184,16 +1342,17 @@ body.mode-en .tc-only { display: none !important; }
 .m-dot {
   width: 28px; height: 28px;
   background: var(--paper);
-  border: 2px solid var(--turquoise);
+  border: 1.5px solid var(--turquoise);
   border-radius: 50%;
-  margin: 0 auto 14px;
+  margin: 0 auto 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 500;
   color: var(--turquoise-deep);
+  letter-spacing: 0.05em;
 }
 
 .m-level {
@@ -1269,8 +1428,8 @@ body.mode-en .tc-only { display: none !important; }
 
 .sc-cat {
   background: var(--paper-deep);
-  padding: 20px;
-  border-top: 3px solid;
+  padding: 24px 20px;
+  border-top: 2px solid;
 }
 
 .sc-cat.a { border-top-color: var(--turquoise); }
@@ -1343,12 +1502,12 @@ body.mode-en .tc-only { display: none !important; }
 }
 
 .d3-callout {
-  padding: 16px 24px;
+  padding: 20px 24px;
   background: var(--brand-black);
   color: var(--paper);
   display: grid;
-  grid-template-columns: 40px 1fr;
-  gap: 16px;
+  grid-template-columns: 36px 1fr;
+  gap: 20px;
   align-items: center;
 }
 
@@ -1389,13 +1548,14 @@ body.mode-en .tc-only { display: none !important; }
 .ops-table-pitch caption {
   text-align: left;
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 10px;
   color: var(--turquoise-deep);
-  letter-spacing: 0.15em;
+  letter-spacing: 0.22em;
   padding-bottom: 12px;
-  border-bottom: 2px solid var(--turquoise);
+  border-bottom: 1.5px solid var(--turquoise);
   margin-bottom: 12px;
   text-transform: uppercase;
+  font-weight: 500;
 }
 
 .ops-table-pitch th {
@@ -1457,9 +1617,12 @@ body.mode-en .tc-only { display: none !important; }
 
 .brand-anchor-pitch {
   background: var(--paper-deep);
-  padding: 16px;
-  border-left: 3px solid var(--turquoise);
+  padding: 20px 24px;
+  border-left: 2px solid var(--turquoise);
+  transition: background var(--t-quick);
 }
+
+.brand-anchor-pitch:hover { background: var(--paper-cool); }
 
 .brand-anchor-pitch .b-label {
   font-family: var(--mono);
@@ -1508,6 +1671,15 @@ body.mode-en .tc-only { display: none !important; }
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
+}
+
+.brand-arc-pitch::before {
+  content: '';
+  position: absolute;
+  top: 24px; left: 0;
+  width: 2px; height: 40px;
+  background: var(--turquoise);
 }
 
 .brand-arc-pitch .arc-label {
@@ -1559,8 +1731,8 @@ body.mode-en .tc-only { display: none !important; }
 }
 
 .cal-loop-pitch {
-  border-left: 3px solid;
-  padding: 16px 24px;
+  border-left: 2px solid;
+  padding: 24px 32px;
   background: var(--paper-deep);
 }
 
@@ -1580,7 +1752,7 @@ body.mode-en .tc-only { display: none !important; }
 .cal-loop-pitch .l-title {
   font-family: var(--serif-tc);
   font-weight: 700;
-  font-size: 20px;
+  font-size: 22px;
   color: var(--brand-black);
 }
 
@@ -1644,24 +1816,40 @@ body.mode-en .tc-only { display: none !important; }
 
 .roadmap-row {
   display: grid;
-  grid-template-columns: 80px 1fr 100px;
-  gap: 24px;
+  grid-template-columns: 100px 1fr 140px;
+  gap: 32px;
   padding: 16px 0;
   border-bottom: 1px solid var(--line-soft);
   align-items: center;
+  transition: background var(--t-quick);
 }
+
+.roadmap-row.done .roadmap-v,
+.roadmap-row.done .roadmap-title { color: var(--ink-mute); }
 
 .roadmap-row.current {
   background: var(--turquoise-soft);
-  padding: 16px;
-  margin: 0 -16px;
+  padding-left: 24px;
+  padding-right: 24px;
+  margin: 0 -24px;
   border-bottom: 1px solid var(--turquoise-line);
+  border-top: 1px solid var(--turquoise-line);
+  position: relative;
+}
+
+.roadmap-row.current::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0;
+  width: 2px; height: 100%;
+  background: var(--turquoise);
 }
 
 .roadmap-v {
   font-family: var(--serif-en);
-  font-size: 24px;
-  color: var(--ink-mute);
+  font-size: clamp(22px, 2vw, 28px);
+  color: var(--brand-black);
+  letter-spacing: -0.02em;
 }
 
 .roadmap-row.current .roadmap-v { color: var(--turquoise); }
@@ -1669,14 +1857,15 @@ body.mode-en .tc-only { display: none !important; }
 .roadmap-title {
   font-family: var(--serif-tc);
   font-weight: 500;
-  font-size: 15px;
+  font-size: 16px;
   color: var(--brand-black);
+  line-height: 1.4;
 }
 
 .roadmap-title-en {
   font-family: var(--serif-en);
   font-style: italic;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--ink-soft);
   margin-top: 4px;
   display: block;
@@ -1687,8 +1876,11 @@ body.mode-en .tc-only { display: none !important; }
   font-size: 11px;
   color: var(--ink-soft);
   text-align: right;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
+  font-feature-settings: "tnum";
 }
+
+.roadmap-row.current .roadmap-eta { color: var(--turquoise-deep); }
 
 /* Decision slide */
 .slide-decision {
@@ -1715,11 +1907,11 @@ body.mode-en .tc-only { display: none !important; }
 .decision-headline-tc {
   font-family: var(--serif-tc);
   font-weight: 900;
-  font-size: clamp(36px, 5.5vw, 72px);
-  letter-spacing: -0.02em;
+  font-size: clamp(40px, 6vw, 80px);
+  letter-spacing: -0.03em;
   color: var(--paper);
-  line-height: 1.15;
-  margin-bottom: 8px;
+  line-height: 1.1;
+  margin-bottom: 2px;
 }
 
 .decision-headline-en {
@@ -1738,8 +1930,19 @@ body.mode-en .tc-only { display: none !important; }
 }
 
 .action-card {
-  border-top: 2px solid var(--turquoise);
+  border-top: 1px solid rgba(248, 246, 241, 0.3);
   padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.action-card::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: 0;
+  width: 40px; height: 1px;
+  background: var(--turquoise);
 }
 
 .action-num {
@@ -1747,7 +1950,8 @@ body.mode-en .tc-only { display: none !important; }
   font-size: 56px;
   color: var(--turquoise);
   line-height: 1;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
+  letter-spacing: -0.03em;
 }
 
 .action-title {
@@ -1832,7 +2036,12 @@ body.mode-en .tc-only { display: none !important; }
   line-height: 1;
   color: var(--brand-black);
   letter-spacing: -0.04em;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
+}
+
+.closing-quote-tc .accent {
+  color: var(--turquoise);
+  font-weight: 400;
 }
 
 .closing-quote-en {
@@ -1882,12 +2091,8 @@ body.mode-en .tc-only { display: none !important; }
   .gap-display { flex-direction: column; gap: 16px; }
 }
 
-/* Smooth entrance */
-.slide-cover, .slide-content, .slide-divider, .slide-decision, .slide-closing, .slide-setup, .slide-tension, .slide-arch, .slide-gap {
-  opacity: 0;
-  animation: fadeIn 0.6s ease forwards;
-}
-
+/* Entrance — fade only, no transforms for cleaner editorial feel */
+.slide { opacity: 0; animation: fadeIn 500ms cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 @keyframes fadeIn { to { opacity: 1; } }
 </style>
 </head>
@@ -1905,8 +2110,6 @@ body.mode-en .tc-only { display: none !important; }
   <button data-mode="en">EN</button>
 </div>
 
-<div class="help-hint">↓ SCROLL or PRESS → · ↓ 滾動 或 →</div>
-
 <!-- ==================== SLIDE 01 — COVER ==================== -->
 <section class="slide slide-cover">
   <div class="cover-top">
@@ -1914,7 +2117,7 @@ body.mode-en .tc-only { display: none !important; }
     <div class="cover-mark">GPS</div>
   </div>
   <div class="cover-center">
-    <h1 class="cover-headline-tc">從接待，<br>到大使。</h1>
+    <h1 class="cover-headline-tc">從接待<span class="tc-comma">，</span><br>到大使<span class="tc-comma">。</span></h1>
     <h2 class="cover-headline-en">From Reception<br>to Ambassadorship.</h2>
     <p class="cover-subtitle">詢問台導覽解說能力架構提案</p>
     <p class="cover-subtitle-en">A Capability Architecture Proposal for the Information Desk</p>
@@ -1945,8 +2148,9 @@ body.mode-en .tc-only { display: none !important; }
 
   <div class="tension-grid">
     <div class="tension-side left">
-      <h3>當前狀態 / Current State</h3>
-      <h4>L0–L1</h4>
+      <h3>Current State · 當前狀態</h3>
+      <div class="tension-state">L0—L1</div>
+      <h4>說明者</h4>
       <span class="h4-en">Clerk to Explainer</span>
       <p>接收問題、給出答案、引導到正確窗口。資訊正確即可，沒有品牌實踐的維度。</p>
       <p class="p-en">Receive questions, give answers, route to the right window. Accuracy is enough; brand practice is absent.</p>
@@ -1955,8 +2159,9 @@ body.mode-en .tc-only { display: none !important; }
     <div class="tension-divider"></div>
 
     <div class="tension-side right">
-      <h3>品牌承諾 / Brand Promise</h3>
-      <h4>L3+</h4>
+      <h3>Brand Promise · 品牌承諾</h3>
+      <div class="tension-state">L3+</div>
+      <h4>體貼的夥伴</h4>
       <span class="h4-en">Considerate Partner</span>
       <p>「在您需要之前」。體貼的夥伴，主動聆聽、預先規劃。需要 L3 以上的解說能力才能呈現。</p>
       <p class="p-en">"Before you need it." The Considerate Partner who listens actively and prepares in advance. Requires L3+ interpretation capability.</p>
@@ -1973,12 +2178,22 @@ body.mode-en .tc-only { display: none !important; }
 
 <!-- ==================== SLIDE 04 — PART I DIVIDER ==================== -->
 <section class="slide slide-divider">
-  <div class="divider-numeral">I</div>
-  <p class="divider-part">PART ONE · 第一部</p>
-  <h2 class="divider-title-tc">洞察</h2>
-  <h3 class="divider-title-en">The Insight</h3>
-  <p class="divider-subhead-tc">解說作為一門專業，已累積七十年的工藝。</p>
-  <p class="divider-subhead-en">Interpretation as a profession: seven decades of accumulated craft.</p>
+  <div></div>
+  <div class="divider-content">
+    <div class="divider-top-meta">
+      <div class="divider-numeral">I</div>
+      <div class="divider-part">Part One · 第一部</div>
+    </div>
+    <div>
+      <h2 class="divider-title-tc">洞察</h2>
+      <h3 class="divider-title-en">The Insight</h3>
+    </div>
+    <div class="divider-subhead">
+      <p class="divider-subhead-tc">解說作為一門專業，已累積七十年的工藝。</p>
+      <p class="divider-subhead-en">Interpretation as a profession: seven decades of accumulated craft.</p>
+    </div>
+  </div>
+  <div></div>
   <div class="slide-num">04 / 17</div>
 </section>
 
@@ -2037,29 +2252,29 @@ body.mode-en .tc-only { display: none !important; }
       <div class="gap-detail-num">+ 02</div>
       <div class="gap-detail-name">主題提煉力</div>
       <span class="gap-detail-name-en">Theme Crafting</span>
-      <p class="gap-detail-conseq">沒有：訪客記不住任何重點。</p>
-      <span class="gap-detail-conseq-en">Without it: visitors remember nothing.</span>
+      <p class="gap-detail-conseq">訪客將記不住任何重點。</p>
+      <span class="gap-detail-conseq-en">Visitors remember nothing.</span>
     </div>
     <div class="gap-detail-item">
       <div class="gap-detail-num">+ 03</div>
       <div class="gap-detail-name">嗓音與體能管理</div>
       <span class="gap-detail-name-en">Voice & Stamina</span>
-      <p class="gap-detail-conseq">沒有：真實的職業傷害。</p>
-      <span class="gap-detail-conseq-en">Without it: real occupational injury.</span>
+      <p class="gap-detail-conseq">真實的職業傷害風險。</p>
+      <span class="gap-detail-conseq-en">Real occupational injury.</span>
     </div>
     <div class="gap-detail-item">
       <div class="gap-detail-num">+ 08</div>
       <div class="gap-detail-name">跨文化敏感度</div>
       <span class="gap-detail-name-en">Cross-cultural Sensitivity</span>
-      <p class="gap-detail-conseq">沒有：JP / DE / CN 子公司信任受損。</p>
-      <span class="gap-detail-conseq-en">Without it: trust with JP/DE/CN subsidiaries damaged.</span>
+      <p class="gap-detail-conseq">與海外子公司的信任受損。</p>
+      <span class="gap-detail-conseq-en">Trust with overseas subsidiaries damaged.</span>
     </div>
     <div class="gap-detail-item">
       <div class="gap-detail-num">+ 09</div>
       <div class="gap-detail-name">服務恢復力</div>
       <span class="gap-detail-name-en">Service Recovery</span>
-      <p class="gap-detail-conseq">沒有：小失誤升級為品牌傷害。</p>
-      <span class="gap-detail-conseq-en">Without it: small mistakes become brand damage.</span>
+      <p class="gap-detail-conseq">小失誤升級為品牌傷害。</p>
+      <span class="gap-detail-conseq-en">Small mistakes become brand damage.</span>
     </div>
   </div>
 
@@ -2068,12 +2283,22 @@ body.mode-en .tc-only { display: none !important; }
 
 <!-- ==================== SLIDE 08 — PART II DIVIDER ==================== -->
 <section class="slide slide-divider">
-  <div class="divider-numeral">II</div>
-  <p class="divider-part">PART TWO · 第二部</p>
-  <h2 class="divider-title-tc">架構</h2>
-  <h3 class="divider-title-en">The Architecture</h3>
-  <p class="divider-subhead-tc">六層由下而上，從「為什麼」回答到「如何整合」。<br>並由雙向校準系統保持自我演化。</p>
-  <p class="divider-subhead-en">Six layers from bottom to top — from <em>why</em> to <em>how it integrates</em>.<br>A dual calibration system keeps it self-evolving.</p>
+  <div></div>
+  <div class="divider-content">
+    <div class="divider-top-meta">
+      <div class="divider-numeral">II</div>
+      <div class="divider-part">Part Two · 第二部</div>
+    </div>
+    <div>
+      <h2 class="divider-title-tc">架構</h2>
+      <h3 class="divider-title-en">The Architecture</h3>
+    </div>
+    <div class="divider-subhead">
+      <p class="divider-subhead-tc">六層由下而上，從「為什麼」回答到「如何整合」。並由雙向校準系統保持自我演化。</p>
+      <p class="divider-subhead-en">Six layers from bottom to top — from <em>why</em> to <em>how it integrates</em>. A dual calibration system keeps it self-evolving.</p>
+    </div>
+  </div>
+  <div></div>
   <div class="slide-num">07 / 17</div>
 </section>
 
@@ -2145,12 +2370,14 @@ body.mode-en .tc-only { display: none !important; }
 <!-- ==================== SLIDE 10 — LAYER 1 PHILOSOPHY ==================== -->
 <section class="slide slide-content">
   <div class="slide-tag">09 / Layer 01</div>
-  <div class="layer-eyebrow-row">
+  <div class="layer-chapter">
     <div class="layer-bignum">01</div>
-    <div class="layer-eyebrow">PHILOSOPHY · 哲學基底層</div>
+    <div class="layer-chapter-meta">
+      <span class="layer-rule">Philosophy · 哲學基底層</span>
+      <h2 class="layer-headline-tc">為什麼解說，為什麼這樣解說。</h2>
+      <h2 class="layer-headline-en">Why we interpret — and why this way.</h2>
+    </div>
   </div>
-  <h2 class="layer-headline-tc">為什麼解說，為什麼這樣解說。</h2>
-  <h2 class="layer-headline-en">Why we interpret — and why this way.</h2>
 
   <div class="content-body">
     <div class="anchor-row">
@@ -2184,12 +2411,14 @@ body.mode-en .tc-only { display: none !important; }
 <!-- ==================== SLIDE 11 — LAYER 2 CAPABILITY ==================== -->
 <section class="slide slide-content">
   <div class="slide-tag">10 / Layer 02</div>
-  <div class="layer-eyebrow-row">
+  <div class="layer-chapter">
     <div class="layer-bignum">02</div>
-    <div class="layer-eyebrow">CAPABILITY · 能力模型層</div>
+    <div class="layer-chapter-meta">
+      <span class="layer-rule">Capability · 能力模型層</span>
+      <h2 class="layer-headline-tc">十二項能力，按「發生時機」分為三組。</h2>
+      <h2 class="layer-headline-en">Twelve capabilities, grouped by <em>when they happen</em>.</h2>
+    </div>
   </div>
-  <h2 class="layer-headline-tc">12 項能力，按「發生時機」分為 3 組。</h2>
-  <h2 class="layer-headline-en">Twelve capabilities, grouped by <em>when they happen</em>.</h2>
 
   <div class="content-body">
     <div class="clusters-display">
@@ -2235,12 +2464,14 @@ body.mode-en .tc-only { display: none !important; }
 <!-- ==================== SLIDE 12 — LAYER 3 MATURITY ==================== -->
 <section class="slide slide-content">
   <div class="slide-tag">11 / Layer 03</div>
-  <div class="layer-eyebrow-row">
+  <div class="layer-chapter">
     <div class="layer-bignum">03</div>
-    <div class="layer-eyebrow">MATURITY · 成熟度層</div>
+    <div class="layer-chapter-meta">
+      <span class="layer-rule">Maturity · 成熟度層</span>
+      <h2 class="layer-headline-tc">每項能力，從 L0 到 L5。</h2>
+      <h2 class="layer-headline-en">Each capability, from L0 to L5.</h2>
+    </div>
   </div>
-  <h2 class="layer-headline-tc">每項能力，從 L0 到 L5。</h2>
-  <h2 class="layer-headline-en">Each capability, from L0 to L5.</h2>
 
   <div class="content-body">
     <div class="maturity-display">
@@ -2297,12 +2528,14 @@ body.mode-en .tc-only { display: none !important; }
 <!-- ==================== SLIDE 13 — LAYER 4 APPLICATION ==================== -->
 <section class="slide slide-content">
   <div class="slide-tag">12 / Layer 04</div>
-  <div class="layer-eyebrow-row">
+  <div class="layer-chapter">
     <div class="layer-bignum">04</div>
-    <div class="layer-eyebrow">APPLICATION · 應用情境層</div>
+    <div class="layer-chapter-meta">
+      <span class="layer-rule">Application · 應用情境層</span>
+      <h2 class="layer-headline-tc">十個場景，四大類，覆蓋詢問台的全部接觸面。</h2>
+      <h2 class="layer-headline-en">Ten scenarios, four categories — full surface coverage.</h2>
+    </div>
   </div>
-  <h2 class="layer-headline-tc">10 個場景，4 大類，<br>覆蓋詢問台的全部接觸面。</h2>
-  <h2 class="layer-headline-en">Ten scenarios in four categories.<br>Full coverage of the information desk surface.</h2>
 
   <div class="content-body">
     <div class="scenarios-full-grid">
@@ -2365,12 +2598,14 @@ body.mode-en .tc-only { display: none !important; }
 <!-- ==================== SLIDE 14 — LAYER 5 OPERATIONS ==================== -->
 <section class="slide slide-content">
   <div class="slide-tag">13 / Layer 05</div>
-  <div class="layer-eyebrow-row">
+  <div class="layer-chapter">
     <div class="layer-bignum">05</div>
-    <div class="layer-eyebrow">OPERATIONS · 訓練與認證層</div>
+    <div class="layer-chapter-meta">
+      <span class="layer-rule">Operations · 訓練與認證層</span>
+      <h2 class="layer-headline-tc">訓練、評估、認證形成閉環。</h2>
+      <h2 class="layer-headline-en">Training, assessment, certification: a closed loop.</h2>
+    </div>
   </div>
-  <h2 class="layer-headline-tc">訓練、評估、認證形成閉環。</h2>
-  <h2 class="layer-headline-en">Training, assessment, certification: a closed loop.</h2>
 
   <div class="content-body">
     <div class="ops-display">
@@ -2451,12 +2686,14 @@ body.mode-en .tc-only { display: none !important; }
 <!-- ==================== SLIDE 15 — LAYER 6 BRAND ==================== -->
 <section class="slide slide-content">
   <div class="slide-tag">14 / Layer 06</div>
-  <div class="layer-eyebrow-row">
+  <div class="layer-chapter">
     <div class="layer-bignum">06</div>
-    <div class="layer-eyebrow">BRAND INTEGRATION · 品牌整合層</div>
+    <div class="layer-chapter-meta">
+      <span class="layer-rule">Brand Integration · 品牌整合層</span>
+      <h2 class="layer-headline-tc">「體貼的夥伴」的營運化身。</h2>
+      <h2 class="layer-headline-en">The operational embodiment of <em>Considerate Partner</em>.</h2>
+    </div>
   </div>
-  <h2 class="layer-headline-tc">「體貼的夥伴」的營運化身。</h2>
-  <h2 class="layer-headline-en">The operational embodiment of <em>Considerate Partner</em>.</h2>
 
   <div class="content-body">
     <div class="brand-display">
@@ -2563,7 +2800,7 @@ body.mode-en .tc-only { display: none !important; }
 
   <div class="content-body">
     <div class="roadmap-display">
-      <div class="roadmap-row">
+      <div class="roadmap-row done">
         <div class="roadmap-v">v1.0</div>
         <div>
           <div class="roadmap-title">線性框架 + 8 大能力</div>
@@ -2657,7 +2894,7 @@ body.mode-en .tc-only { display: none !important; }
 <!-- ==================== CLOSING ==================== -->
 <section class="slide slide-closing">
   <div class="closing-mark">GPS</div>
-  <h2 class="closing-quote-tc">在您需要之前。</h2>
+  <h2 class="closing-quote-tc">在您需要之前<span class="accent">。</span></h2>
   <h3 class="closing-quote-en">Before you need it.</h3>
   <div class="closing-footer">v1.1 · 2026.05</div>
 </section>
@@ -2673,7 +2910,12 @@ body.mode-en .tc-only { display: none !important; }
     langButtons.forEach(function(b) {
       b.classList.toggle('active', b.dataset.mode === mode);
     });
+    try { localStorage.setItem('pitchLangMode', mode); } catch(e) {}
   }
+  try {
+    var saved = localStorage.getItem('pitchLangMode');
+    if (saved && ['tc', 'en', 'bi'].indexOf(saved) >= 0) setMode(saved);
+  } catch(e) {}
   langButtons.forEach(function(btn) {
     btn.addEventListener('click', function() { setMode(btn.dataset.mode); });
   });
