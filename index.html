@@ -2791,7 +2791,88 @@ details.disclosure[open] > .disclosure-body {
 @media (max-width: 768px) {
   .deck-footer { font-size: 8.5px; padding: 4px 9px; gap: 6px; bottom: 6px; }
 }
-@media print { .deck-footer { display: none; } }
+@media print {
+  .deck-footer { display: none; }
+  .entry-router, .entry-onboard { display: none; }
+  .search-overlay { display: none !important; }
+  /* P2: ensure single-language print when toggle is set; "all" mode prints all 3 */
+  .lang-toggle { display: none !important; }
+  /* Tighten slide content for print */
+  .slide { padding: 24px !important; }
+  .todays-three { background: transparent; border-left: 2px solid #333; }
+}
+
+/* ==================== P4 · Onboarding microcopy ==================== */
+.entry-onboard {
+  max-width: 640px; margin-top: 14px; margin-bottom: 12px;
+  font-family: var(--serif-tc); font-size: 13px; line-height: 1.65; color: var(--ink-soft);
+}
+.entry-onboard .eo-en { display: block; font-family: var(--serif-en), 'Lato', sans-serif; font-style: italic; font-size: 11.5px; color: var(--ink-mute); margin-top: 4px; }
+.entry-onboard .eo-jp { display: block; font-family: var(--serif-jp); font-size: 12.5px; color: var(--ink-mute); margin-top: 2px; }
+
+/* ==================== P1 · Search overlay (item 19) ==================== */
+.search-overlay {
+  position: fixed; inset: 0;
+  background: rgba(8, 22, 28, 0.55);
+  z-index: 100;
+  display: none;
+  align-items: flex-start; justify-content: center;
+  padding-top: 8vh;
+}
+.search-overlay[data-open="true"] { display: flex; }
+.search-panel {
+  width: min(640px, 92vw); max-height: 80vh;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow: 0 20px 60px rgba(8, 22, 28, 0.25);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.search-input {
+  appearance: none;
+  width: 100%; padding: 14px 18px;
+  font-family: var(--serif-tc); font-size: 16px;
+  background: var(--paper); color: var(--ink);
+  border: none; border-bottom: 1px solid var(--line);
+  outline: none;
+}
+.search-input::placeholder { color: var(--ink-mute); font-style: italic; }
+.search-results {
+  flex: 1; overflow-y: auto;
+  list-style: none; padding: 0; margin: 0;
+}
+.search-results li {
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--line-soft);
+  cursor: pointer;
+  display: flex; flex-direction: column; gap: 2px;
+  transition: background var(--t-quick);
+}
+.search-results li:hover, .search-results li[aria-selected="true"] {
+  background: var(--turquoise-soft);
+}
+.search-results .sr-title {
+  font-family: var(--serif-tc); font-size: 13px; color: var(--brand-black);
+}
+.search-results .sr-context {
+  font-family: var(--mono); font-size: 9.5px; color: var(--ink-mute); letter-spacing: 0.08em;
+}
+.search-empty {
+  padding: 24px 18px; text-align: center;
+  font-family: var(--serif-tc); font-style: italic; color: var(--ink-mute);
+}
+.search-help {
+  padding: 8px 18px; border-top: 1px solid var(--line-soft);
+  font-family: var(--mono); font-size: 9.5px; color: var(--ink-mute); letter-spacing: 0.08em;
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+}
+.search-help kbd {
+  display: inline-block;
+  background: var(--paper-deep); border: 1px solid var(--line);
+  font-family: var(--mono); font-size: 9px; color: var(--ink-soft);
+  padding: 1px 5px; border-radius: 2px;
+}
+@media print { .search-overlay { display: none !important; } }
 
 /* ==================== R1 · Entry router (items 1, 2, 37) ====================
    Lives inside the cover slide; offers six entry routes without forcing them. */
@@ -3041,6 +3122,10 @@ details.disclosure[open] > .disclosure-body {
     <div>GPS STRATEGY &amp; TRANSFORMATION · 2026.05</div>
     
   </div>
+  <p class="entry-onboard">本提案描述一支詢問台團隊如何從每天 200 次問答的應對者，成長為帶得走名字的文化大使。請從頭讀，或從下方選擇一個視角。
+    <span class="eo-en" lang="en">This deck describes how an information-desk team becomes a recognition-bearing capability — from 200-questions-a-day clerks to cultural ambassadors. Read in order, or choose a view below.</span>
+    <span class="eo-jp" lang="ja">本提案書は、一日二百件の応対を担うご案内所のチームが、いかにしてお客様の記憶に残る「名前のあるおもてなし」を育てるかをまとめたものでございます。順番にお読みいただくも、下記より視点をお選びいただくも、ご随意に。</span>
+  </p>
   <div class="entry-router" role="navigation" aria-label="Choose your view">
     <div class="entry-router-label">Choose your view · 選擇閱讀路徑 · ご覧の視点</div>
     <div class="entry-router-grid">
@@ -4831,6 +4916,152 @@ details.disclosure[open] > .disclosure-body {
     });
   })();
 
+  // P1 (item 19): client-side search
+  (function initSearch() {
+    var overlay = document.getElementById('search-overlay');
+    var input = document.getElementById('search-input');
+    var results = document.getElementById('search-results');
+    if (!overlay || !input || !results) return;
+
+    // Build index from slides — extract text per anchor
+    var index = [];
+    document.querySelectorAll('section.slide').forEach(function(sec) {
+      var anchor = sec.getAttribute('data-anchor') || sec.id;
+      if (!anchor) return;
+      var tag = (sec.querySelector('.slide-tag') || {}).textContent || '';
+      var headline = (sec.querySelector('h1, h2') || {}).textContent || '';
+      // Capture all visible text but keep it modest in size
+      var text = (sec.textContent || '').replace(/\s+/g, ' ').trim();
+      index.push({
+        anchor: anchor,
+        tag: tag.trim(),
+        headline: headline.trim().slice(0, 80),
+        text: text.slice(0, 1200).toLowerCase(),
+        textOrig: text.slice(0, 200)
+      });
+    });
+    // Also index disclosures (per-scenario, per-tier sub-jumps)
+    document.querySelectorAll('details.disclosure').forEach(function(d) {
+      var id = d.id;
+      if (!id) return;
+      var summary = (d.querySelector('summary') || {}).textContent || '';
+      var sec = d.closest('section.slide');
+      var anchorParent = sec ? (sec.getAttribute('data-anchor') || sec.id) : '';
+      index.push({
+        anchor: id,
+        tag: anchorParent || 'detail',
+        headline: summary.trim().slice(0, 80),
+        text: summary.toLowerCase(),
+        textOrig: summary.trim().slice(0, 200)
+      });
+    });
+
+    var selected = 0;
+    function renderResults(query) {
+      var q = query.trim().toLowerCase();
+      var matches;
+      if (!q) {
+        matches = index.slice(0, 20);
+      } else {
+        var tokens = q.split(/\s+/);
+        matches = index
+          .map(function(item) {
+            var score = 0;
+            tokens.forEach(function(t) {
+              if (item.headline.toLowerCase().indexOf(t) >= 0) score += 3;
+              if (item.tag.toLowerCase().indexOf(t) >= 0) score += 2;
+              if (item.text.indexOf(t) >= 0) score += 1;
+            });
+            return { item: item, score: score };
+          })
+          .filter(function(r) { return r.score > 0; })
+          .sort(function(a, b) { return b.score - a.score; })
+          .slice(0, 24)
+          .map(function(r) { return r.item; });
+      }
+      selected = 0;
+      if (!matches.length) {
+        results.innerHTML = '<li class="search-empty">No matches · 沒有結果 · 該当なし</li>';
+        return;
+      }
+      results.innerHTML = matches.map(function(item, i) {
+        return '<li role="option" data-anchor="' + item.anchor + '" aria-selected="' + (i === 0 ? 'true' : 'false') + '">' +
+          '<span class="sr-title">' + (item.headline || item.textOrig || item.anchor) + '</span>' +
+          '<span class="sr-context">' + (item.tag || '') + ' · #' + item.anchor + '</span>' +
+        '</li>';
+      }).join('');
+    }
+
+    function open() {
+      overlay.setAttribute('data-open', 'true');
+      input.value = '';
+      renderResults('');
+      setTimeout(function() { input.focus(); }, 10);
+    }
+    function close() {
+      overlay.setAttribute('data-open', 'false');
+      input.blur();
+    }
+    function jump(anchor) {
+      window.location.hash = anchor;
+      close();
+    }
+    function moveSelection(delta) {
+      var lis = results.querySelectorAll('li[data-anchor]');
+      if (!lis.length) return;
+      selected = (selected + delta + lis.length) % lis.length;
+      lis.forEach(function(l, i) { l.setAttribute('aria-selected', i === selected ? 'true' : 'false'); });
+      lis[selected].scrollIntoView({ block: 'nearest' });
+    }
+
+    document.addEventListener('keydown', function(e) {
+      // "/" opens search — but not when typing in another input
+      if (e.key === '/' && !e.altKey && !e.ctrlKey && !e.metaKey) {
+        var tag = e.target && e.target.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable)) return;
+        e.preventDefault();
+        open();
+      }
+    });
+    input.addEventListener('input', function() { renderResults(input.value); });
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') { e.preventDefault(); close(); }
+      else if (e.key === 'ArrowDown') { e.preventDefault(); moveSelection(1); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); moveSelection(-1); }
+      else if (e.key === 'Enter') {
+        e.preventDefault();
+        var lis = results.querySelectorAll('li[data-anchor]');
+        if (lis[selected]) jump(lis[selected].getAttribute('data-anchor'));
+      }
+    });
+    results.addEventListener('click', function(e) {
+      var li = e.target.closest('li[data-anchor]');
+      if (li) jump(li.getAttribute('data-anchor'));
+    });
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) close();
+    });
+  })();
+
+  // P5 (item 18): pre-fill feedback link with deck version + current slide anchor
+  (function enhanceFeedbackLink() {
+    var link = document.querySelector('.deck-footer-feedback');
+    if (!link) return;
+    var version = (document.querySelector('meta[name="version"]') || {}).content || '';
+    function updateLink() {
+      var hash = (window.location.hash || '').slice(1);
+      var lang = document.documentElement.getAttribute('data-lang') || 'all';
+      var params = new URLSearchParams();
+      params.set('template', 'deck-feedback.yml');
+      params.set('deck_version', version);
+      if (hash) params.set('slide_anchor', '#' + hash);
+      params.set('language_mode', lang);
+      link.href = 'https://github.com/Rockie-9/gps-tour-interpretation-pitch/issues/new?' + params.toString();
+    }
+    updateLink();
+    window.addEventListener('hashchange', updateLink);
+  })();
+
   // R5 (item 15): Today's three phase selector
   (function initTodaysThree() {
     var sel = document.querySelector('.todays-three-phase-select');
@@ -4913,6 +5144,18 @@ details.disclosure[open] > .disclosure-body {
   })();
 })();
 </script>
+
+<!-- P1: search overlay (opened by "/") -->
+<div class="search-overlay" id="search-overlay" data-open="false" role="dialog" aria-modal="true" aria-label="Search deck">
+  <div class="search-panel">
+    <input type="search" class="search-input" id="search-input" placeholder="Search the deck · 搜尋 · 検索  (try: BARS, scenario B1, capability 05, recognition)" autocomplete="off">
+    <ul class="search-results" id="search-results" role="listbox"></ul>
+    <div class="search-help">
+      <span><kbd>↑↓</kbd> navigate · <kbd>↵</kbd> open · <kbd>esc</kbd> close</span>
+      <span><kbd>/</kbd> opens this</span>
+    </div>
+  </div>
+</div>
 
 <footer class="deck-footer" role="contentinfo" aria-label="Deck metadata">
   <span class="lang-toggle" role="group" aria-label="Language">
