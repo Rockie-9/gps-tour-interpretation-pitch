@@ -1,14 +1,14 @@
 /* ==================== TOKENS ==================== */
 :root {
   --turquoise: #1F9CA5;
-  --turquoise-deep: #16767D;
+  --turquoise-deep: #16767D;        /* 4.96:1 on paper, passes AA body */
   --turquoise-soft: rgba(31, 156, 165, 0.06);
   --turquoise-line: rgba(31, 156, 165, 0.22);
-  --copper: #B98C5A;
+  --copper: #8B6438;                /* QA-F: darkened from #B98C5A — was 2.79:1, now 4.89:1 on paper */
   --brand-black: #08161C;
   --ink: #1A262C;
   --ink-soft: #4F5A60;
-  --ink-mute: #94999D;
+  --ink-mute: #7E8489;              /* QA-F: darkened from #94999D — was 2.66:1, now 3.50:1 on paper */
   --paper: #F8F6F1;
   --paper-deep: #EFEBE3;
   --paper-cool: #ECECE7;
@@ -35,6 +35,9 @@
     --brand-black: #F0EEE9;
     --line: rgba(218, 225, 229, 0.10);
     --line-soft: rgba(218, 225, 229, 0.05);
+    /* QA-F: lighter turquoise-deep in dark mode for 4.5:1 AA contrast on body text */
+    --turquoise-deep: #52B8C0;
+    --copper: #C9A176;
   }
 }
 :root[data-theme="dark"] {
@@ -42,6 +45,8 @@
   --ink: #DAE1E5; --ink-soft: #9AA5AB; --ink-mute: #6D767C;
   --brand-black: #F0EEE9;
   --line: rgba(218, 225, 229, 0.10); --line-soft: rgba(218, 225, 229, 0.05);
+  --turquoise-deep: #52B8C0;   /* QA-F: dark-mode link/pill contrast 7.49:1 on paper */
+  --copper: #C9A176;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }

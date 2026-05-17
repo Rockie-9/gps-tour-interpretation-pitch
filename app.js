@@ -5,11 +5,21 @@
 (function() {
   'use strict';
 
+  // QA-A1: defensive localStorage parsing — corrupt data must not crash boot.
+  function safeParse(json, fallback) {
+    try { return JSON.parse(json || JSON.stringify(fallback)); }
+    catch (e) { console.warn('Corrupt localStorage value, resetting:', e); return fallback; }
+  }
+  function safeGet(key, fallback) {
+    try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+  }
+
   const STATE = {
-    data: {},           // populated by loadData()
-    lang: localStorage.getItem('hb-lang') || 'tc',
-    theme: localStorage.getItem('hb-theme') || 'auto',
-    checks: JSON.parse(localStorage.getItem('hb-checks') || '{}'),
+    data: {},
+    lang: safeGet('hb-lang', 'tc'),
+    theme: safeGet('hb-theme', 'auto'),
+    checks: safeParse(safeGet('hb-checks', '{}'), {}),
+    showAll: safeGet('hb-show-all', 'false') === 'true',  // QA-A11: user opt-in to see all 3 langs
   };
 
   const VALID_LANGS = ['tc', 'en', 'jp'];
@@ -43,14 +53,22 @@
   });
 
   async function loadData() {
+    // QA-A13: surface errors to user, not silent console-only
     const files = ['capabilities', 'scenarios', 'bars', 'modules', 'tiers'];
-    try {
-      await Promise.all(files.map(async name => {
+    const errs = [];
+    await Promise.all(files.map(async name => {
+      try {
         const r = await fetch(`data/${name}.json`);
+        if (!r.ok) throw new Error(`HTTP ${r.status} for data/${name}.json`);
         STATE.data[name] = await r.json();
-      }));
-    } catch (e) {
-      console.error('Failed to load data:', e);
+      } catch (e) {
+        errs.push(`${name}: ${e.message}`);
+        STATE.data[name] = null;
+      }
+    }));
+    if (errs.length) {
+      STATE.dataLoadErrors = errs;
+      console.error('Data load errors:', errs);
     }
   }
 
@@ -72,21 +90,30 @@
   }
 
   // ============================================================
-  // PICK (trilingual content -> active-lang string)
+  // PICK / triBlock — trilingual content rendering
   // ============================================================
   function pick(obj) {
     if (!obj) return '';
     if (typeof obj === 'string') return obj;
     return obj[STATE.lang] || obj.en || obj.tc || obj.jp || '';
   }
-  function pickBlock(obj) {
-    // Returns HTML with primary + secondary lang previews.
+  // QA-A11: ONLY the active language renders by default. Other two appear ONLY if
+  // user opted in to "show all 3" mode. This is the fix for "全部混在一起".
+  function triBlock(obj, opts) {
     if (!obj) return '';
     const primary = pick(obj);
-    const others = VALID_LANGS.filter(l => l !== STATE.lang && obj[l])
-      .map(l => `<span class="body-${l === 'en' ? 'en' : (l === 'jp' ? 'jp' : 'tc')}" lang="${l === 'jp' ? 'ja' : l === 'tc' ? 'zh-Hant' : 'en'}">${escapeHtml(obj[l])}</span>`)
-      .join('');
-    return `<div>${escapeHtml(primary)}${others}</div>`;
+    const primaryClass = opts && opts.primaryClass ? opts.primaryClass : 'body';
+    const primaryLang = STATE.lang === 'jp' ? 'ja' : STATE.lang === 'en' ? 'en' : 'zh-Hant';
+    let html = `<div class="${primaryClass}" lang="${primaryLang}">${escapeHtml(primary)}</div>`;
+    if (!STATE.showAll) return html;
+    // Show-all mode: append the other two languages as muted secondaries
+    VALID_LANGS.filter(l => l !== STATE.lang).forEach(l => {
+      if (!obj[l]) return;
+      const cls = l === 'en' ? 'body-en' : l === 'jp' ? 'body-jp' : 'body-tc';
+      const langAttr = l === 'jp' ? 'ja' : l === 'tc' ? 'zh-Hant' : 'en';
+      html += `<div class="${cls}" lang="${langAttr}">${escapeHtml(obj[l])}</div>`;
+    });
+    return html;
   }
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, c => ({
@@ -118,12 +145,25 @@
     });
   }
 
+  function applyShowAll(on) {
+    STATE.showAll = !!on;
+    try { localStorage.setItem('hb-show-all', String(STATE.showAll)); } catch(_) {}
+    document.querySelectorAll('[data-show-all-toggle]').forEach(b => {
+      b.setAttribute('aria-pressed', STATE.showAll ? 'true' : 'false');
+    });
+    if (Object.keys(STATE.data).length) route();
+  }
+
   function bindHeader() {
     document.querySelectorAll('[data-lang-set]').forEach(b => {
       b.addEventListener('click', () => applyLang(b.getAttribute('data-lang-set')));
     });
     document.querySelectorAll('[data-theme-set]').forEach(b => {
       b.addEventListener('click', () => applyTheme(b.getAttribute('data-theme-set')));
+    });
+    document.querySelectorAll('[data-show-all-toggle]').forEach(b => {
+      b.setAttribute('aria-pressed', STATE.showAll ? 'true' : 'false');
+      b.addEventListener('click', () => applyShowAll(!STATE.showAll));
     });
   }
 
@@ -271,7 +311,8 @@
     if (!d) return main.innerHTML = '<p>Loading…</p>';
     const c = d.capabilities.find(x => x.id === id);
     if (!c) return renderNotFound(main);
-    const cluster = d.clusters.find(cl => cl.code === c.cluster);
+    // QA-A6: defensive null check on cluster
+    const cluster = d.clusters.find(cl => cl.code === c.cluster) || { label_en: c.cluster, label_tc: c.cluster, label_jp: c.cluster };
     const bars = STATE.data.bars?.anchors?.filter(a => a.capability_id === id) || [];
     const scenarios = STATE.data.scenarios?.scenarios?.filter(s => s.capabilities.includes(id)) || [];
     const modules = STATE.data.modules?.modules?.filter(m => m.capabilities.includes(id) || m.capabilities.includes('all')) || [];
@@ -283,10 +324,7 @@
 
       <section class="detail-section">
         <h2>定義 <span class="h2-en">Definition</span></h2>
-        <p class="body">${escapeHtml(pick(c.def))}</p>
-        ${STATE.lang !== 'en' ? `<div class="body-en" lang="en">${escapeHtml(c.def.en)}</div>` : ''}
-        ${STATE.lang !== 'jp' ? `<div class="body-jp" lang="ja">${escapeHtml(c.def.jp)}</div>` : ''}
-        ${STATE.lang !== 'tc' ? `<div lang="zh-Hant" style="font-family:var(--serif-tc); color:var(--ink-soft); font-size:14px; margin-top:6px;">${escapeHtml(c.def.tc)}</div>` : ''}
+        ${triBlock(c.def)}
         ${c.hospitality_anchor ? `<div class="hospitality-anchor">${escapeHtml(pick(c.hospitality_anchor))}</div>` : ''}
       </section>
 
@@ -302,8 +340,9 @@
             <div class="bt-level">${b.level}</div>
             <div class="bt-text">
               ${escapeHtml(pick(b.behavior))}
-              ${STATE.lang !== 'en' ? `<span class="bt-en" lang="en">${escapeHtml(b.behavior.en)}</span>` : ''}
-              ${STATE.lang !== 'jp' ? `<span class="bt-jp" lang="ja">${escapeHtml(b.behavior.jp)}</span>` : ''}
+              ${STATE.showAll && STATE.lang !== 'en' ? `<span class="bt-en" lang="en">${escapeHtml(b.behavior.en)}</span>` : ''}
+              ${STATE.showAll && STATE.lang !== 'jp' ? `<span class="bt-jp" lang="ja">${escapeHtml(b.behavior.jp)}</span>` : ''}
+              ${STATE.showAll && STATE.lang !== 'tc' ? `<span class="bt-tc" lang="zh-Hant">${escapeHtml(b.behavior.tc)}</span>` : ''}
             </div>
             <div class="bt-check">
               <input type="checkbox" class="bars-check" id="bars-${c.id}-${b.level}" data-check-key="bars-${c.id}-${b.level}" aria-label="Observed ${c.id} ${b.level}">
@@ -404,9 +443,7 @@
 
       <section class="detail-section">
         <h2>成功的判準 <span class="h2-en">Success criterion</span></h2>
-        <p class="body">${escapeHtml(pick(s.success))}</p>
-        ${STATE.lang !== 'en' ? `<div class="body-en" lang="en">${escapeHtml(s.success.en)}</div>` : ''}
-        ${STATE.lang !== 'jp' ? `<div class="body-jp" lang="ja">${escapeHtml(s.success.jp)}</div>` : ''}
+        ${triBlock(s.success)}
       </section>
 
       ${s.register_anchor ? `
@@ -451,8 +488,9 @@
               <div class="bt-level">${a.level}</div>
               <div class="bt-text">
                 ${escapeHtml(pick(a.behavior))}
-                ${STATE.lang !== 'en' ? `<span class="bt-en" lang="en">${escapeHtml(a.behavior.en)}</span>` : ''}
-                ${STATE.lang !== 'jp' ? `<span class="bt-jp" lang="ja">${escapeHtml(a.behavior.jp)}</span>` : ''}
+                ${STATE.showAll && STATE.lang !== 'en' ? `<span class="bt-en" lang="en">${escapeHtml(a.behavior.en)}</span>` : ''}
+                ${STATE.showAll && STATE.lang !== 'jp' ? `<span class="bt-jp" lang="ja">${escapeHtml(a.behavior.jp)}</span>` : ''}
+                ${STATE.showAll && STATE.lang !== 'tc' ? `<span class="bt-tc" lang="zh-Hant">${escapeHtml(a.behavior.tc)}</span>` : ''}
               </div>
               <div class="bt-check">
                 <input type="checkbox" class="bars-check" data-check-key="bars-${cid}-${a.level}" aria-label="Observed ${cid} ${a.level}">
@@ -532,16 +570,12 @@
 
       <section class="detail-section">
         <h2>內容 <span class="h2-en">Content</span></h2>
-        <p class="body">${escapeHtml(pick(m.content))}</p>
-        ${STATE.lang !== 'en' ? `<div class="body-en" lang="en">${escapeHtml(m.content.en)}</div>` : ''}
-        ${STATE.lang !== 'jp' ? `<div class="body-jp" lang="ja">${escapeHtml(m.content.jp)}</div>` : ''}
+        ${triBlock(m.content)}
       </section>
 
       <section class="detail-section">
         <h2>驗收 <span class="h2-en">Validation</span></h2>
-        <p class="body">${escapeHtml(pick(m.validation))}</p>
-        ${STATE.lang !== 'en' ? `<div class="body-en" lang="en">${escapeHtml(m.validation.en)}</div>` : ''}
-        ${STATE.lang !== 'jp' ? `<div class="body-jp" lang="ja">${escapeHtml(m.validation.jp)}</div>` : ''}
+        ${triBlock(m.validation)}
       </section>
 
       <section class="detail-section">
@@ -600,9 +634,7 @@
 
       <section class="detail-section">
         <h2>訪客感受 <span class="h2-en">Visitor experience</span></h2>
-        <p class="body">${escapeHtml(pick(t.visitor_experience))}</p>
-        ${STATE.lang !== 'en' ? `<div class="body-en" lang="en">${escapeHtml(t.visitor_experience.en)}</div>` : ''}
-        ${STATE.lang !== 'jp' ? `<div class="body-jp" lang="ja">${escapeHtml(t.visitor_experience.jp)}</div>` : ''}
+        ${triBlock(t.visitor_experience)}
       </section>
 
       <section class="detail-section">
@@ -640,7 +672,7 @@
       <section class="list-section">
         <div class="list-section-head"><span class="list-section-code">Spec files</span></div>
         <div class="list-grid">
-          <a class="list-card" href="spec/" target="_blank" rel="noopener">
+          <a class="list-card" href="spec/README.md" target="_blank" rel="noopener">
             <span class="lc-id">README</span>
             <div class="lc-name">Spec 索引</div>
             <div class="lc-name-en">Index + honest-state banner</div>
