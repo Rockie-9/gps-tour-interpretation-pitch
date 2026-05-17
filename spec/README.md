@@ -1,11 +1,20 @@
 # Spec — Substrate
 
-This directory is the contract that Slide 14 (Substrate · 工具、日誌、稽核 / 基盤：ツール、ログ、監査) of `/index.html` promises. The deck is the narrative; the files here are the source of truth. When the deck and the files disagree, the files win — and the deck is updated.
+This directory is the contract that Slide 15 (Substrate · 工具、日誌、稽核 / 基盤：ツール、ログ、監査) of `/index.html` promises (renumbered from 14 → 15 after V2 R4). The deck is the narrative; the files here are the source of truth. When the deck and the files disagree, the files win — and the deck is updated.
+
+## ⚠ Honest-state banner (V2 C9)
+
+This directory is **v0.1 design intent**, not yet **v1.0 buildable**. Sara (#9) flagged this in the 10-persona review: the spec was a good start but couldn't be built from. V2 closes part of that gap (field types, sample payloads, storage placement, versioning policy); v1.0 buildable status requires SLA-tested implementations, region-specific deployment configs, and at least one passing integration test.
 
 ## Files
 
-- [`logging.md`](./logging.md) — log-entry schema, retention tiers, PII rules, and one realistic sample entry per `action_type`.
-- [`audit-events.json`](./audit-events.json) — machine-readable taxonomy: 4 audit domains × 14 action types × 4 trigger rules × evidence schema.
+- [`logging.md`](./logging.md) — log-entry schema, retention tiers, PII rules.
+- [`audit-events.json`](./audit-events.json) — machine-readable taxonomy: 4 audit domains × 14 action types × 4 trigger rules × evidence schema. **Now at schema v0.2.0** with field types and per-action target_fields schema.
+- [`payloads.md`](./payloads.md) — one realistic JSON payload per action_type (V2 C9).
+- [`versioning.md`](./versioning.md) — SemVer policy for the catalogue. Append-only contract. (V2 C9.)
+- [`storage.md`](./storage.md) — hot/warm/cold tier placement, PII rules per tier, region-locality, backup/DR. (V2 C9.)
+- [`i18n.md`](./i18n.md) — measurement, date, name-order, address, currency, honorifics, writing-direction rules. Documents staged languages (DE, zh-Hans) honestly. (V2 C12+P3.)
+- [`dependencies.md`](./dependencies.md) — third-party resource audit and fallback strategy. (V2 F8.)
 
 ## Trace table — deck claim ↔ spec field
 

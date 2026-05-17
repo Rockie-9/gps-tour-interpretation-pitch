@@ -1,8 +1,37 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema",
-  "version": "0.1.0",
+  "version": "0.2.0",
+  "version_note": "0.2.0: C9 enrichment — added field_types, target_fields per action_type, sample_payload references, retention_per_domain. Still 'design intent' per /spec/README.md banner; not yet 'buildable'. See /spec/versioning.md for SemVer policy.",
+  "_schema_version": "0.2.0",
   "name": "GPS Tour Interpretation · Substrate Audit Event Taxonomy",
-  "description": "Machine-readable companion to Slide 14 of the pitch deck. Defines the audit domains, action types, trigger rules, and evidence schema referenced by /spec/logging.md.",
+  "description": "Machine-readable companion to Slide 15 (Substrate) of the pitch deck. Defines the audit domains, action types, trigger rules, evidence schema, field types, and sample payload references for /spec/logging.md and /spec/payloads.md.",
+  "field_types": {
+    "entry_id": { "type": "string", "format": "ULID", "required": true, "description": "Sortable unique id; embeds the millisecond timestamp." },
+    "ts": { "type": "string", "format": "date-time", "required": true, "description": "ISO 8601 with timezone." },
+    "actor": {
+      "type": "object", "required": true,
+      "properties": {
+        "id": { "type": "string", "pattern": "^staff_[A-Z]{2}_[0-9]{4}$|^council_[A-Z]+$" },
+        "tier": { "type": "string", "enum": ["L0", "L1", "L2", "L3", "L4", "L5"] },
+        "role": { "type": "string", "enum": ["clerk", "explainer", "guide", "interpreter", "designer", "ambassador", "calibration_steward", "system"] }
+      }
+    },
+    "action_type": { "type": "string", "enum_ref": "action_types[].code", "required": true },
+    "target": {
+      "type": "object", "required": true,
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "enum": ["assessment", "observation", "script", "scenario", "certification", "kpi", "calibration", "recognition", "recovery", "handover", "wayfinding", "feedback", "brief", "training", "incident", "other"] },
+        "version": { "type": "string", "format": "SemVer" },
+        "fields": { "type": "object", "description": "Per-action-type schema; see action_types[].target_fields_schema below." }
+      }
+    },
+    "surface": { "type": "string", "enum": ["line", "web", "console", "system"], "required": true },
+    "device_class": { "type": "string", "enum": ["phone", "tablet", "desktop", "system"], "required": true },
+    "context_tag": { "type": "string", "maxLength": 240, "required": false },
+    "prior_event_id": { "type": "string", "format": "ULID", "required": false, "description": "Chains an event to a prior event; null for chain origin." },
+    "pii_flag": { "type": "boolean", "required": true, "description": "True if target.fields contains identifiable visitor data." }
+  },
   "audit_domains": [
     { "code": "ASSESS",    "name_tc": "評估稽核", "name_en": "Assessment audit",  "name_jp": "評価監査",   "intent": "BARS observations remain reproducible across observers and across time." },
     { "code": "RECOGNIZE", "name_tc": "表揚稽核", "name_en": "Recognition audit", "name_jp": "表彰監査",   "intent": "Every promotion and insignia award is backed by a complete evidence chain." },
