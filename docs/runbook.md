@@ -157,7 +157,36 @@ or similar Prisma connection errors during cron runs.
 
 ---
 
-## 8. Model deprecation warning from Anthropic
+## 8. Vercel deploy fails: "Hobby accounts are limited to daily cron jobs"
+
+**Symptom.** Vercel preview/production deploy fails with
+"Hobby accounts are limited to daily cron jobs. This cron expression
+(...) would run more than once per day."
+
+**Where to look.**
+- `vercel.json` — does it declare any cron schedule more frequent than
+  daily?
+- Vercel team plan — is it on Hobby?
+
+**Fix.** Upgrade to Vercel Pro **before** restoring the cron block.
+The canonical block (kept in the README "Phase 1 prerequisites" section)
+is:
+```json
+{
+  "crons": [
+    { "path": "/api/cron/ingest",       "schedule": "0 * * * *" },
+    { "path": "/api/cron/infer",        "schedule": "*/5 * * * *" },
+    { "path": "/api/cron/budget-check", "schedule": "0 9 * * *" }
+  ]
+}
+```
+Don't downgrade the schedules to fit Hobby — that breaks the §14.1 SLO
+and the §6.2 motivation for SKIP LOCKED. Either pay for Pro or run
+crons from an external scheduler (GitHub Actions, internal infra).
+
+---
+
+## 9. Model deprecation warning from Anthropic
 
 **Symptom.** Email from Anthropic announcing deprecation of our pinned
 model.

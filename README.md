@@ -134,3 +134,29 @@ circuit-breaker tripped.
 - **Phase 0** (this scaffold): evaluation harness, prompts, ADRs, schema, gateway, queue, sources, dashboard skeleton.
 - **Phase 1**: real ingestion at hourly cadence, dashboards live, predicate accuracy ≥ 80% on the seed set.
 - **Phase 3**: TSMC IT-dictated deployment target; the only code that changes is `lib/llm/gateway.ts` (provider) and `lib/auth/auth.ts` (SSO).
+
+## Phase 1 prerequisites (not yet satisfied)
+
+- **Vercel Pro plan.** Hobby caps cron jobs at daily cadence; the spec
+  requires hourly ingestion and 5-minute inference (§6.2, §14.1). The
+  cron route handlers (`app/api/cron/*`) are checked in and work, but
+  `vercel.json` does **not** declare the crons today — adding them on
+  Hobby breaks the deploy. When Pro is enabled, restore this block:
+  ```json
+  {
+    "crons": [
+      { "path": "/api/cron/ingest",       "schedule": "0 * * * *" },
+      { "path": "/api/cron/infer",        "schedule": "*/5 * * * *" },
+      { "path": "/api/cron/budget-check", "schedule": "0 9 * * *" }
+    ]
+  }
+  ```
+- **Anthropic API key** with billing alert (daily reminder + monthly cap).
+- **Postgres** (Supabase or Neon — free tier is fine for Phase 1).
+- **Resend API key** for §9.2 budget-circuit-breaker emails.
+
+Until cron is declared, trigger handlers manually for local dev:
+```bash
+curl -H "Authorization: Bearer $CRON_SECRET" http://localhost:3000/api/cron/ingest
+curl -H "Authorization: Bearer $CRON_SECRET" http://localhost:3000/api/cron/infer
+```
