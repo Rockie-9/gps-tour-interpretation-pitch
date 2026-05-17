@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Per-commit health check for the deck. Run before pushing.
+# Per-commit health check for the handbook. Run before pushing.
 # Exit 0 = healthy. Non-zero = abort the push and diagnose.
 
 set -euo pipefail
@@ -22,66 +22,48 @@ check() {
 
 echo "smoke-test · $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
-# 1. index.html exists and is non-empty
+# 1. Core files present
 check "index.html present" test -s index.html
+check "app.js present" test -s app.js
+check "styles.css present" test -s styles.css
+check "sw.js present" test -s sw.js
 
-# 2. HTML parses (best-effort via python's HTMLParser — non-fatal on warnings)
+# 2. HTML parses
 check "index.html parses" python3 -c "
 from html.parser import HTMLParser
-import sys
-p = HTMLParser()
-p.feed(open('index.html').read())
+HTMLParser().feed(open('index.html').read())
 "
 
-# 3. Slide count >= 19 (iteration-2 baseline; V2 routing adds 2 more = 21)
-SLIDES=$(grep -cE '<section[^>]*class="slide' index.html || true)
-if [ "$SLIDES" -ge 19 ]; then
-  printf "  ok    slide count: %s (>= 19)\n" "$SLIDES"
-  PASS=$((PASS + 1))
-else
-  printf "  FAIL  slide count: %s (expected >= 19)\n" "$SLIDES"
-  FAIL=$((FAIL + 1))
-fi
+# 3. JSON data files valid
+for f in data/*.json spec/*.json; do
+  [ -f "$f" ] || continue
+  check "valid JSON: $f" python3 -m json.tool "$f"
+done
 
-# 4. slide-num strings consistent (`XX / N` where N is same throughout)
-TOTALS=$(grep -oE 'class="slide-num">[0-9]+ / [0-9]+' index.html | grep -oE '/ [0-9]+' | sort -u | wc -l)
-if [ "$TOTALS" -le 1 ]; then
-  printf "  ok    slide-num totals consistent\n"
-  PASS=$((PASS + 1))
-else
-  printf "  FAIL  slide-num totals inconsistent (multiple denominators)\n"
-  FAIL=$((FAIL + 1))
-fi
+# 4. Data file content sanity (counts match deck claims)
+CAPS=$(python3 -c "import json; print(len(json.load(open('data/capabilities.json'))['capabilities']))" 2>/dev/null || echo 0)
+[ "$CAPS" = "12" ] && { printf "  ok    capabilities count: 12\n"; PASS=$((PASS+1)); } || { printf "  FAIL  capabilities count: %s (expected 12)\n" "$CAPS"; FAIL=$((FAIL+1)); }
 
-# 5. All JSON in /spec/ is valid
-if compgen -G "spec/*.json" > /dev/null; then
-  for f in spec/*.json; do
-    check "valid JSON: $f" python3 -m json.tool "$f"
-  done
-fi
+SCENS=$(python3 -c "import json; print(len(json.load(open('data/scenarios.json'))['scenarios']))" 2>/dev/null || echo 0)
+[ "$SCENS" = "10" ] && { printf "  ok    scenarios count: 10\n"; PASS=$((PASS+1)); } || { printf "  FAIL  scenarios count: %s (expected 10)\n" "$SCENS"; FAIL=$((FAIL+1)); }
 
-# 6. BRAND IDEA appears exactly once (§K invariant from iteration-2)
-BICOUNT=$(grep -c 'BRAND IDEA' index.html || true)
-if [ "$BICOUNT" = "1" ]; then
-  printf "  ok    BRAND IDEA count = 1 (§K invariant)\n"
-  PASS=$((PASS + 1))
-else
-  printf "  FAIL  BRAND IDEA count = %s (expected 1)\n" "$BICOUNT"
-  FAIL=$((FAIL + 1))
-fi
+BARS=$(python3 -c "import json; print(len(json.load(open('data/bars.json'))['anchors']))" 2>/dev/null || echo 0)
+[ "$BARS" = "12" ] && { printf "  ok    BARS anchors illustrated: 12\n"; PASS=$((PASS+1)); } || { printf "  FAIL  BARS anchors: %s (expected 12)\n" "$BARS"; FAIL=$((FAIL+1)); }
 
-# 7. No raw external script tags beyond Google Fonts (third-party audit)
-EXTERNAL_SCRIPTS=$(grep -cE '<script[^>]+src="https?://' index.html || true)
-if [ "$EXTERNAL_SCRIPTS" = "0" ]; then
-  printf "  ok    no external <script src=...> (zero third-party JS)\n"
-  PASS=$((PASS + 1))
-else
-  printf "  FAIL  %s external <script src=...> found\n" "$EXTERNAL_SCRIPTS"
-  FAIL=$((FAIL + 1))
-fi
+MODS=$(python3 -c "import json; print(len(json.load(open('data/modules.json'))['modules']))" 2>/dev/null || echo 0)
+[ "$MODS" = "9" ] && { printf "  ok    modules count: 9\n"; PASS=$((PASS+1)); } || { printf "  FAIL  modules count: %s (expected 9)\n" "$MODS"; FAIL=$((FAIL+1)); }
 
-# 8. STATUS.md exists and was touched recently (catches stale tracker)
+TIERS=$(python3 -c "import json; print(len(json.load(open('data/tiers.json'))['tiers']))" 2>/dev/null || echo 0)
+[ "$TIERS" = "6" ] && { printf "  ok    tiers count: 6\n"; PASS=$((PASS+1)); } || { printf "  FAIL  tiers count: %s (expected 6)\n" "$TIERS"; FAIL=$((FAIL+1)); }
+
+# 5. No external script src (third-party JS audit)
+EXTERNAL=$(grep -cE '<script[^>]+src="https?://' index.html || true)
+[ "$EXTERNAL" = "0" ] && { printf "  ok    no external <script src=...>\n"; PASS=$((PASS+1)); } || { printf "  FAIL  %s external script(s)\n" "$EXTERNAL"; FAIL=$((FAIL+1)); }
+
+# 6. STATUS / AUDIT / CHANGELOG present
 check "STATUS.md present" test -s STATUS.md
+check "CHANGELOG.md present" test -s CHANGELOG.md
+check "AUDIT.md present" test -s AUDIT.md
 
 echo
 echo "result: $PASS passed, $FAIL failed"

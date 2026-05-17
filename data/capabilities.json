@@ -1,0 +1,165 @@
+{
+  "$schema": "../spec/audit-events.json",
+  "version": "1.0.0",
+  "_note": "12 capabilities, grouped into 3 clusters. Each carries tc/en/jp name + definition. hospitality_anchor present on capabilities 03, 10, 12.",
+  "clusters": [
+    {
+      "code": "A",
+      "label_tc": "內在準備組",
+      "label_en": "Self-Readiness",
+      "label_jp": "内的準備群",
+      "subtitle_en": "when no one's there"
+    },
+    {
+      "code": "B",
+      "label_tc": "對人組",
+      "label_en": "Audience-Facing",
+      "label_jp": "対人群",
+      "subtitle_en": "when one person is there"
+    },
+    {
+      "code": "C",
+      "label_tc": "現場與收束組",
+      "label_en": "Site & Closure",
+      "label_jp": "現場・収束群",
+      "subtitle_en": "when the moment is closing"
+    }
+  ],
+  "capabilities": [
+    {
+      "id": "01",
+      "cluster": "A",
+      "name": { "tc": "內容理解力", "en": "Content Mastery", "jp": "内容理解力" },
+      "def": {
+        "tc": "準確掌握展品、品牌、歷史與專業術語的底層事實。",
+        "en": "Accurate command of the underlying facts: artifact, brand, history, and technical vocabulary.",
+        "jp": "展示物、ブランド、歴史、専門用語の根底にある事実を正確に把握する。"
+      }
+    },
+    {
+      "id": "02",
+      "cluster": "A",
+      "name": { "tc": "主題提煉力", "en": "Theme Crafting", "jp": "テーマ抽出力" },
+      "def": {
+        "tc": "從一堆事實中,提煉出一句訪客記得住的核心命題。",
+        "en": "Distilling a body of facts into one single proposition a visitor can carry away.",
+        "jp": "数多くの事実の中から、お客様の記憶に残る一文の核心命題を抽出する。"
+      }
+    },
+    {
+      "id": "03",
+      "cluster": "A",
+      "name": { "tc": "嗓音與體能管理", "en": "Voice & Stamina", "jp": "声と体力管理" },
+      "def": {
+        "tc": "在連續班次中維持音量、清晰度與站姿,不靠興奮稀釋品質。",
+        "en": "Sustaining voice, clarity, and posture across consecutive shifts without trading quality for adrenaline.",
+        "jp": "連続するシフトの中で、音量・明瞭さ・姿勢を保ち、興奮で質を薄めない。"
+      },
+      "hospitality_anchor": {
+        "tc": "承續客艙乘務員的輪班規程 — 嗓音、姿態、節奏的可持續性。",
+        "en": "after cabin-crew shift discipline: voice, posture, sustainable pace.",
+        "jp": "客室乗務員の交代勤務規程に倣う — 声、姿勢、持続可能なペース。"
+      }
+    },
+    {
+      "id": "04",
+      "cluster": "A",
+      "name": { "tc": "敘事設計力", "en": "Narrative Design", "jp": "叙述設計力" },
+      "def": {
+        "tc": "安排訊息順序、節奏與留白,讓十分鐘有起承轉合。",
+        "en": "Sequencing information, pacing, and pauses so that ten minutes have a beginning, a turn, and a close.",
+        "jp": "情報の順序・テンポ・余白を整え、十分間に起承転結を持たせる。"
+      }
+    },
+    {
+      "id": "05",
+      "cluster": "B",
+      "name": { "tc": "觀眾判讀力", "en": "Audience Reading", "jp": "観客読解力" },
+      "def": {
+        "tc": "從衣著、提問、肢體與停留時間,讀出今天眼前這位的真正需求。",
+        "en": "Reading attire, questions, body language, and dwell time to identify what the person in front of you actually needs.",
+        "jp": "衣服、質問、身振り、滞在時間から、目の前のお客様が今何を必要としているかを読み取る。"
+      }
+    },
+    {
+      "id": "06",
+      "cluster": "B",
+      "name": { "tc": "即時轉譯力", "en": "Real-time Translation", "jp": "即時翻訳力" },
+      "def": {
+        "tc": "把專業語言、品牌語言、技術細節,現場切換成對方聽得懂的版本。",
+        "en": "Converting expert, brand, or technical language into a register the listener can absorb, on the spot.",
+        "jp": "専門用語、ブランド表現、技術的詳細を、その場で相手に届く言葉に切り替える。"
+      }
+    },
+    {
+      "id": "07",
+      "cluster": "B",
+      "name": { "tc": "互動應變力", "en": "Interactive Adaptation", "jp": "対話応変力" },
+      "def": {
+        "tc": "在被打斷、被質疑、被追問時,仍守住節奏與訊息主軸。",
+        "en": "Holding pace and through-line when interrupted, challenged, or pressed for detail.",
+        "jp": "中断・疑問・追及を受けても、テンポと主旨を保つ。"
+      }
+    },
+    {
+      "id": "08",
+      "cluster": "B",
+      "name": { "tc": "跨文化敏感度", "en": "Cross-cultural Sensitivity", "jp": "異文化への感受性" },
+      "def": {
+        "tc": "辨識文化差異中的禁忌、距離與禮節,調整稱謂、手勢與舉例。",
+        "en": "Recognising taboo, proxemics, and protocol across cultures; adjusting address, gesture, and example accordingly.",
+        "jp": "文化間の禁忌・距離・礼節を見極め、呼称・身振り・事例を調整する。"
+      }
+    },
+    {
+      "id": "09",
+      "cluster": "C",
+      "name": { "tc": "服務恢復力", "en": "Service Recovery", "jp": "サービス回復力" },
+      "def": {
+        "tc": "在錯誤發生後,承認、修補、重新建立信任,而非掩飾或推諉。",
+        "en": "After a misstep: acknowledge, repair, rebuild trust — rather than conceal or deflect.",
+        "jp": "過ちが起きた後、認め・修復し・信頼を再構築する。隠蔽や責任転嫁ではなく。"
+      }
+    },
+    {
+      "id": "10",
+      "cluster": "C",
+      "name": { "tc": "接觸點設計力", "en": "Touchpoint Design", "jp": "接点設計力" },
+      "def": {
+        "tc": "預先安排動線、視線、座位與道具,讓現場替你完成一半的接待。",
+        "en": "Pre-arranging flow, sightlines, seating, and props so the room does half the hosting for you.",
+        "jp": "動線・視線・席・道具を事前に整え、現場が接客の半分を担うようにする。"
+      },
+      "hospitality_anchor": {
+        "tc": "取法米其林廚房的 mise-en-place — 工序在客人到場前已就位。",
+        "en": "after the Michelin-kitchen mise-en-place: choreography is in place before the guest arrives.",
+        "jp": "ミシュラン厨房のミザンプラスに倣う — 段取りはお客様の到着前に整っている。"
+      }
+    },
+    {
+      "id": "11",
+      "cluster": "C",
+      "name": { "tc": "現場表達力", "en": "On-site Presence", "jp": "現場表現力" },
+      "def": {
+        "tc": "透過站位、眼神、手勢與沉默,傳達「我在這裡,我準備好了」。",
+        "en": "Conveying \"I am here, I am ready\" through posture, eye contact, gesture, and silence.",
+        "jp": "立ち位置・視線・身振り・沈黙によって「私はここにいる、準備はできている」を伝える。"
+      }
+    },
+    {
+      "id": "12",
+      "cluster": "C",
+      "name": { "tc": "體驗收束力", "en": "Experience Closure", "jp": "体験収束力" },
+      "def": {
+        "tc": "在離別瞬間給出一句、一個動作、一份線索,讓記憶有形狀。",
+        "en": "At the moment of parting: a sentence, a gesture, or a cue that gives the memory a shape.",
+        "jp": "別れの瞬間に、一文・一動作・一つの手掛かりを差し出し、記憶に形を与える。"
+      },
+      "hospitality_anchor": {
+        "tc": "取法私人航空的送機儀禮 — 結束的形狀,與抵達同等講究。",
+        "en": "after the private-aviation departure ritual: the shape of the ending matters as much as the arrival.",
+        "jp": "プライベート航空の見送り儀礼に倣う — 終わりの形は、到着と同じだけ丁寧に。"
+      }
+    }
+  ]
+}

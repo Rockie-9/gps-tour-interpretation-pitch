@@ -1,0 +1,128 @@
+{
+  "version": "1.0.0",
+  "_note": "10 scenarios A1..D4 grouped into 4 categories. Each has duration, capabilities involved (by id), success criterion. B1 carries a register anchor for hospitality lineage.",
+  "categories": [
+    { "code": "A", "label_tc": "前線解說", "label_en": "Frontline Interpretation", "label_jp": "最前線の解説" },
+    { "code": "B", "label_tc": "重點接待", "label_en": "Special Reception", "label_jp": "特別な接遇" },
+    { "code": "C", "label_tc": "服務恢復", "label_en": "Service Recovery", "label_jp": "サービス回復" },
+    { "code": "D", "label_tc": "前後台連結", "label_en": "Pre/Post & Backstage", "label_jp": "前後・舞台裏" }
+  ],
+  "scenarios": [
+    {
+      "code": "A1", "category": "A",
+      "name": { "tc": "路引・微導覽", "en": "Wayfinding & Micro-tour", "jp": "案内・ミニツアー" },
+      "duration": { "tc": "30 秒 – 3 分鐘", "en": "30 sec – 3 min", "jp": "30秒〜3分" },
+      "capabilities": ["05", "06", "11"],
+      "success": {
+        "tc": "訪客在三十秒內知道下一步往哪走,不需要再問第二次。",
+        "en": "Visitor knows the next step within 30 seconds and does not need to ask again.",
+        "jp": "お客様は三十秒以内に次の動線を把握し、再度尋ねる必要がない。"
+      }
+    },
+    {
+      "code": "A2", "category": "A",
+      "name": { "tc": "完整陪同導覽", "en": "Full Companion Tour", "jp": "フルご案内ツアー" },
+      "duration": { "tc": "15 – 40 分鐘", "en": "15 – 40 min", "jp": "15〜40分" },
+      "capabilities": ["02", "04", "12"],
+      "success": {
+        "tc": "結束時訪客能用自己的話說出一句核心主題。",
+        "en": "At the end, the visitor can re-state the core theme in their own words.",
+        "jp": "終了時、お客様がご自身の言葉で核心の主題を一文で語れる。"
+      }
+    },
+    {
+      "code": "B1", "category": "B",
+      "name": { "tc": "VIP 接待", "en": "VIP Reception", "jp": "VIPご接遇" },
+      "duration": { "tc": "30 分鐘 – 數小時", "en": "30 min – several hours", "jp": "30分〜数時間" },
+      "capabilities": ["08", "10", "11"],
+      "success": {
+        "tc": "全程零突發、零代答;貴賓自然進入第二個議題。",
+        "en": "Zero surprises and zero answer-for; the guest organically moves into a second topic.",
+        "jp": "全工程を通じて不測事態ゼロ、代弁ゼロ;貴賓が自然に第二の話題へ移行される。"
+      },
+      "register_anchor": {
+        "tc": "對位於頭等艙與一星以上餐廳之接待語體;稱謂、距離、節奏皆有定式。",
+        "en": "register calibrated to First-class cabin and 1-star+ dining-room reception: address, proxemics, and pacing all have settled forms.",
+        "jp": "ファーストクラス客室および一つ星以上の食卓接待に対位する語体 — 呼称、距離、間合いに定型がある。"
+      }
+    },
+    {
+      "code": "B2", "category": "B",
+      "name": { "tc": "團體接待", "en": "Group Reception", "jp": "団体ご接遇" },
+      "duration": { "tc": "20 – 60 分鐘", "en": "20 – 60 min", "jp": "20〜60分" },
+      "capabilities": ["05", "07", "11"],
+      "success": {
+        "tc": "沒有掉隊者;後段提問來自團體中不同的兩個人。",
+        "en": "No one is left behind; late-stage questions come from at least two different members.",
+        "jp": "脱落者なし;後半の質問が団体内の少なくとも二名から発せられる。"
+      }
+    },
+    {
+      "code": "C1", "category": "C",
+      "name": { "tc": "服務恢復", "en": "Service Recovery", "jp": "サービス回復" },
+      "duration": { "tc": "視情況,通常 10 – 30 分鐘", "en": "Variable, typically 10 – 30 min", "jp": "状況による、通常10〜30分" },
+      "capabilities": ["07", "09", "08"],
+      "success": {
+        "tc": "訪客離場時情緒中性或更佳;事件已被記錄並回流到 D3。",
+        "en": "Visitor departs at neutral sentiment or better; the incident is logged and routed back into D3.",
+        "jp": "お客様のお気持ちが中立以上で退場;事案は記録され D3 へ戻される。"
+      }
+    },
+    {
+      "code": "C2", "category": "C",
+      "name": { "tc": "突發事件", "en": "Incident & Emergency", "jp": "突発事案・緊急対応" },
+      "duration": { "tc": "即時", "en": "Immediate", "jp": "即時" },
+      "capabilities": ["09", "03", "11"],
+      "success": {
+        "tc": "第一分鐘內現場秩序穩定;事件移交給正確的權責單位,有紀錄。",
+        "en": "Order restored within the first minute; incident handed to the correct authority with a written record.",
+        "jp": "最初の一分以内に現場の秩序が安定し、事案は適切な担当部署へ記録付きで引き継がれる。"
+      }
+    },
+    {
+      "code": "D1", "category": "D",
+      "name": { "tc": "到場前準備", "en": "Pre-arrival", "jp": "ご到着前の準備" },
+      "duration": { "tc": "接待前 24 – 48 小時", "en": "24 – 48 hours pre-encounter", "jp": "ご接遇前24〜48時間" },
+      "capabilities": ["01", "10", "02"],
+      "success": {
+        "tc": "現場與物料就位;接待者抵達前已能說出今日的主軸。",
+        "en": "Site and materials in place; the host can state today's through-line before arrival.",
+        "jp": "現場と物品が整い、接遇者は到着前に本日の主筋を述べられる。"
+      }
+    },
+    {
+      "code": "D2", "category": "D",
+      "name": { "tc": "離別", "en": "Departure", "jp": "お見送り" },
+      "duration": { "tc": "1 – 3 分鐘", "en": "1 – 3 min", "jp": "1〜3分" },
+      "capabilities": ["12", "11", "08"],
+      "success": {
+        "tc": "訪客帶走一句、一個物件或一個動作,作為記憶的錨。",
+        "en": "Visitor leaves with one sentence, one object, or one gesture as a memory anchor.",
+        "jp": "お客様が一文・一物・一動作を記憶の錨としてお持ち帰りになる。"
+      }
+    },
+    {
+      "code": "D3", "category": "D",
+      "name": { "tc": "回饋蒐集", "en": "Feedback Collection", "jp": "ご意見収集" },
+      "duration": { "tc": "接觸後 5 分鐘 – 7 天", "en": "5 min – 7 days post-encounter", "jp": "ご接触後5分〜7日" },
+      "capabilities": ["09", "05", "06"],
+      "success": {
+        "tc": "蒐集到的回饋附帶情境標籤,可被歸入 BARS 或腳本庫修訂。",
+        "en": "Feedback arrives tagged with context, usable for BARS or script-library revision.",
+        "jp": "収集されたご意見は文脈タグ付きで、BARS または脚本庫の改訂に活用できる。"
+      },
+      "is_loopback": true
+    },
+    {
+      "code": "D4", "category": "D",
+      "name": { "tc": "跨班交接", "en": "Shift Handover", "jp": "シフト引き継ぎ" },
+      "duration": { "tc": "每班次末 10 – 15 分鐘", "en": "10 – 15 min end-of-shift", "jp": "勤務終了時10〜15分" },
+      "capabilities": ["01", "10", "09"],
+      "success": {
+        "tc": "接班者在十分鐘內掌握當日異常、VIP 預告與未結案的回饋。",
+        "en": "The incoming shift, within ten minutes, holds today's exceptions, VIP advance notice, and any open feedback.",
+        "jp": "次番者が十分以内に、本日の異常事項、VIPご来訪予告、未解決のご意見を把握する。"
+      }
+    }
+  ]
+}
