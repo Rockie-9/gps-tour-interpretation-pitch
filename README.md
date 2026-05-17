@@ -1,76 +1,82 @@
-# GPS Tour Interpretation Pitch Deck
+# GPS Tour Interpretation · Handbook
 
-詢問台導覽解說能力架構 v2.0 提案 · A Capability Architecture Proposal for the Information Desk · 案内所インタプリテーション能力構造 v2.0 提案
+詢問台導覽解說手冊 · A reference & practice handbook for the Information Desk · 案内所インタプリテーション手帳
 
-## Overview
+## What this is
 
-**21-slide trilingual pitch deck** (TC · EN · JP) proposing a six-layer capability architecture for developing GPS Information Desk staff from "information providers" into "brand ambassadors." Now includes the operational substrate (LINE-mobile + Web tooling, full logs, audit mechanism), the recognition system that the capability ladder produces, an executive one-pager view, a visitor-experience ladder showing what changes from the visitor's side, and an in-deck reader-router that adapts the entry point to who you are.
+A **static knowledge handbook** for GPS information-desk staff: browse, search, deep-link, and self-practice across the capability architecture (12 capabilities, 10 scenarios, 72 BARS behavior anchors, 9 training modules, 6 maturity tiers).
 
-## Structure
+Replaces the v2 pitch deck. Same content, different form: from "read once, top to bottom" to "look up what you need, when you need it, practice it on your own."
 
-- **Cover** (with reader-router: pick Executive / Staff / Board / Engineer / Calibration / Read-in-order)
-- **Executive one-pager** — scope · cost · timeline · ask
-- **The Setup** → **The Tension** (gap between current state and brand promise)
-- **PART I — The Insight** (international benchmarks, missing capabilities, missing scenarios)
-- **PART II — The Architecture** (six layers + dual calibration system)
-- **PART III — The Substrate** (LINE-mobile + Web tooling, full logs, audit governance) — companion spec at [`/spec/`](./spec/)
-- **PART IV — Recognition** (three-tier honor system: craft · status · conditions)
-- **Visitor Ladder** — same architecture, re-read from the visitor's seat
-- **The Path** (brand integration, roadmap with KPIs/owners, decision request)
-- **Closing** (brand promise)
+**Live URL** (production): https://gps-tour-interpretation-pitch.vercel.app/
 
-## Architecture Summary
+## Sections
 
-| Layer | Name | Question Answered |
-|-------|------|-------------------|
-| 06 | Brand Integration | How this aligns with GPS brand |
-| 05 | Operations | How people learn, how we verify |
-| 04 | Application | Where capabilities get used (10 scenarios) |
-| 03 | Maturity | How far each capability develops (L0–L5) |
-| 02 | Capability | What competencies to develop (12, in 3 clusters) |
-| 01 | Philosophy | Why we interpret (Tilden / CPTED / "Before you need it.") |
-
-## Companion directories
-
-The deck is the narrative; these directories are the source of truth.
-
-- [`/spec/`](./spec/) — **Substrate contracts**: log schema, audit taxonomy, retention storage, event versioning, sample payloads, internationalisation rules, third-party dependency audit, accessibility commitments, validation method.
-- [`/curriculum/`](./curriculum/) — **9 module cards (M1–M9)** for the three-phase training (Explorer · Builder · Architect). Each card honest about which SME content still needs filling.
-- [`/artifacts/`](./artifacts/) — **Visitor-touchable specs** that take the brand idea out of the deck and into the visitor's world: desk card design, parting-line variants per tier, post-visit handwritten signal.
-- [`STATUS.md`](./STATUS.md) — V2 build state. Tracks items 1–35 from the 10-persona review across four phases (Foundation → Routing → Content → Polish).
-- [`CHANGELOG.md`](./CHANGELOG.md) — per-version changes; linked from the in-deck footer.
+| URL | What you'll find |
+|---|---|
+| `#home` | Hub cards into the 7 sections + about page |
+| `#capabilities` | 12 capabilities grouped into 3 clusters; click any for detail + BARS + appears-in-scenarios + trained-by-modules |
+| `#scenarios` | 10 scenarios (A1–D4) in 4 categories; each with duration, required capabilities, success criterion |
+| `#bars` | The illustrated 12 of 72 behavior anchors with self-check checkboxes (localStorage) |
+| `#modules` | 9 training modules across 3 phases (Explorer · Builder · Architect); each with content + validation + my-progress checkbox |
+| `#tiers` | 6 tiers L0–L5; visitor experience + craft + insignia + conditions + unlock path |
+| `#substrate` | Index of `/spec/` files: logs, audit taxonomy, storage, versioning, i18n, accessibility, validation, dependencies |
+| `#artifacts` | Three visitor-touchable artifact specs: desk card, parting lines, post-visit signal |
+| `#about` | Version, honest limitations, sources, feedback channel, audit log |
 
 ## Controls
 
-- `←` / `→` or `↑` / `↓` — navigate between slides
-- `Space` / `PageDown` — next slide
-- `Home` / `End` — first / last slide
-- `F` — toggle fullscreen
-- `/` — open client-side search across slides + disclosures
-- Click `+` chevrons on scenario rows and the assessment BARS row to reveal detail
-- Click language tabs on the BARS exemplar (Slide 12) to compare capabilities
-- Footer pills: language toggle (ALL · 中 · EN · JP) · theme toggle (auto · ☀ · ☾)
+- **Click any nav** to jump to a section
+- **`/` or `⌘K`** to open search (indexes every capability, scenario, BARS anchor, module, tier)
+- **`↑↓` and `↵`** to navigate search results
+- **`Esc`** to close search
+- **Footer pills**: language (中/EN/JP) and theme (auto/light/dark) — both persist via localStorage
+- **Deep links** are stable: `#capability/05`, `#scenario/B1`, `#module/M5`, `#tier/L3`
 
-## Accessibility
+## Companion directories
 
-V2 ships explicit accessibility commitments documented at [`/spec/accessibility.md`](./spec/accessibility.md): `aria-expanded` on disclosures, language-toggle `aria-hidden` propagation to AT, modifier-key exemption on Space-key (so NVDA's read-current-line still works), `prefers-reduced-motion` honored for scroll-snap, dark-mode auto + manual override.
+These are also accessible directly (and linked from inside the handbook):
 
-Known limitations are documented honestly in that file.
+- [`/spec/`](./spec/) — Substrate contracts: log schema, audit taxonomy, retention storage, event versioning, sample payloads, internationalisation, accessibility commitments, third-party dependency audit, validation method
+- [`/curriculum/`](./curriculum/) — 9 module outline cards (v0.1; SME content pending — see each card)
+- [`/artifacts/`](./artifacts/) — Three visitor-touchable artifact specs (desk-card, parting-lines, post-visit-signal)
+- [`STATUS.md`](./STATUS.md) — Live build state
+- [`AUDIT.md`](./AUDIT.md) — Honest audit log: what was built, what was claimed vs delivered, what remains a gap
+- [`CHANGELOG.md`](./CHANGELOG.md) — Per-version changes
 
-## Offline
+## Architecture
 
-A service worker (`sw.js`) caches the deck shell on first load. Subsequent visits work offline, including when the Google Fonts CDN is blocked (font fallbacks documented in [`/spec/dependencies.md`](./spec/dependencies.md)).
+Plain web, no build step:
 
-## Brand Alignment
+- `index.html` — shell (~70 lines)
+- `app.js` — hash router, data loader, renderer, search, language picker, theme toggle, localStorage checklist (~750 lines)
+- `styles.css` — design tokens + components (~430 lines)
+- `data/*.json` — structured content (5 files)
+- `sw.js` — service worker for offline
+- `tools/smoke-test.sh` — per-commit health check
 
-Aligned with GPS Brand v3.6: "在您需要之前 · Before You Need It · 必要となる、その前に." Considerate Partner positioning. Pillar 02 Journey Protection. Three-Year Arc (Trust 2026 / Guardianship 2027 / Anticipation 2028).
+Hosted on Vercel as static files. No backend, no database, no accounts.
 
-The brand idea is manifest in details (recognition, parting lines, visitor ladder, scenario success criteria) rather than labelled. The literal `BRAND IDEA` eyebrow appears exactly once — on the Brand slide.
+## Honest limitations
+
+This handbook ships at **v3.0.0**. Some things are NOT what they appear:
+
+- 60 of 72 BARS anchors are not yet written (SME-pending — see `/curriculum/m8/`)
+- 9 modules are v0.1 outlines; full curriculum content requires NAI-credentialled SME engagement (especially M5 cross-cultural)
+- DE + Simplified CN translations are staged in `/spec/i18n.md`, not delivered
+- No accounts; checklist state is per-browser only
+- No real `PROMOTE_TIER` workflow — recognition tiers describe a human process, the handbook is a reference for it
+
+See [`AUDIT.md`](./AUDIT.md) for the full honest accounting.
 
 ## Feedback
 
-Footer "Feedback ↗" link opens a [GitHub issue template](./.github/ISSUE_TEMPLATE/deck-feedback.yml) pre-filled with the deck version, current slide anchor, current language mode, and reader-view selection. Any persona is welcome.
+Use the footer's `feedback ↗` link to file an issue. The template auto-pre-fills the current section and language.
+
+## Brand alignment
+
+Aligned with GPS Brand v3.6 — "在您需要之前 · Before You Need It · 必要となる、その前に." Considerate Partner positioning. The brand idea is manifest in details (BARS anchors, parting lines, recognition unlocks, visitor experience per tier) rather than labelled.
 
 ## Version
 
-v2.0 · 2026-05 · For GPS Strategy & Transformation
+v3.0 · handbook · 2026-05-17 · For GPS Strategy & Transformation

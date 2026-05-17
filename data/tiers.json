@@ -1,0 +1,128 @@
+{
+  "version": "1.0.0",
+  "_note": "6 maturity levels L0..L5 with: staff-side title, visitor-side experience, craft recognition, status & insignia, conditions & opportunities.",
+  "tiers": [
+    {
+      "level": "L0",
+      "staff_title": { "tc": "應對者", "en": "Clerk", "jp": "応対者" },
+      "visitor_experience": {
+        "tc": "您得到了正確的答案。一切照規矩來。",
+        "en": "You got the right answer. Everything by the book.",
+        "jp": "正しいご回答をいただきました。すべて規程通りでした。"
+      },
+      "craft": { "tc": "—", "en": "—", "jp": "—" },
+      "insignia": { "tc": "(無徽記;試用)", "en": "no insignia (trainee)", "jp": "(徽章なし;研修)" },
+      "conditions": {
+        "tc": "由 L2 以上同仁陪同接待 B1 / B2。",
+        "en": "Accompanied by an L2+ colleague for B1/B2 reception.",
+        "jp": "L2以上の同仁の同伴でB1/B2接遇を行う。"
+      },
+      "unlock_to_next": {
+        "tc": "完成 3 日急救入職即進薪等。",
+        "en": "Pay-band step on completion of the 3-day rapid onboarding.",
+        "jp": "3日間の急速研修修了で給与等級が一段階上昇。"
+      }
+    },
+    {
+      "level": "L1",
+      "staff_title": { "tc": "說明者", "en": "Explainer", "jp": "説明者" },
+      "visitor_experience": {
+        "tc": "您不只得到答案,您理解了答案。",
+        "en": "You did not just receive the answer; you understood it.",
+        "jp": "お答えをいただくだけでなく、しっかりと納得できました。"
+      },
+      "craft": { "tc": "腳本貢獻者", "en": "Script Contributor", "jp": "脚本貢献者" },
+      "insignia": { "tc": "胸章邊緣單一條藍綠色細線", "en": "single turquoise bar on name-badge edge", "jp": "胸章の縁に青緑の細線一本" },
+      "conditions": {
+        "tc": "獨立執行 A1 / A2 / D1 / D2 / D4。",
+        "en": "Independent on A1 / A2 / D1 / D2 / D4.",
+        "jp": "A1/A2/D1/D2/D4を単独で執行できる。"
+      },
+      "unlock_to_next": {
+        "tc": "訓練津貼啟動;可申請 NAI 入門課程補助。",
+        "en": "Training stipend activates; NAI introductory coursework reimbursable.",
+        "jp": "研修手当開始;NAI入門講座の補助申請が可能。"
+      }
+    },
+    {
+      "level": "L2",
+      "staff_title": { "tc": "導覽者", "en": "Guide", "jp": "案内者" },
+      "visitor_experience": {
+        "tc": "您感覺今天的路是為您安排的,而不是別人剩下的。",
+        "en": "Today's path felt arranged for you — not leftovers from someone else's.",
+        "jp": "本日のご動線が、ご自分のために整えられていると感じられた。"
+      },
+      "craft": { "tc": "情境共著", "en": "Scenario Co-author", "jp": "場面共著者" },
+      "insignia": { "tc": "胸章邊緣雙條藍綠色細線", "en": "double turquoise bar on name-badge edge", "jp": "胸章の縁に青緑の細線二本" },
+      "conditions": {
+        "tc": "獨立執行 B2 群體接待與 C1 服務恢復。",
+        "en": "Independent on B2 group reception and C1 recovery.",
+        "jp": "B2団体接遇とC1サービス回復を単独で執行できる。"
+      },
+      "unlock_to_next": {
+        "tc": "年度進階薪等;可參加 WFTGA 區域工作坊。",
+        "en": "Annual progression step; eligible for WFTGA regional workshop.",
+        "jp": "年次の昇給;WFTGA地域ワークショップへの参加資格。"
+      }
+    },
+    {
+      "level": "L3",
+      "staff_title": { "tc": "解說者", "en": "Interpreter", "jp": "解説者" },
+      "visitor_experience": {
+        "tc": "您離開時,能用自己的話說出一句主題 — 並且想再回來。",
+        "en": "When you left, you could re-state the theme in your own words — and wanted to return.",
+        "jp": "お帰りの際、ご自身の言葉で主題を一文に語れ、また訪れたいと思っていただけた。"
+      },
+      "craft": { "tc": "主題作者", "en": "Theme Author", "jp": "テーマ著者" },
+      "insignia": { "tc": "領針上小型藍綠色圓點;桌牌標記「解說者」", "en": "small turquoise dot (lapel pin); desk plate gains 解説者 / Interpreter", "jp": "襟ピンに小型の青緑の点;卓上札に「解説者」表記" },
+      "conditions": {
+        "tc": "具 VIP 接待(B1)主導資格。",
+        "en": "Eligible to lead VIP reception (B1).",
+        "jp": "VIP接遇(B1)を主導できる資格。"
+      },
+      "unlock_to_next": {
+        "tc": "跨區輪調機會(TW → JP / DE);外部認證費用全額補助。",
+        "en": "Cross-region rotation option (TW → JP / DE); full external certification reimbursement.",
+        "jp": "地域横断ローテーション(TW→JP/DE);外部認証費用の全額補助。"
+      }
+    },
+    {
+      "level": "L4",
+      "staff_title": { "tc": "體驗設計者", "en": "Experience Designer", "jp": "体験設計者" },
+      "visitor_experience": {
+        "tc": "您沒注意到場景的安排 — 那正是您注意到它好的證據。",
+        "en": "You didn't notice the choreography — which is exactly the evidence that it worked.",
+        "jp": "場面の段取りに気づかずに過ごされた — それこそが、巧みに整えられていた証でございます。"
+      },
+      "craft": { "tc": "模組共持", "en": "Module Co-owner", "jp": "講座共同保持者" },
+      "insignia": { "tc": "銅色圓點取代藍綠色;桌牌加「體驗設計者」;年鑑列名", "en": "copper dot replaces turquoise dot; desk plate adds 體驗設計者 / Experience Designer; named in internal yearbook", "jp": "銅色の点が青緑の点に置き換わる;卓上札に「体験設計者」加筆;内部年鑑に記名" },
+      "conditions": {
+        "tc": "可開發新的微導覽腳本,列入正式腳本庫。",
+        "en": "Authors new micro-tour scripts admitted to the official library.",
+        "jp": "新規ミニツアー脚本を作成し、公式脚本庫に登録できる。"
+      },
+      "unlock_to_next": {
+        "tc": "年度策略津貼;參與架構年度修訂會議。",
+        "en": "Annual stewardship stipend; seat at the annual architecture revision.",
+        "jp": "年次戦略手当;架構年次改訂会議への出席権。"
+      }
+    },
+    {
+      "level": "L5",
+      "staff_title": { "tc": "文化大使", "en": "Cultural Ambassador", "jp": "文化大使" },
+      "visitor_experience": {
+        "tc": "次日,您在飯店收到一張手寫卡 — 同樣的名字,繼續中的故事。",
+        "en": "The next day, a handwritten card arrives at your hotel — the same name, a story still in motion.",
+        "jp": "翌日、ご宿泊先に手書きの一枚が届く — 同じお名前、続いている物語。"
+      },
+      "craft": { "tc": "校準主理", "en": "Calibration Steward", "jp": "校正主理者" },
+      "insignia": { "tc": "銅底實心方塊(品牌黑);桌牌「文化大使」加訪客可見之服務承諾句", "en": "small filled square (brand-black on copper); desk plate reads 文化大使 / Cultural Ambassador with the visitor-visible service-guarantee line", "jp": "銅地に黒塗の小型方;卓上札に「文化大使」、お客様向け奉仕約束文を併記" },
+      "conditions": {
+        "tc": "訓練、認證、跨地區校準。",
+        "en": "Trains, certifies, and calibrates across regions.",
+        "jp": "訓練・認証・地域横断校正を担う。"
+      },
+      "unlock_to_next": null
+    }
+  ]
+}

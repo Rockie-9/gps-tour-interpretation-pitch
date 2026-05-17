@@ -1,0 +1,117 @@
+{
+  "version": "1.0.0",
+  "_note": "BARS (Behaviorally Anchored Rating Scale) anchors. The full system is 12 capabilities × 6 levels = 72 anchors. This file ships 2 capabilities × 6 levels = 12 illustrated anchors as the worked exemplar. Remaining 60 are SME-pending; see /curriculum/m8/ for calibration method.",
+  "capabilities_illustrated": ["04", "05"],
+  "anchors_total": 72,
+  "anchors_in_file": 12,
+  "anchors": [
+    {
+      "capability_id": "04",
+      "level": "L0",
+      "behavior": {
+        "tc": "逐條讀稿,順序固定。",
+        "en": "Reads the script item by item, in fixed order.",
+        "jp": "脚本を一項目ずつ、決まった順番で読み上げる。"
+      }
+    },
+    {
+      "capability_id": "04",
+      "level": "L1",
+      "behavior": {
+        "tc": "有開場、有結尾,中段仍是清單。",
+        "en": "Has an opening and a closing; the middle is still a list.",
+        "jp": "導入と締めくくりがあるが、中盤は依然として箇条書きである。"
+      }
+    },
+    {
+      "capability_id": "04",
+      "level": "L2",
+      "behavior": {
+        "tc": "為當下訪客挑選三件展品,刪掉不相關的兩件。",
+        "en": "For the visitor at hand, selects three exhibits and drops two unrelated ones.",
+        "jp": "目の前のお客様のために展示物三点を選び、関連しない二点を省く。"
+      }
+    },
+    {
+      "capability_id": "04",
+      "level": "L3",
+      "behavior": {
+        "tc": "用一句主題串起十分鐘,留白給對方提問。",
+        "en": "A single theme threads the ten minutes; pauses leave room for questions.",
+        "jp": "一文の主題で十分間を貫き、ご質問の余白を残す。"
+      }
+    },
+    {
+      "capability_id": "04",
+      "level": "L4",
+      "behavior": {
+        "tc": "依據三類典型訪客備有三條敘事路徑,現場切換。",
+        "en": "Holds three narrative paths for three visitor archetypes; switches on the fly.",
+        "jp": "三類型のお客様像に応じた三つの叙述経路を持ち、その場で切り替える。"
+      }
+    },
+    {
+      "capability_id": "04",
+      "level": "L5",
+      "behavior": {
+        "tc": "能拆解自己的敘事結構,教另一位同仁複製。",
+        "en": "Can dissect own narrative structure and teach a colleague to reproduce it.",
+        "jp": "自身の叙述構造を分解し、他の同仁にも再現できるよう教えられる。"
+      }
+    },
+    {
+      "capability_id": "05",
+      "level": "L0",
+      "behavior": {
+        "tc": "對每位訪客使用同一套招呼與語速。",
+        "en": "Uses one greeting and one cadence for every visitor.",
+        "jp": "全てのお客様に同じ挨拶と同じ話速を用いる。"
+      }
+    },
+    {
+      "capability_id": "05",
+      "level": "L1",
+      "behavior": {
+        "tc": "辨識語言、年齡、團體 vs 個人,調整語言版本。",
+        "en": "Notes language, age, group-vs-individual; switches language version accordingly.",
+        "jp": "言語・年齢・団体か個人かを見分け、言語版を切り替える。"
+      }
+    },
+    {
+      "capability_id": "05",
+      "level": "L2",
+      "behavior": {
+        "tc": "在三十秒內讀出對方想要的是「快」或「深」。",
+        "en": "Within thirty seconds, reads whether the visitor wants fast or deep.",
+        "jp": "三十秒以内に、相手が「速さ」を望むか「深さ」を望むかを読み取る。"
+      }
+    },
+    {
+      "capability_id": "05",
+      "level": "L3",
+      "behavior": {
+        "tc": "從沉默與停留時間反推對方的興趣點,主動加深或收尾。",
+        "en": "Infers interest from silences and dwell time; deepens or wraps without being asked.",
+        "jp": "沈黙と滞在時間から相手の関心点を逆算し、求められる前に掘り下げるか締めくくる。"
+      }
+    },
+    {
+      "capability_id": "05",
+      "level": "L4",
+      "behavior": {
+        "tc": "在多人團體中同時讀出意見領袖、猶豫者與旁觀者,分別回應。",
+        "en": "In a group, reads opinion leader, hesitant member, and observer simultaneously — and responds to each.",
+        "jp": "団体の中で意見の主導者・迷う方・観察者を同時に読み取り、それぞれに応じる。"
+      }
+    },
+    {
+      "capability_id": "05",
+      "level": "L5",
+      "behavior": {
+        "tc": "能把判讀依據寫成範例腳本,訓練新人辨識相同訊號。",
+        "en": "Codifies own reading cues into a sample script that trains new hires to spot the same signals.",
+        "jp": "自身の読み取りの根拠を見本脚本に書き起こし、新人が同じ信号を見分けられるよう訓練できる。"
+      }
+    }
+  ]
+}

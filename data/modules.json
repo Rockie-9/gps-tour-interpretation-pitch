@@ -1,0 +1,115 @@
+{
+  "version": "1.0.0",
+  "_note": "9 training modules across 3 phases (Explorer / Builder / Architect). Each module links to /curriculum/m{n}/ for the full v0.1 outline card. M5 is the largest SME gap.",
+  "phases": [
+    {
+      "code": "explorer",
+      "label_tc": "探索期",
+      "label_en": "Explorer",
+      "label_jp": "探索期",
+      "duration": "4 weeks",
+      "for_tiers": ["L0", "L1"]
+    },
+    {
+      "code": "builder",
+      "label_tc": "建構期",
+      "label_en": "Builder",
+      "label_jp": "建構期",
+      "duration": "8 weeks",
+      "for_tiers": ["L1", "L2", "L3"]
+    },
+    {
+      "code": "architect",
+      "label_tc": "構築期",
+      "label_en": "Architect",
+      "label_jp": "構築期",
+      "duration": "ongoing",
+      "for_tiers": ["L3", "L4", "L5"]
+    }
+  ],
+  "modules": [
+    {
+      "code": "M1", "phase": "explorer",
+      "name": { "tc": "TORE 入門", "en": "TORE basics", "jp": "TORE 入門" },
+      "capabilities": ["01", "02"],
+      "content": { "tc": "TORE 四要件、Tilden 六原則精讀。", "en": "TORE four elements; close reading of Tilden's six principles.", "jp": "TORE四要件、ティルデン六原則の精読。" },
+      "validation": { "tc": "寫出 1 句主題 + 30 秒口述。", "en": "Write 1 theme sentence + 30s spoken delivery.", "jp": "主題一文の作成 + 30秒の口述。" },
+      "state": "v0.1-outline",
+      "details_url": "curriculum/m1/"
+    },
+    {
+      "code": "M2", "phase": "explorer",
+      "name": { "tc": "嗓音與體能", "en": "Voice & Stamina", "jp": "声と体力" },
+      "capabilities": ["03"],
+      "content": { "tc": "嗓音保護、站姿、200 次／日的可持續節奏。", "en": "Voice protection, posture, sustainable pace at 200/day.", "jp": "発声保護、姿勢、一日200件の持続可能なペース。" },
+      "validation": { "tc": "連續 5 日尾班測試不走樣。", "en": "5 consecutive end-of-shift checks; no drift.", "jp": "5日連続の終業時点検でブレなし。" },
+      "state": "v0.1-outline",
+      "details_url": "curriculum/m2/"
+    },
+    {
+      "code": "M3", "phase": "explorer",
+      "name": { "tc": "路引與微導覽", "en": "Wayfinding & Micro-tour", "jp": "案内とミニツアー" },
+      "capabilities": ["05", "06", "11"],
+      "content": { "tc": "A1 場景 20 個高頻情境腳本。", "en": "A1 scenario · 20 high-frequency scripts.", "jp": "A1場面 · 高頻度の脚本20本。" },
+      "validation": { "tc": "雙語腳本盲測 ≥ 90% 命中。", "en": "Bilingual blind test ≥ 90% recall.", "jp": "二言語の盲検テストで90%以上の再現。" },
+      "state": "v0.1-outline",
+      "details_url": "curriculum/m3/"
+    },
+    {
+      "code": "M4", "phase": "builder",
+      "name": { "tc": "主題提煉", "en": "Theme Crafting", "jp": "テーマ抽出" },
+      "capabilities": ["02"],
+      "content": { "tc": "從展品資料抽 1 句主題的工作坊。", "en": "Workshop: extract one theme sentence from exhibit material.", "jp": "展示資料から主題一文を抽出するワークショップ。" },
+      "validation": { "tc": "通過 3 位內部評審共識。", "en": "Pass consensus of three internal reviewers.", "jp": "内部審査員三名の合意による合格。" },
+      "state": "v0.1-outline",
+      "details_url": "curriculum/m4/"
+    },
+    {
+      "code": "M5", "phase": "builder",
+      "name": { "tc": "跨文化敏感度", "en": "Cross-cultural Sensitivity", "jp": "異文化感受性" },
+      "capabilities": ["08", "05", "07"],
+      "content": { "tc": "TW / JP / DE / CN / US-AZ 禮貌邊界對照。", "en": "Politeness boundaries across TW / JP / DE / CN / US-AZ.", "jp": "TW/JP/DE/CN/US-AZ の礼節境界の対照。" },
+      "validation": { "tc": "情境模擬,無觸犯紀錄。", "en": "Simulation; zero infractions.", "jp": "場面模擬で違反記録ゼロ。" },
+      "state": "v0.1-outline",
+      "sme_blocker": "Largest SME gap. Needs taboo cards × 5 regions, gesture maps × 5 regions, proxemics charts × 5 regions, 25 simulation scripts. 4-6 weeks of SME engagement minimum.",
+      "details_url": "curriculum/m5/"
+    },
+    {
+      "code": "M6", "phase": "builder",
+      "name": { "tc": "服務恢復", "en": "Service Recovery", "jp": "サービス回復" },
+      "capabilities": ["09", "07"],
+      "content": { "tc": "C1 場景;公開致歉的語法。", "en": "C1 scenario; the grammar of public acknowledgment.", "jp": "C1場面;公の謝意表明の文法。" },
+      "validation": { "tc": "Mystery 訪客評分 ≥ 4/5。", "en": "Mystery visitor score ≥ 4/5.", "jp": "覆面客様の評価4点以上(5点満点)。" },
+      "state": "v0.1-outline",
+      "details_url": "curriculum/m6/"
+    },
+    {
+      "code": "M7", "phase": "architect",
+      "name": { "tc": "微體驗設計", "en": "Micro-experience Design", "jp": "ミニ体験設計" },
+      "capabilities": ["02", "04", "10"],
+      "content": { "tc": "15 分鐘可重複的策展型微導覽。", "en": "15-minute repeatable curated micro-tour.", "jp": "15分間で再現可能なキュレーション式ミニツアー。" },
+      "validation": { "tc": "試播 + 3 場現場交付 + NPS。", "en": "Pilot + 3 live deliveries + NPS.", "jp": "試演 + 3回の現場交付 + NPS。" },
+      "state": "v0.1-outline",
+      "details_url": "curriculum/m7/"
+    },
+    {
+      "code": "M8", "phase": "architect",
+      "name": { "tc": "校準與評估", "en": "Calibration & Assessment", "jp": "校正と評価" },
+      "capabilities": ["04"],
+      "content": { "tc": "BARS 校準會議的主持。", "en": "Facilitate BARS calibration sessions.", "jp": "BARS校正会議の進行。" },
+      "validation": { "tc": "主持 ≥ 2 場、校準漂移 < 0.3。", "en": "Facilitate ≥ 2 sessions; rater drift < 0.3.", "jp": "2回以上の進行 + 評価者ぶれ0.3未満。" },
+      "state": "v0.1-outline",
+      "details_url": "curriculum/m8/"
+    },
+    {
+      "code": "M9", "phase": "architect",
+      "name": { "tc": "帶人與認證", "en": "Mentoring & Certification", "jp": "育成と認証" },
+      "capabilities": ["all"],
+      "content": { "tc": "帶 1 位新進至 L2、文件化過程。", "en": "Mentor one new hire to L2 with documented process.", "jp": "新人一名をL2まで育成し、過程を文書化。" },
+      "validation": { "tc": "受訓者通過 L2 認證。", "en": "Mentee passes L2 certification.", "jp": "被育成者がL2認証を取得。" },
+      "state": "v0.1-outline",
+      "required_for_l5": true,
+      "details_url": "curriculum/m9/"
+    }
+  ]
+}
