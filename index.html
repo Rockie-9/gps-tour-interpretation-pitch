@@ -114,6 +114,42 @@ button:focus-visible, a:focus-visible {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  /* F2 (item 24): scroll-snap itself induces motion. Disable when reduced-motion requested. */
+  html { scroll-snap-type: none !important; }
+  .slide { scroll-snap-align: none !important; scroll-snap-stop: normal !important; }
+}
+
+/* ==================== F5 · Dark mode (item 23) ==================== */
+/* Auto via prefers-color-scheme, plus manual override via <html data-theme="dark|light"> */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0E1B22;
+    --paper-deep: #0A1419;
+    --paper-cool: #11212A;
+    --ink: #DAE1E5;
+    --ink-soft: #9AA5AB;
+    --ink-mute: #6D767C;
+    --brand-black: #F0EEE9;
+    --line: rgba(218, 225, 229, 0.10);
+    --line-soft: rgba(218, 225, 229, 0.05);
+    --rule: #DAE1E5;
+    --turquoise-soft: rgba(31, 156, 165, 0.12);
+    --turquoise-line: rgba(31, 156, 165, 0.28);
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0E1B22;
+  --paper-deep: #0A1419;
+  --paper-cool: #11212A;
+  --ink: #DAE1E5;
+  --ink-soft: #9AA5AB;
+  --ink-mute: #6D767C;
+  --brand-black: #F0EEE9;
+  --line: rgba(218, 225, 229, 0.10);
+  --line-soft: rgba(218, 225, 229, 0.05);
+  --rule: #DAE1E5;
+  --turquoise-soft: rgba(31, 156, 165, 0.12);
+  --turquoise-line: rgba(31, 156, 165, 0.28);
 }
 
 @media print {
@@ -4209,8 +4245,21 @@ details.disclosure[open] > .disclosure-body {
   window.addEventListener('resize', updateNav);
   updateNav();
 
+  // F2 (item 9): exempt keydown when focus is in a form/text input or contenteditable;
+  // also exempt when modifier keys (Alt/Ctrl/Meta) are held so screen readers can pass through.
+  function isFormFocus(target) {
+    if (!target) return false;
+    var tag = target.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return true;
+    if (target.isContentEditable) return true;
+    if (target.getAttribute && target.getAttribute('role') === 'textbox') return true;
+    return false;
+  }
+
   // Keyboard navigation
   document.addEventListener('keydown', function(e) {
+    if (isFormFocus(e.target)) return;
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
     var idx = getCurrentSlide();
     var target = idx;
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
@@ -4251,17 +4300,50 @@ details.disclosure[open] > .disclosure-body {
   window.addEventListener('beforeprint', function(){ setDisclosuresForPrint(true); });
   window.addEventListener('afterprint',  function(){ setDisclosuresForPrint(false); });
 
+  // F2 (item 9): aria-expanded sync on all details.disclosure summaries.
+  // Initialise + watch for toggle events. Allows screen readers to announce open/closed state.
+  function syncDetailsAria(detailsEl) {
+    var summary = detailsEl.querySelector(':scope > summary');
+    if (summary) summary.setAttribute('aria-expanded', detailsEl.open ? 'true' : 'false');
+  }
+  document.querySelectorAll('details.disclosure').forEach(function(d) {
+    syncDetailsAria(d);
+    d.addEventListener('toggle', function() { syncDetailsAria(d); });
+  });
+
   // Capture Space on focused summary so it toggles details and does NOT bubble to slide-nav.
+  // F2 update: pass through when modifier keys held (lets AT users escape to read-current-line).
   document.addEventListener('keydown', function(e) {
     if (e.key !== ' ') return;
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
     var t = e.target;
     if (t && t.tagName === 'SUMMARY' && t.closest('details.disclosure')) {
       e.preventDefault();
       e.stopPropagation();
       var d = t.closest('details.disclosure');
       d.open = !d.open;
+      // toggle event will fire syncDetailsAria
     }
   }, true);
+
+  // F4 v2: open <details> matching URL hash (e.g., #slide-12 opens scenario list, but if
+  // a sub-anchor matches a <details> id, force it open and scroll-into-view).
+  function openDetailsFromHash() {
+    var hash = window.location.hash.slice(1);
+    if (!hash) return;
+    var target = document.getElementById(hash);
+    if (!target) return;
+    // If target is or contains a details, open ancestor details up the chain
+    var d = target.closest ? target.closest('details') : null;
+    while (d) {
+      d.open = true;
+      d = d.parentElement && d.parentElement.closest ? d.parentElement.closest('details') : null;
+    }
+    if (target.tagName === 'DETAILS') target.open = true;
+    setTimeout(function() { target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+  }
+  window.addEventListener('hashchange', openDetailsFromHash);
+  if (window.location.hash) setTimeout(openDetailsFromHash, 50);
 
   // BARS tabs (Layer 03 worked exemplar)
   (function initBarsTabs() {
