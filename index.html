@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="version" content="2.0.0-v2-in-progress">
+<meta name="build-date" content="2026-05-17">
 <title>從接待，到大使 · From Reception to Ambassadorship</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2678,6 +2680,30 @@ details.disclosure[open] > .disclosure-body {
 .roadmap-tag .tag-label { color: var(--ink-mute); text-transform: uppercase; margin-right: 5px; letter-spacing: 0.1em; font-size: 9px; }
 .roadmap-row.current .roadmap-tag.kpi { background: var(--paper); border-color: var(--turquoise); }
 @media (max-width: 768px) { .roadmap-meta { gap: 4px 6px; margin-top: 6px; } .roadmap-tag { font-size: 9px; padding: 2px 6px; } }
+
+/* ==================== DECK FOOTER (V2 F7: version + changelog + feedback) ==================== */
+.deck-footer {
+  position: fixed; bottom: 8px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em;
+  color: var(--ink-mute); background: rgba(248, 246, 241, 0.78);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  padding: 5px 12px; border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  z-index: 50;
+  pointer-events: auto;
+  opacity: 0.7;
+  transition: opacity var(--t-quick);
+}
+.deck-footer:hover { opacity: 1; }
+.deck-footer-link { color: var(--ink-soft); text-decoration: none; }
+.deck-footer-link:hover, .deck-footer-link:focus-visible { color: var(--turquoise-deep); }
+.deck-footer-link:focus-visible { outline: 2px solid var(--turquoise); outline-offset: 2px; border-radius: 2px; }
+.deck-footer-sep { color: var(--ink-mute); }
+@media (max-width: 768px) {
+  .deck-footer { font-size: 8.5px; padding: 4px 9px; gap: 6px; bottom: 6px; }
+}
+@media print { .deck-footer { display: none; } }
 </style>
 </head>
 <body>
@@ -4267,6 +4293,14 @@ details.disclosure[open] > .disclosure-body {
   })();
 })();
 </script>
+
+<footer class="deck-footer" role="contentinfo" aria-label="Deck metadata">
+  <span class="deck-footer-version" lang="en">v2.0.0 · 2026-05-17</span>
+  <span class="deck-footer-sep" aria-hidden="true">·</span>
+  <a class="deck-footer-link" href="CHANGELOG.md" target="_blank" rel="noopener" lang="en">changelog</a>
+  <span class="deck-footer-sep" aria-hidden="true">·</span>
+  <a class="deck-footer-link deck-footer-feedback" href="https://github.com/Rockie-9/gps-tour-interpretation-pitch/issues/new?template=deck-feedback.yml" target="_blank" rel="noopener" lang="en">feedback ↗</a>
+</footer>
 
 </body>
 </html>
