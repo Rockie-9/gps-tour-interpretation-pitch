@@ -121,39 +121,36 @@ button:focus-visible, a:focus-visible {
 
 /* ==================== F3 · Language toggle (item 9) ====================
    <html data-lang> values: "all" (default trilingual), "tc", "en", "jp"
-   When tc|en|jp: hide translation-sibling spans + lang-attributed alternates.
-   Known limitation: bare TC text without an explicit -en/-jp class counterpart
-   remains visible in en|jp modes — acceptable as ambient context; documented
-   in /spec/accessibility.md once P12 lands. */
-:root[data-lang="en"] *[class$="-tc"],
-:root[data-lang="en"] *[class$="-jp"],
-:root[data-lang="en"] *[class*="-tc "],
-:root[data-lang="en"] *[class*="-jp "],
-:root[data-lang="en"] *[lang="zh-Hant"],
-:root[data-lang="en"] *[lang="ja"] { display: none !important; }
+   When tc|en|jp: hide elements whose language doesn't match.
+   Strategy: :lang() respects HTML inheritance. Since <html lang="zh-Hant"> is
+   set on the document, every element inherits zh-Hant UNLESS its own lang
+   attribute overrides. Every -en / -jp suffixed span now carries an explicit
+   lang attribute so it escapes the inherited TC default. */
+:root[data-lang="en"] :lang(zh-Hant) { display: none !important; }
+:root[data-lang="en"] :lang(ja)      { display: none !important; }
 
-:root[data-lang="jp"] *[class$="-tc"],
-:root[data-lang="jp"] *[class$="-en"],
-:root[data-lang="jp"] *[class*="-tc "],
-:root[data-lang="jp"] *[class*="-en "],
-:root[data-lang="jp"] *[lang="zh-Hant"],
-:root[data-lang="jp"] *[lang="en"] { display: none !important; }
+:root[data-lang="jp"] :lang(zh-Hant) { display: none !important; }
+:root[data-lang="jp"] :lang(en)      { display: none !important; }
 
-:root[data-lang="tc"] *[class$="-en"],
-:root[data-lang="tc"] *[class$="-jp"],
-:root[data-lang="tc"] *[class*="-en "],
-:root[data-lang="tc"] *[class*="-jp "],
-:root[data-lang="tc"] *[lang="en"],
-:root[data-lang="tc"] *[lang="ja"] { display: none !important; }
+:root[data-lang="tc"] :lang(en) { display: none !important; }
+:root[data-lang="tc"] :lang(ja) { display: none !important; }
 
-/* The toggle UI itself must NEVER be hidden by the toggle. */
-:root[data-lang] .lang-toggle,
-:root[data-lang] .lang-toggle *,
+/* Protect UI chrome — navigation/framing elements are deliberately bilingual
+   ("10 · Layer 02", entry router, slide tags). They are not content; they stay
+   visible in every language mode. */
+:root[data-lang] .entry-router,
+:root[data-lang] .entry-router *,
+:root[data-lang] .entry-onboard,
+:root[data-lang] .slide-tag,
+:root[data-lang] .slide-num,
+:root[data-lang] .nav,
+:root[data-lang] .nav *,
 :root[data-lang] .deck-footer,
 :root[data-lang] .deck-footer * { display: revert !important; }
-/* deck-footer uses flex, restore: */
 :root[data-lang] .deck-footer { display: flex !important; }
-/* But preserve aria-hidden side-effects */
+:root[data-lang] .lang-toggle { display: inline-flex !important; }
+
+/* Preserve aria-hidden behavior inside toggle UI */
 :root[data-lang] .lang-toggle [aria-hidden="true"]:not(.lang-btn) { display: none !important; }
 
 /* Inline lang toggle (provisional — R1 entry router replaces with a richer UI) */
@@ -3113,10 +3110,10 @@ details.disclosure[open] > .disclosure-body {
     <div class="cover-mark">GPS</div>
   </div>
   <div class="cover-center">
-    <h1 class="cover-headline-tc">從接待<span class="tc-comma">，</span><br>到大使<span class="tc-comma">。</span></h1>
-    <h2 class="cover-headline-en">From Reception<br>to Ambassadorship.</h2>
+    <h1 class="cover-headline-tc" lang="zh-Hant">從接待<span class="tc-comma">，</span><br>到大使<span class="tc-comma">。</span></h1>
+    <h2 class="cover-headline-en" lang="en">From Reception<br>to Ambassadorship.</h2>
     <p class="cover-subtitle">詢問台導覽解說能力架構提案</p>
-    <p class="cover-subtitle-en">A Capability Architecture Proposal for the Information Desk</p>
+    <p class="cover-subtitle-en" lang="en">A Capability Architecture Proposal for the Information Desk</p>
   </div>
   <div class="cover-bottom">
     <div>GPS STRATEGY &amp; TRANSFORMATION · 2026.05</div>
@@ -3144,15 +3141,15 @@ details.disclosure[open] > .disclosure-body {
 <section id="exec" data-anchor="exec" class="slide slide-content slide-exec">
   <div class="slide-tag">02</div>
   <div class="content-headline">
-    <h2 class="content-headline-tc">如果只能看一張，這一張。</h2>
-    <p class="content-headline-en">If only one slide, this one.</p>
+    <h2 class="content-headline-tc" lang="zh-Hant">如果只能看一張，這一張。</h2>
+    <p class="content-headline-en" lang="en">If only one slide, this one.</p>
     <p class="content-headline-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal;">一枚だけご覧になるなら、この一枚を。</p>
   </div>
   <div class="exec-pager">
     <div class="exec-pager-left">
       <div class="exec-eyebrow">For the decision-maker · 決策者用</div>
       <h2>從清單式接待，到署名式接待。</h2>
-      <p class="exec-h-en">From checklist reception to named-by reception.</p>
+      <p class="exec-h-en" lang="en">From checklist reception to named-by reception.</p>
       <p class="exec-h-jp" lang="ja">手順表の応対から、署名のある応対へ。</p>
       <div class="exec-ask">
         我們請求授權啟動三年制能力架構：第一年內 80% 同仁達 L1、首年度建立 BARS 基線、跨地區校準在 2027 上線。
@@ -3213,18 +3210,18 @@ details.disclosure[open] > .disclosure-body {
 <section id="slide-03" data-anchor="setup" class="slide slide-setup">
   <div class="slide-tag">03</div>
   <div class="setup-hero-stat">50–200</div>
-  <p class="setup-label-tc">詢問台同仁每天接觸訪客的次數。</p>
-  <p class="setup-label-en">Daily visitor contacts per information desk staff member.</p>
-  <p class="setup-punchline-tc">每一次接觸，都是品牌的具體實踐。</p>
-  <p class="setup-punchline-en">Every contact, a concrete practice of the brand.</p>
+  <p class="setup-label-tc" lang="zh-Hant">詢問台同仁每天接觸訪客的次數。</p>
+  <p class="setup-label-en" lang="en">Daily visitor contacts per information desk staff member.</p>
+  <p class="setup-punchline-tc" lang="zh-Hant">每一次接觸，都是品牌的具體實踐。</p>
+  <p class="setup-punchline-en" lang="en">Every contact, a concrete practice of the brand.</p>
   <div class="slide-num">03 / 21</div>
 </section>
 
 <!-- ==================== SLIDE 03 — THE TENSION ==================== -->
 <section id="slide-04" data-anchor="tension" class="slide slide-tension">
   <div class="slide-tag">04</div>
-  <h2 class="tension-headline-tc">最高頻的接觸點，<br>尚未有對應的能力架構。</h2>
-  <h2 class="tension-headline-en">The highest-frequency touchpoint<br>awaits a matching capability architecture.</h2>
+  <h2 class="tension-headline-tc" lang="zh-Hant">最高頻的接觸點，<br>尚未有對應的能力架構。</h2>
+  <h2 class="tension-headline-en" lang="en">The highest-frequency touchpoint<br>awaits a matching capability architecture.</h2>
 
   <div class="tension-grid">
     <div class="tension-side left">
@@ -3233,7 +3230,7 @@ details.disclosure[open] > .disclosure-body {
       <h4>說明者</h4>
       <span class="h4-en">Clerk to Explainer</span>
       <p>接收問題、給出答案、引導到正確窗口。資訊正確即可，沒有品牌實踐的維度。</p>
-      <p class="p-en">Receive questions, give answers, route to the right window. Accuracy is enough; brand practice is absent.</p>
+      <p class="p-en" lang="en">Receive questions, give answers, route to the right window. Accuracy is enough; brand practice is absent.</p>
     </div>
 
     <div class="tension-divider"></div>
@@ -3244,13 +3241,13 @@ details.disclosure[open] > .disclosure-body {
       <h4>體貼的夥伴</h4>
       <span class="h4-en">Considerate Partner</span>
       <p>「在您需要之前」。體貼的夥伴，主動聆聽、預先規劃。需要 L3 以上的解說能力才能呈現。</p>
-      <p class="p-en">"Before you need it." The Considerate Partner who listens actively and prepares in advance. Requires L3+ interpretation capability.</p>
+      <p class="p-en" lang="en">"Before you need it." The Considerate Partner who listens actively and prepares in advance. Requires L3+ interpretation capability.</p>
     </div>
   </div>
 
   <div class="tension-conclusion">
-    <p class="tension-conclusion-tc">兩者之間，尚未有架構承接。</p>
-    <p class="tension-conclusion-en">Between the two, no architecture yet.</p>
+    <p class="tension-conclusion-tc" lang="zh-Hant">兩者之間，尚未有架構承接。</p>
+    <p class="tension-conclusion-en" lang="en">Between the two, no architecture yet.</p>
   </div>
 
   <div class="slide-num">04 / 21</div>
@@ -3265,12 +3262,12 @@ details.disclosure[open] > .disclosure-body {
       <div class="divider-part">Part One · 第一部</div>
     </div>
     <div>
-      <h2 class="divider-title-tc">洞察</h2>
-      <h3 class="divider-title-en">The Insight</h3>
+      <h2 class="divider-title-tc" lang="zh-Hant">洞察</h2>
+      <h3 class="divider-title-en" lang="en">The Insight</h3>
     </div>
     <div class="divider-subhead">
-      <p class="divider-subhead-tc">解說作為一門專業，已累積七十年的工藝。</p>
-      <p class="divider-subhead-en">Interpretation as a profession: seven decades of accumulated craft.</p>
+      <p class="divider-subhead-tc" lang="zh-Hant">解說作為一門專業，已累積七十年的工藝。</p>
+      <p class="divider-subhead-en" lang="en">Interpretation as a profession: seven decades of accumulated craft.</p>
     </div>
   </div>
   <div></div>
@@ -3280,17 +3277,17 @@ details.disclosure[open] > .disclosure-body {
 <!-- ==================== SLIDE 05 — INTERNATIONAL BENCHMARKS ==================== -->
 <section id="slide-06" data-anchor="gap-detail" class="slide slide-content">
   <div class="slide-tag">06</div>
-  <h2 class="content-headline-tc">建立在已驗證的方法學上。</h2>
-  <h2 class="content-headline-en">Built on established interpretive practice.</h2>
+  <h2 class="content-headline-tc" lang="zh-Hant">建立在已驗證的方法學上。</h2>
+  <h2 class="content-headline-en" lang="en">Built on established interpretive practice.</h2>
 
   <div class="content-body">
     <div class="benchmarks-grid">
       <div class="benchmark-card">
         <div class="benchmark-year">1957</div>
         <div class="benchmark-name">Tilden 六原則</div>
-        <span class="benchmark-name-en">Six Principles of Interpretation</span>
+        <span class="benchmark-name-en" lang="en">Six Principles of Interpretation</span>
         <p class="benchmark-desc">解說作為獨立專業的根基。「資訊不是解說；目的是觸發，不是教導。」</p>
-        <span class="benchmark-desc-en">The foundation of interpretation as a profession. "Information is not interpretation; the goal is provocation, not instruction."</span>
+        <span class="benchmark-desc-en" lang="en">The foundation of interpretation as a profession. "Information is not interpretation; the goal is provocation, not instruction."</span>
         <div class="source-link">
           <span class="src-label">Source</span><br>
           Tilden, F. (1957). <em>Interpreting Our Heritage</em>. UNC Press.<br>
@@ -3300,9 +3297,9 @@ details.disclosure[open] > .disclosure-body {
       <div class="benchmark-card">
         <div class="benchmark-year">2013</div>
         <div class="benchmark-name">Sam Ham TORE 模型</div>
-        <span class="benchmark-name-en">TORE Model</span>
+        <span class="benchmark-name-en" lang="en">TORE Model</span>
         <p class="benchmark-desc">最實用的規劃工具。每段解說應為 Thematic、Organized、Relevant、Enjoyable。</p>
-        <span class="benchmark-desc-en">The most practical planning tool. Every interpretation should be Thematic, Organized, Relevant, Enjoyable.</span>
+        <span class="benchmark-desc-en" lang="en">The most practical planning tool. Every interpretation should be Thematic, Organized, Relevant, Enjoyable.</span>
         <div class="source-link">
           <span class="src-label">Source</span><br>
           Ham, S. H. (2013). <em>Interpretation—Making a Difference on Purpose</em>. Fulcrum.<br>
@@ -3312,9 +3309,9 @@ details.disclosure[open] > .disclosure-body {
       <div class="benchmark-card">
         <div class="benchmark-year">NAI</div>
         <div class="benchmark-name">兩階六級專業認證</div>
-        <span class="benchmark-name-en">Two-tier Certification</span>
+        <span class="benchmark-name-en" lang="en">Two-tier Certification</span>
         <p class="benchmark-desc">培訓階 CIH、CIG，專業階 CHI、CIP、CIM、CIT。可直接對照本架構的 L0–L5。</p>
-        <span class="benchmark-desc-en">Training-level CIH, CIG plus professional-level CHI, CIP, CIM, CIT. Maps to our L0–L5.</span>
+        <span class="benchmark-desc-en" lang="en">Training-level CIH, CIG plus professional-level CHI, CIP, CIM, CIT. Maps to our L0–L5.</span>
         <div class="source-link">
           <span class="src-label">Source</span><br>
           National Association for Interpretation (501(c)(3))<br>
@@ -3324,9 +3321,9 @@ details.disclosure[open] > .disclosure-body {
       <div class="benchmark-card">
         <div class="benchmark-year">2008</div>
         <div class="benchmark-name">WFTGA · EN 15565</div>
-        <span class="benchmark-name-en">Global Minimum Standard</span>
+        <span class="benchmark-name-en" lang="en">Global Minimum Standard</span>
         <p class="benchmark-desc">採用 EN 15565:2008 為全球最低訓練標準，明列簡報技巧、溝通技巧、群體管理為必備能力。</p>
-        <span class="benchmark-desc-en">Adopts EN 15565:2008 as the global minimum, listing presentation, communication, and group management as required competencies.</span>
+        <span class="benchmark-desc-en" lang="en">Adopts EN 15565:2008 as the global minimum, listing presentation, communication, and group management as required competencies.</span>
         <div class="source-link">
           <span class="src-label">Source</span><br>
           World Federation of Tourist Guide Associations<br>
@@ -3343,38 +3340,38 @@ details.disclosure[open] > .disclosure-body {
 <section id="slide-07" data-anchor="gap-now" class="slide slide-gap">
   <div class="slide-tag">07</div>
 
-  <h2 class="content-headline-tc" style="text-align: left;">四項常被忽略的關鍵能力。</h2>
-  <h2 class="content-headline-en" style="margin-bottom: 8px;">Four capabilities often overlooked.</h2>
+  <h2 class="content-headline-tc" lang="zh-Hant" style="text-align: left;">四項常被忽略的關鍵能力。</h2>
+  <h2 class="content-headline-en" lang="en" style="margin-bottom: 8px;">Four capabilities often overlooked.</h2>
   <p style="font-family: var(--serif-en), 'Lato', sans-serif; font-style: italic; font-size: 16px; color: var(--ink-soft); max-width: 760px; line-height: 1.5; margin-bottom: 48px;">沒有它們，會發生專業失誤。 · Without them, professional malpractice.</p>
 
   <div class="gap-detail-list">
     <div class="gap-detail-item">
       <div class="gap-detail-num">+ 02</div>
       <div class="gap-detail-name">主題提煉力</div>
-      <span class="gap-detail-name-en">Theme Crafting</span>
+      <span class="gap-detail-name-en" lang="en">Theme Crafting</span>
       <p class="gap-detail-conseq">訪客將記不住任何重點。</p>
-      <span class="gap-detail-conseq-en">Visitors remember nothing.</span>
+      <span class="gap-detail-conseq-en" lang="en">Visitors remember nothing.</span>
     </div>
     <div class="gap-detail-item">
       <div class="gap-detail-num">+ 03</div>
       <div class="gap-detail-name">嗓音與體能管理</div>
-      <span class="gap-detail-name-en">Voice & Stamina</span>
+      <span class="gap-detail-name-en" lang="en">Voice & Stamina</span>
       <p class="gap-detail-conseq">真實的職業傷害風險。</p>
-      <span class="gap-detail-conseq-en">Real occupational injury.</span>
+      <span class="gap-detail-conseq-en" lang="en">Real occupational injury.</span>
     </div>
     <div class="gap-detail-item">
       <div class="gap-detail-num">+ 08</div>
       <div class="gap-detail-name">跨文化敏感度</div>
-      <span class="gap-detail-name-en">Cross-cultural Sensitivity</span>
+      <span class="gap-detail-name-en" lang="en">Cross-cultural Sensitivity</span>
       <p class="gap-detail-conseq">與海外子公司的信任受損。</p>
-      <span class="gap-detail-conseq-en">Trust with overseas subsidiaries damaged.</span>
+      <span class="gap-detail-conseq-en" lang="en">Trust with overseas subsidiaries damaged.</span>
     </div>
     <div class="gap-detail-item">
       <div class="gap-detail-num">+ 09</div>
       <div class="gap-detail-name">服務恢復力</div>
-      <span class="gap-detail-name-en">Service Recovery</span>
+      <span class="gap-detail-name-en" lang="en">Service Recovery</span>
       <p class="gap-detail-conseq">小失誤升級為品牌傷害。</p>
-      <span class="gap-detail-conseq-en">Small mistakes become brand damage.</span>
+      <span class="gap-detail-conseq-en" lang="en">Small mistakes become brand damage.</span>
     </div>
   </div>
 
@@ -3390,12 +3387,12 @@ details.disclosure[open] > .disclosure-body {
       <div class="divider-part">Part Two · 第二部</div>
     </div>
     <div>
-      <h2 class="divider-title-tc">架構</h2>
-      <h3 class="divider-title-en">The Architecture</h3>
+      <h2 class="divider-title-tc" lang="zh-Hant">架構</h2>
+      <h3 class="divider-title-en" lang="en">The Architecture</h3>
     </div>
     <div class="divider-subhead">
-      <p class="divider-subhead-tc">六層由下而上，從「為什麼」回答到「如何整合」。並由雙向校準系統保持自我演化。</p>
-      <p class="divider-subhead-en">Six layers from bottom to top — from <em>why</em> to <em>how it integrates</em>. A dual calibration system keeps it self-evolving.</p>
+      <p class="divider-subhead-tc" lang="zh-Hant">六層由下而上，從「為什麼」回答到「如何整合」。並由雙向校準系統保持自我演化。</p>
+      <p class="divider-subhead-en" lang="en">Six layers from bottom to top — from <em>why</em> to <em>how it integrates</em>. A dual calibration system keeps it self-evolving.</p>
     </div>
   </div>
   <div></div>
@@ -3405,50 +3402,50 @@ details.disclosure[open] > .disclosure-body {
 <!-- ==================== SLIDE 09 — SIX-LAYER STACK ==================== -->
 <section id="slide-09" data-anchor="premise" class="slide slide-arch">
   <div class="slide-tag">09</div>
-  <h2 class="content-headline-tc">每一層回答一個不同的問題，<br>下層支撐上層。</h2>
-  <h2 class="content-headline-en">Each layer answers a different question.<br>Lower supports upper.</h2>
+  <h2 class="content-headline-tc" lang="zh-Hant">每一層回答一個不同的問題，<br>下層支撐上層。</h2>
+  <h2 class="content-headline-en" lang="en">Each layer answers a different question.<br>Lower supports upper.</h2>
 
   <div class="arch-stack">
     <div class="arch-stack-main">
       <div class="arch-row">
         <div class="arch-row-num">06</div>
         <div>
-          <div class="arch-row-name">品牌整合層 <span class="arch-row-name-en">Brand Integration</span></div>
+          <div class="arch-row-name">品牌整合層 <span class="arch-row-name-en" lang="en">Brand Integration</span></div>
           <div class="arch-row-q">如何與品牌一致？ / How it aligns with the brand.</div>
         </div>
       </div>
       <div class="arch-row">
         <div class="arch-row-num">05</div>
         <div>
-          <div class="arch-row-name">訓練與認證層 <span class="arch-row-name-en">Operations</span></div>
+          <div class="arch-row-name">訓練與認證層 <span class="arch-row-name-en" lang="en">Operations</span></div>
           <div class="arch-row-q">怎麼學會、怎麼驗證？ / How they learn, how we verify.</div>
         </div>
       </div>
       <div class="arch-row">
         <div class="arch-row-num">04</div>
         <div>
-          <div class="arch-row-name">應用情境層 <span class="arch-row-name-en">Application</span></div>
+          <div class="arch-row-name">應用情境層 <span class="arch-row-name-en" lang="en">Application</span></div>
           <div class="arch-row-q">在哪些場景用？ / Where it gets used.</div>
         </div>
       </div>
       <div class="arch-row">
         <div class="arch-row-num">03</div>
         <div>
-          <div class="arch-row-name">成熟度層 <span class="arch-row-name-en">Maturity</span></div>
+          <div class="arch-row-name">成熟度層 <span class="arch-row-name-en" lang="en">Maturity</span></div>
           <div class="arch-row-q">能練到哪一階？ / How far each develops.</div>
         </div>
       </div>
       <div class="arch-row">
         <div class="arch-row-num">02</div>
         <div>
-          <div class="arch-row-name">能力模型層 <span class="arch-row-name-en">Capability</span></div>
+          <div class="arch-row-name">能力模型層 <span class="arch-row-name-en" lang="en">Capability</span></div>
           <div class="arch-row-q">要練哪些能力？ / What to develop.</div>
         </div>
       </div>
       <div class="arch-row">
         <div class="arch-row-num">01</div>
         <div>
-          <div class="arch-row-name">哲學基底層 <span class="arch-row-name-en">Philosophy</span></div>
+          <div class="arch-row-name">哲學基底層 <span class="arch-row-name-en" lang="en">Philosophy</span></div>
           <div class="arch-row-q">為什麼解說？ / Why we interpret.</div>
         </div>
       </div>
@@ -3459,7 +3456,7 @@ details.disclosure[open] > .disclosure-body {
       <h4>訪客回饋系統</h4>
       <span class="h4-en">External Feedback Loop</span>
       <p>外部回饋從架構右側進入，可影響任一層的設計。
-        <span class="p-en">External feedback enters from the side and can influence any layer.</span>
+        <span class="p-en" lang="en">External feedback enters from the side and can influence any layer.</span>
       </p>
     </div>
   </div>
@@ -3474,8 +3471,8 @@ details.disclosure[open] > .disclosure-body {
     <div class="layer-bignum">01</div>
     <div class="layer-chapter-meta">
       <span class="layer-rule">Philosophy · 哲學基底層</span>
-      <h2 class="layer-headline-tc">為什麼解說，為什麼這樣解說。</h2>
-      <h2 class="layer-headline-en">Why we interpret — and why this way.</h2>
+      <h2 class="layer-headline-tc" lang="zh-Hant">為什麼解說，為什麼這樣解說。</h2>
+      <h2 class="layer-headline-en" lang="en">Why we interpret — and why this way.</h2>
     </div>
   </div>
 
@@ -3484,9 +3481,9 @@ details.disclosure[open] > .disclosure-body {
       <div class="anchor-block">
         <div class="a-num">A · 1957</div>
         <div class="a-name">Tilden 解說六原則</div>
-        <span class="a-name-en">Tilden's Six Principles</span>
+        <span class="a-name-en" lang="en">Tilden's Six Principles</span>
         <p class="a-desc">資訊不是解說；目的是觸發，不是教導。</p>
-        <span class="a-desc-en">Information is not interpretation; the goal is provocation, not instruction.</span>
+        <span class="a-desc-en" lang="en">Information is not interpretation; the goal is provocation, not instruction.</span>
         <div class="source-link">
           <a href="https://www.nps.gov/people/freeman-tilden.htm" target="_blank" rel="noopener">nps.gov/people/freeman-tilden</a>
         </div>
@@ -3494,9 +3491,9 @@ details.disclosure[open] > .disclosure-body {
       <div class="anchor-block">
         <div class="a-num">B · 1971</div>
         <div class="a-name">CPTED 環境設計犯罪預防</div>
-        <span class="a-name-en">Crime Prevention Through Environmental Design</span>
+        <span class="a-name-en" lang="en">Crime Prevention Through Environmental Design</span>
         <p class="a-desc">透過環境的主動設計，讓安全感成為內建狀態。</p>
-        <span class="a-desc-en">Deliberate environmental design makes safety a built-in state.</span>
+        <span class="a-desc-en" lang="en">Deliberate environmental design makes safety a built-in state.</span>
         <div class="source-link">
           <a href="https://www.cpted.net/" target="_blank" rel="noopener">cpted.net · International CPTED Association</a>
         </div>
@@ -3504,9 +3501,9 @@ details.disclosure[open] > .disclosure-body {
       <div class="anchor-block">
         <div class="a-num">C · GPS Brand</div>
         <div class="a-name">「在您需要之前」</div>
-        <span class="a-name-en">"Before You Need It."</span>
+        <span class="a-name-en" lang="en">"Before You Need It."</span>
         <p class="a-desc">詢問台是這句承諾最高頻次的具體實踐。</p>
-        <span class="a-desc-en">The information desk is this promise's highest-frequency concrete practice.</span>
+        <span class="a-desc-en" lang="en">The information desk is this promise's highest-frequency concrete practice.</span>
         <span class="a-desc-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal; color:var(--ink-soft);">案内所は、この約束が最も頻度高く形を取る場である。</span>
         <div class="source-link">
           <span class="src-label">Internal · GPS Brand Framework</span>
@@ -3525,8 +3522,8 @@ details.disclosure[open] > .disclosure-body {
     <div class="layer-bignum">02</div>
     <div class="layer-chapter-meta">
       <span class="layer-rule">Capability · 能力模型層</span>
-      <h2 class="layer-headline-tc">十二項能力，按「發生時機」分為三組。</h2>
-      <h2 class="layer-headline-en">Twelve capabilities, grouped by <em>when they happen</em>.</h2>
+      <h2 class="layer-headline-tc" lang="zh-Hant">十二項能力，按「發生時機」分為三組。</h2>
+      <h2 class="layer-headline-en" lang="en">Twelve capabilities, grouped by <em>when they happen</em>.</h2>
     </div>
   </div>
 
@@ -3560,7 +3557,7 @@ details.disclosure[open] > .disclosure-body {
       <div class="cluster self">
         <div class="cluster-label">CLUSTER A · SELF-READINESS</div>
         <div class="cluster-title">內在準備組</div>
-        <span class="cluster-title-en">Self-Readiness — when no one's there</span>
+        <span class="cluster-title-en" lang="en">Self-Readiness — when no one's there</span>
         <ul>
           <li><span class="num">01</span><div>
             <span class="name" lang="zh-Hant">內容理解力</span>
@@ -3600,7 +3597,7 @@ details.disclosure[open] > .disclosure-body {
       <div class="cluster people">
         <div class="cluster-label">CLUSTER B · PEOPLE-FACING</div>
         <div class="cluster-title">對人互動組</div>
-        <span class="cluster-title-en">People-Facing — at the moment of contact</span>
+        <span class="cluster-title-en" lang="en">People-Facing — at the moment of contact</span>
         <ul>
           <li><span class="num">05</span><div>
             <span class="name" lang="zh-Hant">觀眾判讀力</span>
@@ -3647,7 +3644,7 @@ details.disclosure[open] > .disclosure-body {
       <div class="cluster space">
         <div class="cluster-label">CLUSTER C · SPACE & EXPERIENCE</div>
         <div class="cluster-title">場域與體驗組</div>
-        <span class="cluster-title-en">Space & Experience — environment & impression</span>
+        <span class="cluster-title-en" lang="en">Space & Experience — environment & impression</span>
         <ul>
           <li><span class="num">10</span><div>
             <span class="name" lang="zh-Hant">接觸點設計力<span class="new">RE</span></span>
@@ -3690,8 +3687,8 @@ details.disclosure[open] > .disclosure-body {
     <div class="layer-bignum">03</div>
     <div class="layer-chapter-meta">
       <span class="layer-rule">Maturity · 成熟度層</span>
-      <h2 class="layer-headline-tc">每項能力，從 L0 到 L5。</h2>
-      <h2 class="layer-headline-en">Each capability, from L0 to L5.</h2>
+      <h2 class="layer-headline-tc" lang="zh-Hant">每項能力，從 L0 到 L5。</h2>
+      <h2 class="layer-headline-en" lang="en">Each capability, from L0 to L5.</h2>
     </div>
   </div>
 
@@ -3701,45 +3698,45 @@ details.disclosure[open] > .disclosure-body {
         <div class="m-node">
           <div class="m-dot">L0</div>
           <div class="m-level">應對者</div>
-          <div class="m-level-en">Clerk</div>
-          <div class="m-desc">正確回答<span class="m-desc-en">Correct answers</span></div>
+          <div class="m-level-en" lang="en">Clerk</div>
+          <div class="m-desc">正確回答<span class="m-desc-en" lang="en">Correct answers</span></div>
         </div>
         <div class="m-node">
           <div class="m-dot">L1</div>
           <div class="m-level">說明者</div>
-          <div class="m-level-en">Explainer</div>
-          <div class="m-desc">完整講述<span class="m-desc-en">Complete delivery</span></div>
+          <div class="m-level-en" lang="en">Explainer</div>
+          <div class="m-desc">完整講述<span class="m-desc-en" lang="en">Complete delivery</span></div>
         </div>
         <div class="m-node">
           <div class="m-dot">L2</div>
           <div class="m-level">導覽者</div>
-          <div class="m-level-en">Guide</div>
-          <div class="m-desc">讀懂聽眾<span class="m-desc-en">Reads audience</span></div>
+          <div class="m-level-en" lang="en">Guide</div>
+          <div class="m-desc">讀懂聽眾<span class="m-desc-en" lang="en">Reads audience</span></div>
         </div>
         <div class="m-node">
           <div class="m-dot">L3</div>
           <div class="m-level">解說者</div>
-          <div class="m-level-en">Interpreter</div>
-          <div class="m-desc">建立意義<span class="m-desc-en">Builds meaning</span></div>
+          <div class="m-level-en" lang="en">Interpreter</div>
+          <div class="m-desc">建立意義<span class="m-desc-en" lang="en">Builds meaning</span></div>
         </div>
         <div class="m-node">
           <div class="m-dot">L4</div>
           <div class="m-level">體驗設計者</div>
-          <div class="m-level-en">Designer</div>
-          <div class="m-desc">整合旅程<span class="m-desc-en">Integrates journey</span></div>
+          <div class="m-level-en" lang="en">Designer</div>
+          <div class="m-desc">整合旅程<span class="m-desc-en" lang="en">Integrates journey</span></div>
         </div>
         <div class="m-node">
           <div class="m-dot">L5</div>
           <div class="m-level">文化大使</div>
-          <div class="m-level-en">Ambassador</div>
-          <div class="m-desc">訓練他人<span class="m-desc-en">Trains others</span></div>
+          <div class="m-level-en" lang="en">Ambassador</div>
+          <div class="m-desc">訓練他人<span class="m-desc-en" lang="en">Trains others</span></div>
         </div>
       </div>
 
       <div class="maturity-insight">
         <div class="maturity-insight-label">CORE STRUCTURE</div>
         <p class="maturity-insight-text">12 項能力 × 6 級 = <strong style="color: var(--turquoise-deep); font-family: var(--mono);">72</strong> 個可觀察的 BARS 行為描述。這是評估與認證的核心資料結構。</p>
-        <p class="maturity-insight-text-en">12 capabilities × 6 levels = <strong style="color: var(--turquoise-deep); font-family: var(--mono);">72</strong> observable BARS behavior descriptions. The core data structure for assessment and certification.</p>
+        <p class="maturity-insight-text-en" lang="en">12 capabilities × 6 levels = <strong style="color: var(--turquoise-deep); font-family: var(--mono);">72</strong> observable BARS behavior descriptions. The core data structure for assessment and certification.</p>
         <div class="source-link" style="border-top-color: rgba(8, 22, 28, 0.08); margin-top: 16px; padding-top: 14px;">
           <span class="src-label">BARS Method</span><br>
           Smith, P. C., &amp; Kendall, L. M. (1963). <em>Journal of Applied Psychology</em>, 47(2), 149–155.<br>
@@ -3854,8 +3851,8 @@ details.disclosure[open] > .disclosure-body {
     <div class="layer-bignum">04</div>
     <div class="layer-chapter-meta">
       <span class="layer-rule">Application · 應用情境層</span>
-      <h2 class="layer-headline-tc">十個場景，四大類，覆蓋詢問台的全部接觸面。</h2>
-      <h2 class="layer-headline-en">Ten scenarios, four categories — full surface coverage.</h2>
+      <h2 class="layer-headline-tc" lang="zh-Hant">十個場景，四大類，覆蓋詢問台的全部接觸面。</h2>
+      <h2 class="layer-headline-en" lang="en">Ten scenarios, four categories — full surface coverage.</h2>
     </div>
   </div>
 
@@ -3864,23 +3861,23 @@ details.disclosure[open] > .disclosure-body {
       <div class="sc-cat a">
         <div class="sc-cat-label">CAT A · 高頻 / High Frequency</div>
         <div class="sc-cat-title">一般接待</div>
-        <span class="sc-cat-title-en">Standard Reception</span>
+        <span class="sc-cat-title-en" lang="en">Standard Reception</span>
         <div class="sc-cat-freq">日均 50–200 次 / Daily / 一日50〜200回</div>
         <ul>
           <li class="sc-item"><details class="disclosure">
-            <summary><span class="sc-code">A1</span>路引／微導覽<span class="sc-en">Wayfinding &amp; Micro-tour</span><span class="sc-jp" lang="ja">案内・ミニツアー</span></summary>
+            <summary><span class="sc-code">A1</span>路引／微導覽<span class="sc-en" lang="en">Wayfinding &amp; Micro-tour</span><span class="sc-jp" lang="ja">案内・ミニツアー</span></summary>
             <div class="disclosure-body">
-              <dl class="sc-meta-row"><dt>Duration</dt><dd>30 秒 – 3 分鐘<span class="meta-en">30 sec – 3 min</span><span class="meta-jp" lang="ja">30秒〜3分</span></dd></dl>
-              <dl class="sc-meta-row"><dt>Capabilities</dt><dd><span class="sc-cap-pill">05</span><span class="sc-cap-pill">06</span><span class="sc-cap-pill">11</span>觀眾判讀力 · 即時轉譯力 · 現場表達力<span class="meta-en">Audience Reading · Real-time Translation · On-site Presence</span><span class="meta-jp" lang="ja">観客読解力 · 即時翻訳力 · 現場表現力</span></dd></dl>
-              <dl class="sc-meta-row"><dt>Success</dt><dd>訪客在三十秒內知道下一步往哪走，不需要再問第二次。<span class="meta-en">Visitor knows the next step within 30 seconds and does not need to ask again.</span><span class="meta-jp" lang="ja">お客様は三十秒以内に次の動線を把握し、再度尋ねる必要がない。</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Duration</dt><dd>30 秒 – 3 分鐘<span class="meta-en" lang="en">30 sec – 3 min</span><span class="meta-jp" lang="ja">30秒〜3分</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Capabilities</dt><dd><span class="sc-cap-pill">05</span><span class="sc-cap-pill">06</span><span class="sc-cap-pill">11</span>觀眾判讀力 · 即時轉譯力 · 現場表達力<span class="meta-en" lang="en">Audience Reading · Real-time Translation · On-site Presence</span><span class="meta-jp" lang="ja">観客読解力 · 即時翻訳力 · 現場表現力</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Success</dt><dd>訪客在三十秒內知道下一步往哪走，不需要再問第二次。<span class="meta-en" lang="en">Visitor knows the next step within 30 seconds and does not need to ask again.</span><span class="meta-jp" lang="ja">お客様は三十秒以内に次の動線を把握し、再度尋ねる必要がない。</span></dd></dl>
             </div>
           </details></li>
           <li class="sc-item"><details class="disclosure">
-            <summary><span class="sc-code">A2</span>完整陪同導覽<span class="sc-en">Full Companion Tour</span><span class="sc-jp" lang="ja">同行フルツアー</span></summary>
+            <summary><span class="sc-code">A2</span>完整陪同導覽<span class="sc-en" lang="en">Full Companion Tour</span><span class="sc-jp" lang="ja">同行フルツアー</span></summary>
             <div class="disclosure-body">
-              <dl class="sc-meta-row"><dt>Duration</dt><dd>15 – 40 分鐘<span class="meta-en">15 – 40 min</span><span class="meta-jp" lang="ja">15〜40分</span></dd></dl>
-              <dl class="sc-meta-row"><dt>Capabilities</dt><dd><span class="sc-cap-pill">02</span><span class="sc-cap-pill">04</span><span class="sc-cap-pill">12</span>主題提煉力 · 敘事設計力 · 體驗收束力<span class="meta-en">Theme Crafting · Narrative Design · Experience Closure</span><span class="meta-jp" lang="ja">テーマ抽出力 · 物語設計力 · 体験収束力</span></dd></dl>
-              <dl class="sc-meta-row"><dt>Success</dt><dd>結束時訪客能用自己的話說出一句核心主題。<span class="meta-en">At the end, the visitor can re-state the core theme in their own words.</span><span class="meta-jp" lang="ja">終わりに、お客様がご自身の言葉で核心主題を一文でお話しになれる。</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Duration</dt><dd>15 – 40 分鐘<span class="meta-en" lang="en">15 – 40 min</span><span class="meta-jp" lang="ja">15〜40分</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Capabilities</dt><dd><span class="sc-cap-pill">02</span><span class="sc-cap-pill">04</span><span class="sc-cap-pill">12</span>主題提煉力 · 敘事設計力 · 體驗收束力<span class="meta-en" lang="en">Theme Crafting · Narrative Design · Experience Closure</span><span class="meta-jp" lang="ja">テーマ抽出力 · 物語設計力 · 体験収束力</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Success</dt><dd>結束時訪客能用自己的話說出一句核心主題。<span class="meta-en" lang="en">At the end, the visitor can re-state the core theme in their own words.</span><span class="meta-jp" lang="ja">終わりに、お客様がご自身の言葉で核心主題を一文でお話しになれる。</span></dd></dl>
             </div>
           </details></li>
         </ul>
@@ -3888,24 +3885,24 @@ details.disclosure[open] > .disclosure-body {
       <div class="sc-cat b">
         <div class="sc-cat-label">CAT B · 高品質 / High Quality</div>
         <div class="sc-cat-title">特殊接待</div>
-        <span class="sc-cat-title-en">Special Reception</span>
+        <span class="sc-cat-title-en" lang="en">Special Reception</span>
         <div class="sc-cat-freq">週均數次 / Weekly / 週に数回</div>
         <ul>
           <li class="sc-item"><details class="disclosure">
-            <summary><span class="sc-code">B1</span>VIP 接待<span class="sc-en">VIP Reception</span><span class="sc-jp" lang="ja">VIP接遇</span></summary>
+            <summary><span class="sc-code">B1</span>VIP 接待<span class="sc-en" lang="en">VIP Reception</span><span class="sc-jp" lang="ja">VIP接遇</span></summary>
             <div class="disclosure-body">
-              <dl class="sc-meta-row"><dt>Duration</dt><dd>30 分鐘 – 數小時<span class="meta-en">30 min – several hours</span><span class="meta-jp" lang="ja">30分〜数時間</span></dd></dl>
-              <dl class="sc-meta-row"><dt>Capabilities</dt><dd><span class="sc-cap-pill">08</span><span class="sc-cap-pill">10</span><span class="sc-cap-pill">11</span>跨文化敏感度 · 接觸點設計力 · 現場表達力<span class="meta-en">Cross-cultural Sensitivity · Touchpoint Design · On-site Presence</span><span class="meta-jp" lang="ja">異文化感受性 · 接点設計力 · 現場表現力</span></dd></dl>
-              <dl class="sc-meta-row"><dt>Success</dt><dd>全程零突發、零代答；貴賓自然進入第二個議題。<span class="meta-en">Zero surprises and zero answer-for; the guest organically moves into a second topic.</span><span class="meta-jp" lang="ja">全工程を通じて不測事態ゼロ、代弁ゼロ；貴賓が自然に第二の話題へ移行される。</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Duration</dt><dd>30 分鐘 – 數小時<span class="meta-en" lang="en">30 min – several hours</span><span class="meta-jp" lang="ja">30分〜数時間</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Capabilities</dt><dd><span class="sc-cap-pill">08</span><span class="sc-cap-pill">10</span><span class="sc-cap-pill">11</span>跨文化敏感度 · 接觸點設計力 · 現場表達力<span class="meta-en" lang="en">Cross-cultural Sensitivity · Touchpoint Design · On-site Presence</span><span class="meta-jp" lang="ja">異文化感受性 · 接点設計力 · 現場表現力</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Success</dt><dd>全程零突發、零代答；貴賓自然進入第二個議題。<span class="meta-en" lang="en">Zero surprises and zero answer-for; the guest organically moves into a second topic.</span><span class="meta-jp" lang="ja">全工程を通じて不測事態ゼロ、代弁ゼロ；貴賓が自然に第二の話題へ移行される。</span></dd></dl>
               <dl class="sc-meta-row"><dt>Register</dt><dd><span class="hospitality-anchor" style="margin-left:0"><span class="ha-tc" lang="zh-Hant">對位於頭等艙與一星以上餐廳之接待語體；稱謂、距離、節奏皆有定式。</span><span class="ha-en" lang="en">— register calibrated to First-class cabin and 1-star+ dining-room reception: address, proxemics, and pacing all have settled forms.</span><span class="ha-jp" lang="ja">ファーストクラス客室および一つ星以上の食卓接待に対位する語体 — 呼称、距離、間合いに定型がある。</span></span></dd></dl>
             </div>
           </details></li>
           <li class="sc-item"><details class="disclosure">
-            <summary><span class="sc-code">B2</span>群體接待<span class="sc-en">Group Reception</span><span class="sc-jp" lang="ja">団体接遇</span></summary>
+            <summary><span class="sc-code">B2</span>群體接待<span class="sc-en" lang="en">Group Reception</span><span class="sc-jp" lang="ja">団体接遇</span></summary>
             <div class="disclosure-body">
-              <dl class="sc-meta-row"><dt>Duration</dt><dd>20 – 60 分鐘<span class="meta-en">20 – 60 min</span><span class="meta-jp" lang="ja">20〜60分</span></dd></dl>
-              <dl class="sc-meta-row"><dt>Capabilities</dt><dd><span class="sc-cap-pill">05</span><span class="sc-cap-pill">07</span><span class="sc-cap-pill">11</span>觀眾判讀力 · 互動應變力 · 現場表達力<span class="meta-en">Audience Reading · Interactive Adaptation · On-site Presence</span><span class="meta-jp" lang="ja">観客読解力 · 対話応変力 · 現場表現力</span></dd></dl>
-              <dl class="sc-meta-row"><dt>Success</dt><dd>沒有掉隊者；後段提問來自團體中不同的兩個人。<span class="meta-en">No one is left behind; late-stage questions come from at least two different members.</span><span class="meta-jp" lang="ja">置いて行かれる方がいない；後半の問いは団体内の異なる二名から出る。</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Duration</dt><dd>20 – 60 分鐘<span class="meta-en" lang="en">20 – 60 min</span><span class="meta-jp" lang="ja">20〜60分</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Capabilities</dt><dd><span class="sc-cap-pill">05</span><span class="sc-cap-pill">07</span><span class="sc-cap-pill">11</span>觀眾判讀力 · 互動應變力 · 現場表達力<span class="meta-en" lang="en">Audience Reading · Interactive Adaptation · On-site Presence</span><span class="meta-jp" lang="ja">観客読解力 · 対話応変力 · 現場表現力</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Success</dt><dd>沒有掉隊者；後段提問來自團體中不同的兩個人。<span class="meta-en" lang="en">No one is left behind; late-stage questions come from at least two different members.</span><span class="meta-jp" lang="ja">置いて行かれる方がいない；後半の問いは団体内の異なる二名から出る。</span></dd></dl>
             </div>
           </details></li>
         </ul>
@@ -3913,23 +3910,23 @@ details.disclosure[open] > .disclosure-body {
       <div class="sc-cat c">
         <div class="sc-cat-label">CAT C · 高風險 / High Risk</div>
         <div class="sc-cat-title">例外處理</div>
-        <span class="sc-cat-title-en">Exception Handling</span>
+        <span class="sc-cat-title-en" lang="en">Exception Handling</span>
         <div class="sc-cat-freq">月均數次 / Monthly / 月に数回</div>
         <ul>
           <li class="sc-item"><details class="disclosure">
-            <summary><span class="sc-code">C1</span>服務恢復<span class="sc-en">Service Recovery</span><span class="sc-jp" lang="ja">サービス回復</span></summary>
+            <summary><span class="sc-code">C1</span>服務恢復<span class="sc-en" lang="en">Service Recovery</span><span class="sc-jp" lang="ja">サービス回復</span></summary>
             <div class="disclosure-body">
-              <dl class="sc-meta-row"><dt>Duration</dt><dd>視情況，通常 10 – 30 分鐘<span class="meta-en">Variable, typically 10 – 30 min</span><span class="meta-jp" lang="ja">状況による、通常10〜30分</span></dd></dl>
-              <dl class="sc-meta-row"><dt>Capabilities</dt><dd><span class="sc-cap-pill">07</span><span class="sc-cap-pill">09</span><span class="sc-cap-pill">08</span>互動應變力 · 服務恢復力 · 跨文化敏感度<span class="meta-en">Interactive Adaptation · Service Recovery · Cross-cultural Sensitivity</span><span class="meta-jp" lang="ja">対話応変力 · サービス回復力 · 異文化感受性</span></dd></dl>
-              <dl class="sc-meta-row"><dt>Success</dt><dd>訪客離場時情緒中性或更佳；事件已被記錄並回流到 D3。<span class="meta-en">Visitor departs at neutral sentiment or better; the incident is logged and routed back into D3.</span><span class="meta-jp" lang="ja">お客様は中立またはそれ以上の気持ちでお戻りになり、事案はD3へ記録・還流される。</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Duration</dt><dd>視情況，通常 10 – 30 分鐘<span class="meta-en" lang="en">Variable, typically 10 – 30 min</span><span class="meta-jp" lang="ja">状況による、通常10〜30分</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Capabilities</dt><dd><span class="sc-cap-pill">07</span><span class="sc-cap-pill">09</span><span class="sc-cap-pill">08</span>互動應變力 · 服務恢復力 · 跨文化敏感度<span class="meta-en" lang="en">Interactive Adaptation · Service Recovery · Cross-cultural Sensitivity</span><span class="meta-jp" lang="ja">対話応変力 · サービス回復力 · 異文化感受性</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Success</dt><dd>訪客離場時情緒中性或更佳；事件已被記錄並回流到 D3。<span class="meta-en" lang="en">Visitor departs at neutral sentiment or better; the incident is logged and routed back into D3.</span><span class="meta-jp" lang="ja">お客様は中立またはそれ以上の気持ちでお戻りになり、事案はD3へ記録・還流される。</span></dd></dl>
             </div>
           </details></li>
           <li class="sc-item"><details class="disclosure">
-            <summary><span class="sc-code">C2</span>異常／緊急<span class="sc-en">Incident &amp; Emergency</span><span class="sc-jp" lang="ja">異常・緊急</span></summary>
+            <summary><span class="sc-code">C2</span>異常／緊急<span class="sc-en" lang="en">Incident &amp; Emergency</span><span class="sc-jp" lang="ja">異常・緊急</span></summary>
             <div class="disclosure-body">
-              <dl class="sc-meta-row"><dt>Duration</dt><dd>即時<span class="meta-en">Immediate</span><span class="meta-jp" lang="ja">即時</span></dd></dl>
-              <dl class="sc-meta-row"><dt>Capabilities</dt><dd><span class="sc-cap-pill">09</span><span class="sc-cap-pill">03</span><span class="sc-cap-pill">11</span>服務恢復力 · 嗓音與體能管理 · 現場表達力<span class="meta-en">Service Recovery · Voice &amp; Stamina · On-site Presence</span><span class="meta-jp" lang="ja">サービス回復力 · 声と体力の管理 · 現場表現力</span></dd></dl>
-              <dl class="sc-meta-row"><dt>Success</dt><dd>第一分鐘內現場秩序穩定；事件移交給正確的權責單位，有紀錄。<span class="meta-en">Order restored within the first minute; incident handed to the correct authority with a written record.</span><span class="meta-jp" lang="ja">最初の一分以内に現場秩序が安定し、事案は記録付きで正しい権限部署へ引き継がれる。</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Duration</dt><dd>即時<span class="meta-en" lang="en">Immediate</span><span class="meta-jp" lang="ja">即時</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Capabilities</dt><dd><span class="sc-cap-pill">09</span><span class="sc-cap-pill">03</span><span class="sc-cap-pill">11</span>服務恢復力 · 嗓音與體能管理 · 現場表達力<span class="meta-en" lang="en">Service Recovery · Voice &amp; Stamina · On-site Presence</span><span class="meta-jp" lang="ja">サービス回復力 · 声と体力の管理 · 現場表現力</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Success</dt><dd>第一分鐘內現場秩序穩定；事件移交給正確的權責單位，有紀錄。<span class="meta-en" lang="en">Order restored within the first minute; incident handed to the correct authority with a written record.</span><span class="meta-jp" lang="ja">最初の一分以内に現場秩序が安定し、事案は記録付きで正しい権限部署へ引き継がれる。</span></dd></dl>
             </div>
           </details></li>
         </ul>
@@ -3937,39 +3934,39 @@ details.disclosure[open] > .disclosure-body {
       <div class="sc-cat d">
         <div class="sc-cat-label">CAT D · 連續性 / Continuity</div>
         <div class="sc-cat-title">接觸前後</div>
-        <span class="sc-cat-title-en">Pre &amp; Post-encounter</span>
+        <span class="sc-cat-title-en" lang="en">Pre &amp; Post-encounter</span>
         <div class="sc-cat-freq">連續性管理 / Continuous / 連続的管理</div>
         <ul>
           <li class="sc-item"><details class="disclosure">
-            <summary><span class="sc-code">D1</span>預備接待<span class="sc-en">Pre-arrival</span><span class="sc-jp" lang="ja">事前準備</span></summary>
+            <summary><span class="sc-code">D1</span>預備接待<span class="sc-en" lang="en">Pre-arrival</span><span class="sc-jp" lang="ja">事前準備</span></summary>
             <div class="disclosure-body">
-              <dl class="sc-meta-row"><dt>Duration</dt><dd>接待前 24 – 48 小時<span class="meta-en">24 – 48 hours pre-encounter</span><span class="meta-jp" lang="ja">接遇前24〜48時間</span></dd></dl>
-              <dl class="sc-meta-row"><dt>Capabilities</dt><dd><span class="sc-cap-pill">01</span><span class="sc-cap-pill">10</span><span class="sc-cap-pill">02</span>內容理解力 · 接觸點設計力 · 主題提煉力<span class="meta-en">Content Mastery · Touchpoint Design · Theme Crafting</span><span class="meta-jp" lang="ja">内容理解力 · 接点設計力 · テーマ抽出力</span></dd></dl>
-              <dl class="sc-meta-row"><dt>Success</dt><dd>現場與物料就位；接待者抵達前已能說出今日的主軸。<span class="meta-en">Site and materials in place; the host can state today's through-line before arrival.</span><span class="meta-jp" lang="ja">現場と備品が整い、お迎えする者は到着前に本日の主軸を語れる。</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Duration</dt><dd>接待前 24 – 48 小時<span class="meta-en" lang="en">24 – 48 hours pre-encounter</span><span class="meta-jp" lang="ja">接遇前24〜48時間</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Capabilities</dt><dd><span class="sc-cap-pill">01</span><span class="sc-cap-pill">10</span><span class="sc-cap-pill">02</span>內容理解力 · 接觸點設計力 · 主題提煉力<span class="meta-en" lang="en">Content Mastery · Touchpoint Design · Theme Crafting</span><span class="meta-jp" lang="ja">内容理解力 · 接点設計力 · テーマ抽出力</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Success</dt><dd>現場與物料就位；接待者抵達前已能說出今日的主軸。<span class="meta-en" lang="en">Site and materials in place; the host can state today's through-line before arrival.</span><span class="meta-jp" lang="ja">現場と備品が整い、お迎えする者は到着前に本日の主軸を語れる。</span></dd></dl>
             </div>
           </details></li>
           <li class="sc-item"><details class="disclosure">
-            <summary><span class="sc-code">D2</span>離場送別<span class="sc-en">Departure</span><span class="sc-jp" lang="ja">お見送り</span></summary>
+            <summary><span class="sc-code">D2</span>離場送別<span class="sc-en" lang="en">Departure</span><span class="sc-jp" lang="ja">お見送り</span></summary>
             <div class="disclosure-body">
-              <dl class="sc-meta-row"><dt>Duration</dt><dd>1 – 3 分鐘<span class="meta-en">1 – 3 min</span><span class="meta-jp" lang="ja">1〜3分</span></dd></dl>
-              <dl class="sc-meta-row"><dt>Capabilities</dt><dd><span class="sc-cap-pill">12</span><span class="sc-cap-pill">11</span><span class="sc-cap-pill">08</span>體驗收束力 · 現場表達力 · 跨文化敏感度<span class="meta-en">Experience Closure · On-site Presence · Cross-cultural Sensitivity</span><span class="meta-jp" lang="ja">体験収束力 · 現場表現力 · 異文化感受性</span></dd></dl>
-              <dl class="sc-meta-row"><dt>Success</dt><dd>訪客帶走一句、一個物件或一個動作，作為記憶的錨。<span class="meta-en">Visitor leaves with one sentence, one object, or one gesture as a memory anchor.</span><span class="meta-jp" lang="ja">お客様は一言、一物、または一所作を、記憶の錨としてお持ち帰りになる。</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Duration</dt><dd>1 – 3 分鐘<span class="meta-en" lang="en">1 – 3 min</span><span class="meta-jp" lang="ja">1〜3分</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Capabilities</dt><dd><span class="sc-cap-pill">12</span><span class="sc-cap-pill">11</span><span class="sc-cap-pill">08</span>體驗收束力 · 現場表達力 · 跨文化敏感度<span class="meta-en" lang="en">Experience Closure · On-site Presence · Cross-cultural Sensitivity</span><span class="meta-jp" lang="ja">体験収束力 · 現場表現力 · 異文化感受性</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Success</dt><dd>訪客帶走一句、一個物件或一個動作，作為記憶的錨。<span class="meta-en" lang="en">Visitor leaves with one sentence, one object, or one gesture as a memory anchor.</span><span class="meta-jp" lang="ja">お客様は一言、一物、または一所作を、記憶の錨としてお持ち帰りになる。</span></dd></dl>
             </div>
           </details></li>
           <li class="sc-item"><details class="disclosure">
-            <summary><span class="sc-code">D3</span>訪客回饋蒐集<span class="sc-en">Feedback Collection</span><span class="sc-jp" lang="ja">来館者フィードバック収集</span></summary>
+            <summary><span class="sc-code">D3</span>訪客回饋蒐集<span class="sc-en" lang="en">Feedback Collection</span><span class="sc-jp" lang="ja">来館者フィードバック収集</span></summary>
             <div class="disclosure-body">
-              <dl class="sc-meta-row"><dt>Duration</dt><dd>接觸後 5 分鐘 – 7 天<span class="meta-en">5 min – 7 days post-encounter</span><span class="meta-jp" lang="ja">接遇後5分〜7日</span></dd></dl>
-              <dl class="sc-meta-row"><dt>Capabilities</dt><dd><span class="sc-cap-pill">09</span><span class="sc-cap-pill">05</span><span class="sc-cap-pill">06</span>服務恢復力 · 觀眾判讀力 · 即時轉譯力<span class="meta-en">Service Recovery · Audience Reading · Real-time Translation</span><span class="meta-jp" lang="ja">サービス回復力 · 観客読解力 · 即時翻訳力</span></dd></dl>
-              <dl class="sc-meta-row"><dt>Success</dt><dd>蒐集到的回饋附帶情境標籤，可被歸入 BARS 或腳本庫修訂。<span class="meta-en">Feedback arrives tagged with context, usable for BARS or script-library revision.</span><span class="meta-jp" lang="ja">回収されたご意見は文脈タグを伴い、BARSまたは脚本庫の改訂に活用できる。</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Duration</dt><dd>接觸後 5 分鐘 – 7 天<span class="meta-en" lang="en">5 min – 7 days post-encounter</span><span class="meta-jp" lang="ja">接遇後5分〜7日</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Capabilities</dt><dd><span class="sc-cap-pill">09</span><span class="sc-cap-pill">05</span><span class="sc-cap-pill">06</span>服務恢復力 · 觀眾判讀力 · 即時轉譯力<span class="meta-en" lang="en">Service Recovery · Audience Reading · Real-time Translation</span><span class="meta-jp" lang="ja">サービス回復力 · 観客読解力 · 即時翻訳力</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Success</dt><dd>蒐集到的回饋附帶情境標籤，可被歸入 BARS 或腳本庫修訂。<span class="meta-en" lang="en">Feedback arrives tagged with context, usable for BARS or script-library revision.</span><span class="meta-jp" lang="ja">回収されたご意見は文脈タグを伴い、BARSまたは脚本庫の改訂に活用できる。</span></dd></dl>
             </div>
           </details></li>
           <li class="sc-item"><details class="disclosure">
-            <summary><span class="sc-code">D4</span>跨班交接<span class="sc-en">Shift Handover</span><span class="sc-jp" lang="ja">シフト引き継ぎ</span></summary>
+            <summary><span class="sc-code">D4</span>跨班交接<span class="sc-en" lang="en">Shift Handover</span><span class="sc-jp" lang="ja">シフト引き継ぎ</span></summary>
             <div class="disclosure-body">
-              <dl class="sc-meta-row"><dt>Duration</dt><dd>每班次末 10 – 15 分鐘<span class="meta-en">10 – 15 min end-of-shift</span><span class="meta-jp" lang="ja">各シフト終了時10〜15分</span></dd></dl>
-              <dl class="sc-meta-row"><dt>Capabilities</dt><dd><span class="sc-cap-pill">01</span><span class="sc-cap-pill">10</span><span class="sc-cap-pill">09</span>內容理解力 · 接觸點設計力 · 服務恢復力<span class="meta-en">Content Mastery · Touchpoint Design · Service Recovery</span><span class="meta-jp" lang="ja">内容理解力 · 接点設計力 · サービス回復力</span></dd></dl>
-              <dl class="sc-meta-row"><dt>Success</dt><dd>接班者在十分鐘內掌握當日異常、VIP 預告與未結案的回饋。<span class="meta-en">The incoming shift, within ten minutes, holds today's exceptions, VIP advance notice, and any open feedback.</span><span class="meta-jp" lang="ja">引き継ぐ同僚は十分以内に、当日の異常、VIP予告、未決のご意見を把握する。</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Duration</dt><dd>每班次末 10 – 15 分鐘<span class="meta-en" lang="en">10 – 15 min end-of-shift</span><span class="meta-jp" lang="ja">各シフト終了時10〜15分</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Capabilities</dt><dd><span class="sc-cap-pill">01</span><span class="sc-cap-pill">10</span><span class="sc-cap-pill">09</span>內容理解力 · 接觸點設計力 · 服務恢復力<span class="meta-en" lang="en">Content Mastery · Touchpoint Design · Service Recovery</span><span class="meta-jp" lang="ja">内容理解力 · 接点設計力 · サービス回復力</span></dd></dl>
+              <dl class="sc-meta-row"><dt>Success</dt><dd>接班者在十分鐘內掌握當日異常、VIP 預告與未結案的回饋。<span class="meta-en" lang="en">The incoming shift, within ten minutes, holds today's exceptions, VIP advance notice, and any open feedback.</span><span class="meta-jp" lang="ja">引き継ぐ同僚は十分以内に、当日の異常、VIP予告、未決のご意見を把握する。</span></dd></dl>
             </div>
           </details></li>
         </ul>
@@ -3980,7 +3977,7 @@ details.disclosure[open] > .disclosure-body {
       <div class="star">★</div>
       <div>
         <strong>D3 訪客回饋蒐集既是場景，也是校準源頭。</strong>
-        <span class="strong-en">D3 Visitor Feedback is both a scenario and a calibration source.</span>
+        <span class="strong-en" lang="en">D3 Visitor Feedback is both a scenario and a calibration source.</span>
       </div>
     </div>
   </div>
@@ -3995,8 +3992,8 @@ details.disclosure[open] > .disclosure-body {
     <div class="layer-bignum">05</div>
     <div class="layer-chapter-meta">
       <span class="layer-rule">Operations · 訓練與認證層</span>
-      <h2 class="layer-headline-tc">訓練、評估、認證形成閉環。</h2>
-      <h2 class="layer-headline-en">Training, assessment, certification: a closed loop.</h2>
+      <h2 class="layer-headline-tc" lang="zh-Hant">訓練、評估、認證形成閉環。</h2>
+      <h2 class="layer-headline-en" lang="en">Training, assessment, certification: a closed loop.</h2>
     </div>
   </div>
 
@@ -4007,30 +4004,30 @@ details.disclosure[open] > .disclosure-body {
           <caption>訓練架構 / Training · Vita Pattern / 訓練体系</caption>
           <thead>
             <tr>
-              <th>階段<span class="th-en">Phase</span></th>
-              <th>對應<span class="th-en">Maps To</span></th>
-              <th>目標<span class="th-en">Target</span></th>
-              <th>模組<span class="th-en">Modules</span></th>
+              <th>階段<span class="th-en" lang="en">Phase</span></th>
+              <th>對應<span class="th-en" lang="en">Maps To</span></th>
+              <th>目標<span class="th-en" lang="en">Target</span></th>
+              <th>模組<span class="th-en" lang="en">Modules</span></th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td class="phase">階段一</td>
-              <td>Explorer<br><span class="td-en">4 weeks</span><span class="td-jp" lang="ja">エクスプローラー · 4週</span></td>
+              <td>Explorer<br><span class="td-en" lang="en">4 weeks</span><span class="td-jp" lang="ja">エクスプローラー · 4週</span></td>
               <td>L0 → L1</td>
-              <td>TORE 入門 · 嗓音 · 路引 · 服務恢復基礎<span class="td-en">TORE basics · Voice · Wayfinding · Recovery 101</span><span class="td-jp" lang="ja">TORE入門 · 発声 · 案内 · サービス回復基礎</span></td>
+              <td>TORE 入門 · 嗓音 · 路引 · 服務恢復基礎<span class="td-en" lang="en">TORE basics · Voice · Wayfinding · Recovery 101</span><span class="td-jp" lang="ja">TORE入門 · 発声 · 案内 · サービス回復基礎</span></td>
             </tr>
             <tr>
               <td class="phase">階段二</td>
-              <td>Builder<br><span class="td-en">8 weeks</span><span class="td-jp" lang="ja">ビルダー · 8週</span></td>
+              <td>Builder<br><span class="td-en" lang="en">8 weeks</span><span class="td-jp" lang="ja">ビルダー · 8週</span></td>
               <td>L1 → L3</td>
-              <td>主題提煉 · 跨文化禮節 · 觀眾判讀 · 微體驗設計<span class="td-en">Theme crafting · Cross-cultural protocol · Audience reading · Micro-experience design</span><span class="td-jp" lang="ja">テーマ抽出 · 異文化礼節 · 観客読解 · ミニ体験設計</span></td>
+              <td>主題提煉 · 跨文化禮節 · 觀眾判讀 · 微體驗設計<span class="td-en" lang="en">Theme crafting · Cross-cultural protocol · Audience reading · Micro-experience design</span><span class="td-jp" lang="ja">テーマ抽出 · 異文化礼節 · 観客読解 · ミニ体験設計</span></td>
             </tr>
             <tr>
               <td class="phase">階段三</td>
-              <td>Architect<br><span class="td-en">Ongoing</span><span class="td-jp" lang="ja">アーキテクト · 継続</span></td>
+              <td>Architect<br><span class="td-en" lang="en">Ongoing</span><span class="td-jp" lang="ja">アーキテクト · 継続</span></td>
               <td>L3 → L5</td>
-              <td>敘事架構 · 接觸點編排 · BARS 教練法 · 跨地區校準<span class="td-en">Narrative architecture · Touchpoint choreography · BARS coaching · Cross-region calibration</span><span class="td-jp" lang="ja">物語構築 · 接点演出 · BARSコーチング · 拠点間校正</span></td>
+              <td>敘事架構 · 接觸點編排 · BARS 教練法 · 跨地區校準<span class="td-en" lang="en">Narrative architecture · Touchpoint choreography · BARS coaching · Cross-region calibration</span><span class="td-jp" lang="ja">物語構築 · 接点演出 · BARSコーチング · 拠点間校正</span></td>
             </tr>
           </tbody>
         </table>
@@ -4041,9 +4038,9 @@ details.disclosure[open] > .disclosure-body {
           <caption>評估機制 / Assessment · 四種並用 / 評価機構</caption>
           <thead>
             <tr>
-              <th>機制<span class="th-en">Mechanism</span></th>
-              <th>用途<span class="th-en">Purpose</span></th>
-              <th>頻率<span class="th-en">Frequency</span></th>
+              <th>機制<span class="th-en" lang="en">Mechanism</span></th>
+              <th>用途<span class="th-en" lang="en">Purpose</span></th>
+              <th>頻率<span class="th-en" lang="en">Frequency</span></th>
             </tr>
           </thead>
           <tbody>
@@ -4053,8 +4050,8 @@ details.disclosure[open] > .disclosure-body {
                   <summary>
                     <div class="assess-cells">
                       <div><span class="cell-phase">BARS</span></div>
-                      <div>客觀依據<span class="td-en">Objective basis</span><span class="td-jp" lang="ja">客観的根拠</span></div>
-                      <div>季<span class="td-en">Q</span><span class="td-jp" lang="ja">四半期</span></div>
+                      <div>客觀依據<span class="td-en" lang="en">Objective basis</span><span class="td-jp" lang="ja">客観的根拠</span></div>
+                      <div>季<span class="td-en" lang="en">Q</span><span class="td-jp" lang="ja">四半期</span></div>
                     </div>
                   </summary>
                   <div class="disclosure-body">
@@ -4093,19 +4090,19 @@ details.disclosure[open] > .disclosure-body {
               </td>
             </tr>
             <tr>
-              <td class="phase">神秘訪客<span class="td-en">Mystery</span><span class="td-jp" lang="ja">ミステリー来館</span></td>
-              <td>跨身分驗證<span class="td-en">Cross-identity</span><span class="td-jp" lang="ja">身分横断検証</span></td>
-              <td>季<span class="td-en">Q</span><span class="td-jp" lang="ja">四半期</span></td>
+              <td class="phase">神秘訪客<span class="td-en" lang="en">Mystery</span><span class="td-jp" lang="ja">ミステリー来館</span></td>
+              <td>跨身分驗證<span class="td-en" lang="en">Cross-identity</span><span class="td-jp" lang="ja">身分横断検証</span></td>
+              <td>季<span class="td-en" lang="en">Q</span><span class="td-jp" lang="ja">四半期</span></td>
             </tr>
             <tr>
               <td class="phase">訪客 NPS<span class="td-jp" lang="ja">来館者NPS</span></td>
-              <td>即時回饋<span class="td-en">Real-time</span><span class="td-jp" lang="ja">即時の声</span></td>
-              <td>持續<span class="td-en">Continuous</span><span class="td-jp" lang="ja">継続</span></td>
+              <td>即時回饋<span class="td-en" lang="en">Real-time</span><span class="td-jp" lang="ja">即時の声</span></td>
+              <td>持續<span class="td-en" lang="en">Continuous</span><span class="td-jp" lang="ja">継続</span></td>
             </tr>
             <tr>
-              <td class="phase">同儕觀察<span class="td-en">Peer</span><span class="td-jp" lang="ja">同僚観察</span></td>
-              <td>交叉校準<span class="td-en">Cross-cal</span><span class="td-jp" lang="ja">相互校正</span></td>
-              <td>月<span class="td-en">M</span><span class="td-jp" lang="ja">月次</span></td>
+              <td class="phase">同儕觀察<span class="td-en" lang="en">Peer</span><span class="td-jp" lang="ja">同僚観察</span></td>
+              <td>交叉校準<span class="td-en" lang="en">Cross-cal</span><span class="td-jp" lang="ja">相互校正</span></td>
+              <td>月<span class="td-en" lang="en">M</span><span class="td-jp" lang="ja">月次</span></td>
             </tr>
           </tbody>
         </table>
@@ -4116,56 +4113,56 @@ details.disclosure[open] > .disclosure-body {
           <caption>模組細目 / Module Rubric · 3 phases × 3 modules / 講座細目</caption>
           <thead>
             <tr>
-              <th>模組<span class="th-en">Module</span></th>
-              <th>內容<span class="th-en">Content</span></th>
-              <th>驗收<span class="th-en">Validation</span></th>
+              <th>模組<span class="th-en" lang="en">Module</span></th>
+              <th>內容<span class="th-en" lang="en">Content</span></th>
+              <th>驗收<span class="th-en" lang="en">Validation</span></th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td class="phase">Explorer · M1<span class="td-en">TORE 入門</span><span class="td-jp" lang="ja">TORE入門</span></td>
-              <td>TORE 四要件、Tilden 六原則精讀。<span class="td-en">TORE four elements; close reading of Tilden's six principles.</span><span class="td-jp" lang="ja">TOREの四要件、Tilden六原則の精読。</span></td>
-              <td>寫出 1 句主題 + 30 秒口述。<span class="td-en">Write 1 theme sentence + 30s spoken delivery.</span><span class="td-jp" lang="ja">主題一文の記述と30秒口述。</span></td>
+              <td class="phase">Explorer · M1<span class="td-en" lang="en">TORE 入門</span><span class="td-jp" lang="ja">TORE入門</span></td>
+              <td>TORE 四要件、Tilden 六原則精讀。<span class="td-en" lang="en">TORE four elements; close reading of Tilden's six principles.</span><span class="td-jp" lang="ja">TOREの四要件、Tilden六原則の精読。</span></td>
+              <td>寫出 1 句主題 + 30 秒口述。<span class="td-en" lang="en">Write 1 theme sentence + 30s spoken delivery.</span><span class="td-jp" lang="ja">主題一文の記述と30秒口述。</span></td>
             </tr>
             <tr>
-              <td class="phase">Explorer · M2<span class="td-en">嗓音與體能</span><span class="td-jp" lang="ja">声と体力</span></td>
-              <td>嗓音保護、站姿、200 次／日的可持續節奏。<span class="td-en">Voice protection, posture, sustainable pace at 200/day.</span><span class="td-jp" lang="ja">声の保護、姿勢、一日200回の持続可能なペース。</span></td>
-              <td>連續 5 日尾班測試不走樣。<span class="td-en">5 consecutive end-of-shift checks; no drift.</span><span class="td-jp" lang="ja">連続5日、終業前の確認でぶれがない。</span></td>
+              <td class="phase">Explorer · M2<span class="td-en" lang="en">嗓音與體能</span><span class="td-jp" lang="ja">声と体力</span></td>
+              <td>嗓音保護、站姿、200 次／日的可持續節奏。<span class="td-en" lang="en">Voice protection, posture, sustainable pace at 200/day.</span><span class="td-jp" lang="ja">声の保護、姿勢、一日200回の持続可能なペース。</span></td>
+              <td>連續 5 日尾班測試不走樣。<span class="td-en" lang="en">5 consecutive end-of-shift checks; no drift.</span><span class="td-jp" lang="ja">連続5日、終業前の確認でぶれがない。</span></td>
             </tr>
             <tr>
-              <td class="phase">Explorer · M3<span class="td-en">路引與微導覽</span><span class="td-jp" lang="ja">案内とミニツアー</span></td>
-              <td>A1 場景 20 個高頻情境腳本。<span class="td-en">A1 scenario · 20 high-frequency scripts.</span><span class="td-jp" lang="ja">A1場面の高頻度20脚本。</span></td>
-              <td>雙語腳本盲測 ≥ 90% 命中。<span class="td-en">Bilingual blind test ≥ 90% recall.</span><span class="td-jp" lang="ja">バイリンガル盲検で90％以上の再現。</span></td>
+              <td class="phase">Explorer · M3<span class="td-en" lang="en">路引與微導覽</span><span class="td-jp" lang="ja">案内とミニツアー</span></td>
+              <td>A1 場景 20 個高頻情境腳本。<span class="td-en" lang="en">A1 scenario · 20 high-frequency scripts.</span><span class="td-jp" lang="ja">A1場面の高頻度20脚本。</span></td>
+              <td>雙語腳本盲測 ≥ 90% 命中。<span class="td-en" lang="en">Bilingual blind test ≥ 90% recall.</span><span class="td-jp" lang="ja">バイリンガル盲検で90％以上の再現。</span></td>
             </tr>
             <tr>
-              <td class="phase">Builder · M4<span class="td-en">主題提煉</span><span class="td-jp" lang="ja">テーマ抽出</span></td>
-              <td>從展品資料抽 1 句主題的工作坊。<span class="td-en">Workshop: extract one theme sentence from exhibit material.</span><span class="td-jp" lang="ja">展示資料から主題一文を抽出する工房。</span></td>
-              <td>通過 3 位內部評審共識。<span class="td-en">Pass consensus of three internal reviewers.</span><span class="td-jp" lang="ja">内部評者三名の合意を得る。</span></td>
+              <td class="phase">Builder · M4<span class="td-en" lang="en">主題提煉</span><span class="td-jp" lang="ja">テーマ抽出</span></td>
+              <td>從展品資料抽 1 句主題的工作坊。<span class="td-en" lang="en">Workshop: extract one theme sentence from exhibit material.</span><span class="td-jp" lang="ja">展示資料から主題一文を抽出する工房。</span></td>
+              <td>通過 3 位內部評審共識。<span class="td-en" lang="en">Pass consensus of three internal reviewers.</span><span class="td-jp" lang="ja">内部評者三名の合意を得る。</span></td>
             </tr>
             <tr>
-              <td class="phase">Builder · M5<span class="td-en">跨文化敏感度</span><span class="td-jp" lang="ja">異文化感受性</span></td>
-              <td>TW / JP / DE / CN / US-AZ 禮貌邊界對照。<span class="td-en">Politeness boundaries across TW / JP / DE / CN / US-AZ.</span><span class="td-jp" lang="ja">台日独中・米国アリゾナの礼節境界の対照。</span></td>
-              <td>情境模擬，無觸犯紀錄。<span class="td-en">Simulation; zero infractions.</span><span class="td-jp" lang="ja">場面演習にて、抵触ゼロ。</span></td>
+              <td class="phase">Builder · M5<span class="td-en" lang="en">跨文化敏感度</span><span class="td-jp" lang="ja">異文化感受性</span></td>
+              <td>TW / JP / DE / CN / US-AZ 禮貌邊界對照。<span class="td-en" lang="en">Politeness boundaries across TW / JP / DE / CN / US-AZ.</span><span class="td-jp" lang="ja">台日独中・米国アリゾナの礼節境界の対照。</span></td>
+              <td>情境模擬，無觸犯紀錄。<span class="td-en" lang="en">Simulation; zero infractions.</span><span class="td-jp" lang="ja">場面演習にて、抵触ゼロ。</span></td>
             </tr>
             <tr>
-              <td class="phase">Builder · M6<span class="td-en">服務恢復</span><span class="td-jp" lang="ja">サービス回復</span></td>
-              <td>C1 場景；公開致歉的語法。<span class="td-en">C1 scenario; the grammar of public acknowledgment.</span><span class="td-jp" lang="ja">C1場面；公の謝意表明の語法。</span></td>
-              <td>Mystery 訪客評分 ≥ 4/5。<span class="td-en">Mystery visitor score ≥ 4/5.</span><span class="td-jp" lang="ja">ミステリー来館者評価が5点中4点以上。</span></td>
+              <td class="phase">Builder · M6<span class="td-en" lang="en">服務恢復</span><span class="td-jp" lang="ja">サービス回復</span></td>
+              <td>C1 場景；公開致歉的語法。<span class="td-en" lang="en">C1 scenario; the grammar of public acknowledgment.</span><span class="td-jp" lang="ja">C1場面；公の謝意表明の語法。</span></td>
+              <td>Mystery 訪客評分 ≥ 4/5。<span class="td-en" lang="en">Mystery visitor score ≥ 4/5.</span><span class="td-jp" lang="ja">ミステリー来館者評価が5点中4点以上。</span></td>
             </tr>
             <tr>
-              <td class="phase">Architect · M7<span class="td-en">微體驗設計</span><span class="td-jp" lang="ja">ミニ体験設計</span></td>
-              <td>15 分鐘可重複的策展型微導覽。<span class="td-en">15-minute repeatable curated micro-tour.</span><span class="td-jp" lang="ja">15分・再現可能なキュレーション型ミニツアー。</span></td>
-              <td>試播 + 3 場現場交付 + NPS。<span class="td-en">Pilot + 3 live deliveries + NPS.</span><span class="td-jp" lang="ja">試走 + 3回の現場提供 + NPS。</span></td>
+              <td class="phase">Architect · M7<span class="td-en" lang="en">微體驗設計</span><span class="td-jp" lang="ja">ミニ体験設計</span></td>
+              <td>15 分鐘可重複的策展型微導覽。<span class="td-en" lang="en">15-minute repeatable curated micro-tour.</span><span class="td-jp" lang="ja">15分・再現可能なキュレーション型ミニツアー。</span></td>
+              <td>試播 + 3 場現場交付 + NPS。<span class="td-en" lang="en">Pilot + 3 live deliveries + NPS.</span><span class="td-jp" lang="ja">試走 + 3回の現場提供 + NPS。</span></td>
             </tr>
             <tr>
-              <td class="phase">Architect · M8<span class="td-en">校準與評估</span><span class="td-jp" lang="ja">校正と評価</span></td>
-              <td>BARS 校準會議的主持。<span class="td-en">Facilitate BARS calibration sessions.</span><span class="td-jp" lang="ja">BARS校正会議の主宰。</span></td>
-              <td>主持 ≥ 2 場、校準漂移 &lt; 0.3。<span class="td-en">Facilitate ≥ 2 sessions; rater drift &lt; 0.3.</span><span class="td-jp" lang="ja">2回以上の主宰、評者間ドリフト0.3未満。</span></td>
+              <td class="phase">Architect · M8<span class="td-en" lang="en">校準與評估</span><span class="td-jp" lang="ja">校正と評価</span></td>
+              <td>BARS 校準會議的主持。<span class="td-en" lang="en">Facilitate BARS calibration sessions.</span><span class="td-jp" lang="ja">BARS校正会議の主宰。</span></td>
+              <td>主持 ≥ 2 場、校準漂移 &lt; 0.3。<span class="td-en" lang="en">Facilitate ≥ 2 sessions; rater drift &lt; 0.3.</span><span class="td-jp" lang="ja">2回以上の主宰、評者間ドリフト0.3未満。</span></td>
             </tr>
             <tr>
-              <td class="phase">Architect · M9<span class="td-en">帶人與認證</span><span class="td-jp" lang="ja">育成と認証</span></td>
-              <td>帶 1 位新進至 L2、文件化過程。<span class="td-en">Mentor one new hire to L2 with documented process.</span><span class="td-jp" lang="ja">新人一名をL2まで導き、過程を文書化する。</span></td>
-              <td>受訓者通過 L2 認證。<span class="td-en">Mentee passes L2 certification.</span><span class="td-jp" lang="ja">受講者がL2認証を取得する。</span></td>
+              <td class="phase">Architect · M9<span class="td-en" lang="en">帶人與認證</span><span class="td-jp" lang="ja">育成と認証</span></td>
+              <td>帶 1 位新進至 L2、文件化過程。<span class="td-en" lang="en">Mentor one new hire to L2 with documented process.</span><span class="td-jp" lang="ja">新人一名をL2まで導き、過程を文書化する。</span></td>
+              <td>受訓者通過 L2 認證。<span class="td-en" lang="en">Mentee passes L2 certification.</span><span class="td-jp" lang="ja">受講者がL2認証を取得する。</span></td>
             </tr>
           </tbody>
         </table>
@@ -4187,8 +4184,8 @@ details.disclosure[open] > .disclosure-body {
     <div class="layer-bignum">—</div>
     <div class="layer-chapter-meta">
       <span class="layer-rule">Substrate · 工具、日誌、稽核 / 基盤：ツール、ログ、監査</span>
-      <h2 class="layer-headline-tc">骨架之下，是一張可追溯的網。</h2>
-      <h2 class="layer-headline-en">Beneath the frame, a traceable mesh.</h2>
+      <h2 class="layer-headline-tc" lang="zh-Hant">骨架之下，是一張可追溯的網。</h2>
+      <h2 class="layer-headline-en" lang="en">Beneath the frame, a traceable mesh.</h2>
       <h2 class="layer-headline-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal;">骨格の下には、追跡可能な網がある。</h2>
     </div>
   </div>
@@ -4200,31 +4197,31 @@ details.disclosure[open] > .disclosure-body {
 
     <div class="substrate-cols">
       <div class="substrate-col">
-        <h3>工具 / Tooling<span class="col-en">— LINE-mobile + Web console</span><span class="col-jp" lang="ja">ツール — モバイル（LINE）+ ウェブ</span></h3>
+        <h3>工具 / Tooling<span class="col-en" lang="en">— LINE-mobile + Web console</span><span class="col-jp" lang="ja">ツール — モバイル（LINE）+ ウェブ</span></h3>
         <div class="substrate-raison">每日操作走手機，主檔與規範走網站。<span class="r-en" lang="en">Daily operations on phone, source-of-truth on web.</span><span class="r-jp" lang="ja">日常運用はモバイル、原本と規範はウェブ。</span></div>
         <table class="substrate-table">
           <thead><tr><th>Surface</th><th>Use</th></tr></thead>
           <tbody>
             <tr>
-              <td><span class="t-strong" lang="zh-Hant">LINE 公式（社內專用）</span><span class="t-en">LINE OA (staff-only)</span><span class="t-jp" lang="ja">LINE公式（社内専用）</span></td>
-              <td>班次腳本推送 · 場景查找卡片 · BARS 自檢 · 回饋表單 · 徽章進度<span class="t-en">Shift-start script push · scenario lookup card · BARS self-check · feedback intake · badge progress</span><span class="t-jp" lang="ja">シフト開始時の脚本配信・場面検索カード・BARS自己点検・ご意見フォーム・徽章進捗</span></td>
+              <td><span class="t-strong" lang="zh-Hant">LINE 公式（社內專用）</span><span class="t-en" lang="en">LINE OA (staff-only)</span><span class="t-jp" lang="ja">LINE公式（社内専用）</span></td>
+              <td>班次腳本推送 · 場景查找卡片 · BARS 自檢 · 回饋表單 · 徽章進度<span class="t-en" lang="en">Shift-start script push · scenario lookup card · BARS self-check · feedback intake · badge progress</span><span class="t-jp" lang="ja">シフト開始時の脚本配信・場面検索カード・BARS自己点検・ご意見フォーム・徽章進捗</span></td>
             </tr>
             <tr>
-              <td><span class="t-strong" lang="zh-Hant">Web 主控台</span><span class="t-en">Web console</span><span class="t-jp" lang="ja">Web主管台</span></td>
-              <td>訓練模組 · BARS 規範庫 · 腳本庫 · 稽核儀表板 · 認證流程 · 校準排程<span class="t-en">Training modules · BARS library · script library · audit dashboard · certification flow · calibration scheduling</span><span class="t-jp" lang="ja">訓練講座・BARS規範庫・脚本庫・監査ダッシュボード・認証手順・校正スケジュール</span></td>
+              <td><span class="t-strong" lang="zh-Hant">Web 主控台</span><span class="t-en" lang="en">Web console</span><span class="t-jp" lang="ja">Web主管台</span></td>
+              <td>訓練模組 · BARS 規範庫 · 腳本庫 · 稽核儀表板 · 認證流程 · 校準排程<span class="t-en" lang="en">Training modules · BARS library · script library · audit dashboard · certification flow · calibration scheduling</span><span class="t-jp" lang="ja">訓練講座・BARS規範庫・脚本庫・監査ダッシュボード・認証手順・校正スケジュール</span></td>
             </tr>
           </tbody>
         </table>
         <div class="substrate-note">
           LINE 只承載操作捷徑，不存原始檔；任何規範變更先到 Web，再廣播至 LINE。
-          <span class="n-en">LINE carries operational shortcuts only; never the source. Standards land on Web first, then broadcast to LINE.</span>
+          <span class="n-en" lang="en">LINE carries operational shortcuts only; never the source. Standards land on Web first, then broadcast to LINE.</span>
           <span class="n-jp" lang="ja">LINEは操作ショートカットのみを担い、原本は持たない。基準変更はまずWebに反映し、その後LINEへ配信する。</span>
         </div>
         <div class="substrate-out-of-scope">visitor-facing surface · 訪客介面 · 来館者面 — 留待後續</div>
       </div>
 
       <div class="substrate-col">
-        <h3>日誌 / Logs<span class="col-en">— full traceability, 5W1H schema</span><span class="col-jp" lang="ja">ログ — 完全追跡・5W1H</span></h3>
+        <h3>日誌 / Logs<span class="col-en" lang="en">— full traceability, 5W1H schema</span><span class="col-jp" lang="ja">ログ — 完全追跡・5W1H</span></h3>
         <div class="substrate-raison">問題若無法被找回，就無法被修正。<span class="r-en" lang="en">What cannot be retrieved cannot be corrected.</span><span class="r-jp" lang="ja">呼び戻せないものは、直すこともできない。</span></div>
         <table class="substrate-table">
           <thead><tr><th>Field</th><th>Description</th></tr></thead>
@@ -4232,50 +4229,50 @@ details.disclosure[open] > .disclosure-body {
             <tr><td><span class="t-strong">Who</span></td><td>actor_id, tier (L0..L5), role</td></tr>
             <tr><td><span class="t-strong">When</span></td><td>ISO 8601 + timezone</td></tr>
             <tr><td><span class="t-strong">What</span></td><td>action_type (1 of 14)</td></tr>
-            <tr><td><span class="t-strong">On which</span></td><td>target_id + target_type<span class="t-en">assessment · observation · script · scenario · certification · KPI · calibration · recognition · recovery · handover · wayfinding · feedback · brief · other</span></td></tr>
+            <tr><td><span class="t-strong">On which</span></td><td>target_id + target_type<span class="t-en" lang="en">assessment · observation · script · scenario · certification · KPI · calibration · recognition · recovery · handover · wayfinding · feedback · brief · other</span></td></tr>
             <tr><td><span class="t-strong">From where</span></td><td>surface (line · web · console) · device_class</td></tr>
             <tr><td><span class="t-strong">Why</span></td><td>context_tag · prior_event_id (chain)</td></tr>
           </tbody>
         </table>
         <div class="substrate-note">
           熱 90 天可查 · 溫 1 年可索 · 冷 3 年可審 · 個資依法處置
-          <span class="n-en">Hot 90d queryable · warm 1y indexable · cold 3y auditable · PII handled per regulation</span>
+          <span class="n-en" lang="en">Hot 90d queryable · warm 1y indexable · cold 3y auditable · PII handled per regulation</span>
           <span class="n-jp" lang="ja">ホット90日：検索可能 / ウォーム1年：索引可能 / コールド3年：監査可能 / 個人情報は法令準拠</span>
         </div>
         <a class="substrate-spec-link" href="spec/logging.md">spec / 規格 / 仕様 — logging.md</a>
       </div>
 
       <div class="substrate-col">
-        <h3>稽核 / Audit<span class="col-en">— governance over every function + dataset</span><span class="col-jp" lang="ja">監査 — 全機能・全資料の統治</span></h3>
+        <h3>稽核 / Audit<span class="col-en" lang="en">— governance over every function + dataset</span><span class="col-jp" lang="ja">監査 — 全機能・全資料の統治</span></h3>
         <div class="substrate-raison">表揚必須可被質疑；質疑必須能找到答案。<span class="r-en" lang="en">Honor must be open to challenge; every challenge must find its answer.</span><span class="r-jp" lang="ja">表彰は問い直しに開かれ、問い直しには必ず答が見いだせる。</span></div>
         <table class="substrate-table">
           <thead><tr><th>Domain</th><th>What's audited</th><th>Trigger</th></tr></thead>
           <tbody>
             <tr>
-              <td><span class="t-strong">ASSESS</span><span class="t-en">BARS chain</span><span class="t-jp" lang="ja">BARS連鎖</span></td>
-              <td>觀察鏈、雙觀察者校驗、季度漂移<span class="t-en">observation chain · two-observer · quarterly drift</span><span class="t-jp" lang="ja">観察連鎖・二名照合・四半期ドリフト</span></td>
+              <td><span class="t-strong">ASSESS</span><span class="t-en" lang="en">BARS chain</span><span class="t-jp" lang="ja">BARS連鎖</span></td>
+              <td>觀察鏈、雙觀察者校驗、季度漂移<span class="t-en" lang="en">observation chain · two-observer · quarterly drift</span><span class="t-jp" lang="ja">観察連鎖・二名照合・四半期ドリフト</span></td>
               <td>&gt;15% → recalibration</td>
             </tr>
             <tr>
-              <td><span class="t-strong">RECOGNIZE</span><span class="t-en">Tier promotion</span><span class="t-jp" lang="ja">段階昇格</span></td>
-              <td>佐證鏈：BARS + 場景 + 教練簽核<span class="t-en">evidence chain: BARS + scenario + mentor sign-off</span><span class="t-jp" lang="ja">証跡連鎖：BARS+場面+教練の認可</span></td>
+              <td><span class="t-strong">RECOGNIZE</span><span class="t-en" lang="en">Tier promotion</span><span class="t-jp" lang="ja">段階昇格</span></td>
+              <td>佐證鏈：BARS + 場景 + 教練簽核<span class="t-en" lang="en">evidence chain: BARS + scenario + mentor sign-off</span><span class="t-jp" lang="ja">証跡連鎖：BARS+場面+教練の認可</span></td>
               <td>missing → freeze tier</td>
             </tr>
             <tr>
-              <td><span class="t-strong">TRAIN</span><span class="t-en">Module completion</span><span class="t-jp" lang="ja">講座修了</span></td>
-              <td>驗收物對照 M1–M9 標準<span class="t-en">validation outputs vs M1–M9 rubric</span><span class="t-jp" lang="ja">検収物とM1〜M9規範の照合</span></td>
+              <td><span class="t-strong">TRAIN</span><span class="t-en" lang="en">Module completion</span><span class="t-jp" lang="ja">講座修了</span></td>
+              <td>驗收物對照 M1–M9 標準<span class="t-en" lang="en">validation outputs vs M1–M9 rubric</span><span class="t-jp" lang="ja">検収物とM1〜M9規範の照合</span></td>
               <td>absent → void</td>
             </tr>
             <tr>
-              <td><span class="t-strong">RECOVER</span><span class="t-en">C1/C2 incidents</span><span class="t-jp" lang="ja">C1/C2事案</span></td>
-              <td>事後審視鏈（D3 回流）<span class="t-en">post-incident review chain (D3 loop)</span><span class="t-jp" lang="ja">事後点検連鎖（D3還流）</span></td>
+              <td><span class="t-strong">RECOVER</span><span class="t-en" lang="en">C1/C2 incidents</span><span class="t-jp" lang="ja">C1/C2事案</span></td>
+              <td>事後審視鏈（D3 回流）<span class="t-en" lang="en">post-incident review chain (D3 loop)</span><span class="t-jp" lang="ja">事後点検連鎖（D3還流）</span></td>
               <td>same class &gt;3/Q → recall</td>
             </tr>
           </tbody>
         </table>
         <div class="substrate-note">
           逐筆即時 · 季度交叉 · 年度結算
-          <span class="n-en">Per-event live · quarterly cross-review · annual close-out</span>
+          <span class="n-en" lang="en">Per-event live · quarterly cross-review · annual close-out</span>
           <span class="n-jp" lang="ja">イベント毎にリアルタイム・四半期ごとに照合・年次決算</span>
         </div>
         <a class="substrate-spec-link" href="spec/audit-events.json">spec / 規格 / 仕様 — audit-events.json</a>
@@ -4284,7 +4281,7 @@ details.disclosure[open] > .disclosure-body {
 
     <div class="cadence-note" style="margin-top: 28px;">
       <strong>工具讓今天能動；日誌讓昨天可被找回；稽核讓明天值得相信。</strong>
-      <span class="strong-en">Tooling makes today move; logs make yesterday retrievable; audit makes tomorrow worth trusting.</span>
+      <span class="strong-en" lang="en">Tooling makes today move; logs make yesterday retrievable; audit makes tomorrow worth trusting.</span>
       <span lang="ja" style="display:block; font-family: var(--serif-jp); color: var(--ink-soft); font-size: 12.5px; margin-top: 4px;">ツールが今日を動かす。ログが昨日を呼び戻す。監査が明日を信ずるに足るものにする。</span>
     </div>
   </div>
@@ -4299,8 +4296,8 @@ details.disclosure[open] > .disclosure-body {
     <div class="layer-bignum">—</div>
     <div class="layer-chapter-meta">
       <span class="layer-rule">Recognition · 榮譽與晉階 / 栄誉と段階</span>
-      <h2 class="layer-headline-tc">訓練、評估、之後是榮譽。</h2>
-      <h2 class="layer-headline-en">Training, then assessment, then honor.</h2>
+      <h2 class="layer-headline-tc" lang="zh-Hant">訓練、評估、之後是榮譽。</h2>
+      <h2 class="layer-headline-en" lang="en">Training, then assessment, then honor.</h2>
       <h2 class="layer-headline-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal;">訓練、評価、その先に栄誉がある。</h2>
     </div>
   </div>
@@ -4312,22 +4309,22 @@ details.disclosure[open] > .disclosure-body {
 
     <div class="substrate-cols" style="margin-top: 18px;">
       <div class="substrate-col">
-        <h3>工藝認可 / Craft Recognition<span class="col-en">— intrinsic, peer-visible</span><span class="col-jp" lang="ja">職人としての認可</span></h3>
+        <h3>工藝認可 / Craft Recognition<span class="col-en" lang="en">— intrinsic, peer-visible</span><span class="col-jp" lang="ja">職人としての認可</span></h3>
         <table class="substrate-table">
           <thead><tr><th>Tier</th><th>Unlocks</th></tr></thead>
           <tbody>
-            <tr><td><span class="t-strong">L0 應對者</span><span class="t-en">Clerk</span><span class="t-jp" lang="ja">応対者</span></td><td>學徒身分；可旁聽校準會議。<span class="t-en">Apprentice; may sit in on calibration sessions.</span><span class="t-jp" lang="ja">見習い；校正会議に陪席できる。</span></td></tr>
-            <tr><td><span class="t-strong">L1 說明者</span><span class="t-en">Script Contributor</span><span class="t-jp" lang="ja">説明者・脚本寄稿者</span></td><td>可向腳本庫投稿並署名。<span class="t-en">May submit named entries to the script library.</span><span class="t-jp" lang="ja">脚本庫へ記名で投稿できる。</span></td></tr>
-            <tr><td><span class="t-strong">L2 導覽者</span><span class="t-en">Scenario Co-author</span><span class="t-jp" lang="ja">案内者・場面共著者</span></td><td>可署名共同維護一個 A1–D4 場景。<span class="t-en">Co-maintains one A1–D4 scenario, by name.</span><span class="t-jp" lang="ja">A1〜D4の一場面を記名で共同維持できる。</span></td></tr>
-            <tr><td><span class="t-strong">L3 解說者</span><span class="t-en">Theme Author</span><span class="t-jp" lang="ja">解説者・テーマ著者</span></td><td>可發表一條署名的「招牌微導覽」。<span class="t-en">Authors a named signature micro-tour.</span><span class="t-jp" lang="ja">記名の「定番ミニツアー」を発表できる。</span></td></tr>
-            <tr><td><span class="t-strong">L4 體驗設計者</span><span class="t-en">Module Co-owner</span><span class="t-jp" lang="ja">体験設計者・講座共持者</span></td><td>共持一個訓練模組（M1–M9），參與年度修訂。<span class="t-en">Co-owns one training module (M1–M9) with annual revision rights.</span><span class="t-jp" lang="ja">講座M1〜M9のいずれかを共持し、年度改訂に参与する。</span></td></tr>
-            <tr><td><span class="t-strong">L5 文化大使</span><span class="t-en">Calibration Steward</span><span class="t-jp" lang="ja">文化大使・校正主幹</span></td><td>主持季度 BARS 校準會議；認證新進。<span class="t-en">Stewards quarterly BARS calibration; certifies new colleagues.</span><span class="t-jp" lang="ja">四半期BARS校正会議を主宰し、新人を認証する。</span></td></tr>
+            <tr><td><span class="t-strong">L0 應對者</span><span class="t-en" lang="en">Clerk</span><span class="t-jp" lang="ja">応対者</span></td><td>學徒身分；可旁聽校準會議。<span class="t-en" lang="en">Apprentice; may sit in on calibration sessions.</span><span class="t-jp" lang="ja">見習い；校正会議に陪席できる。</span></td></tr>
+            <tr><td><span class="t-strong">L1 說明者</span><span class="t-en" lang="en">Script Contributor</span><span class="t-jp" lang="ja">説明者・脚本寄稿者</span></td><td>可向腳本庫投稿並署名。<span class="t-en" lang="en">May submit named entries to the script library.</span><span class="t-jp" lang="ja">脚本庫へ記名で投稿できる。</span></td></tr>
+            <tr><td><span class="t-strong">L2 導覽者</span><span class="t-en" lang="en">Scenario Co-author</span><span class="t-jp" lang="ja">案内者・場面共著者</span></td><td>可署名共同維護一個 A1–D4 場景。<span class="t-en" lang="en">Co-maintains one A1–D4 scenario, by name.</span><span class="t-jp" lang="ja">A1〜D4の一場面を記名で共同維持できる。</span></td></tr>
+            <tr><td><span class="t-strong">L3 解說者</span><span class="t-en" lang="en">Theme Author</span><span class="t-jp" lang="ja">解説者・テーマ著者</span></td><td>可發表一條署名的「招牌微導覽」。<span class="t-en" lang="en">Authors a named signature micro-tour.</span><span class="t-jp" lang="ja">記名の「定番ミニツアー」を発表できる。</span></td></tr>
+            <tr><td><span class="t-strong">L4 體驗設計者</span><span class="t-en" lang="en">Module Co-owner</span><span class="t-jp" lang="ja">体験設計者・講座共持者</span></td><td>共持一個訓練模組（M1–M9），參與年度修訂。<span class="t-en" lang="en">Co-owns one training module (M1–M9) with annual revision rights.</span><span class="t-jp" lang="ja">講座M1〜M9のいずれかを共持し、年度改訂に参与する。</span></td></tr>
+            <tr><td><span class="t-strong">L5 文化大使</span><span class="t-en" lang="en">Calibration Steward</span><span class="t-jp" lang="ja">文化大使・校正主幹</span></td><td>主持季度 BARS 校準會議；認證新進。<span class="t-en" lang="en">Stewards quarterly BARS calibration; certifies new colleagues.</span><span class="t-jp" lang="ja">四半期BARS校正会議を主宰し、新人を認証する。</span></td></tr>
           </tbody>
         </table>
       </div>
 
       <div class="substrate-col">
-        <h3>身分與進階 / Status &amp; Progression<span class="col-en">— visible insignia</span><span class="col-jp" lang="ja">地位と進階</span></h3>
+        <h3>身分與進階 / Status &amp; Progression<span class="col-en" lang="en">— visible insignia</span><span class="col-jp" lang="ja">地位と進階</span></h3>
         <div class="hospitality-anchor block" style="margin-bottom: 8px;">
           <span class="ha-tc" lang="zh-Hant">徽記之可讀，仿照航空乘務制服上的條紋 — 不需解釋，行內人立刻明白。</span>
           <span class="ha-en" lang="en">— legible insignia, after the practice of airline-crew uniform stripes: no explanation needed; insiders read it at once.</span>
@@ -4336,26 +4333,26 @@ details.disclosure[open] > .disclosure-body {
         <table class="substrate-table">
           <thead><tr><th>Tier</th><th>Title in use · Insignia</th></tr></thead>
           <tbody>
-            <tr><td><span class="t-strong">L0</span></td><td>試用 · 無徽<span class="t-en">In Training · no insignia</span><span class="t-jp" lang="ja">試用 · 徽章なし</span></td></tr>
-            <tr><td><span class="t-strong">L1</span></td><td>正式同仁 · 邊緣單條<span class="t-en">Certified Associate · single bar</span><span class="t-jp" lang="ja">正規同僚 · 一本線</span></td></tr>
-            <tr><td><span class="t-strong">L2</span></td><td>正式同仁 · 邊緣雙條<span class="t-en">Certified Associate · double bar</span><span class="t-jp" lang="ja">正規同僚 · 二本線</span></td></tr>
-            <tr><td><span class="t-strong">L3</span></td><td>解說者 · 翠綠圓點<span class="t-en">Interpreter · turquoise dot</span><span class="t-jp" lang="ja">解説者 · 翠の丸点</span></td></tr>
-            <tr><td><span class="t-strong">L4</span></td><td>體驗設計者 · 銅色圓點<span class="t-en">Experience Designer · copper dot</span><span class="t-jp" lang="ja">体験設計者 · 銅の丸点</span></td></tr>
-            <tr><td><span class="t-strong">L5</span></td><td>文化大使 · 黑於銅實心方<span class="t-en">Cultural Ambassador · filled square</span><span class="t-jp" lang="ja">文化大使 · 銅地に黒の方形</span></td></tr>
+            <tr><td><span class="t-strong">L0</span></td><td>試用 · 無徽<span class="t-en" lang="en">In Training · no insignia</span><span class="t-jp" lang="ja">試用 · 徽章なし</span></td></tr>
+            <tr><td><span class="t-strong">L1</span></td><td>正式同仁 · 邊緣單條<span class="t-en" lang="en">Certified Associate · single bar</span><span class="t-jp" lang="ja">正規同僚 · 一本線</span></td></tr>
+            <tr><td><span class="t-strong">L2</span></td><td>正式同仁 · 邊緣雙條<span class="t-en" lang="en">Certified Associate · double bar</span><span class="t-jp" lang="ja">正規同僚 · 二本線</span></td></tr>
+            <tr><td><span class="t-strong">L3</span></td><td>解說者 · 翠綠圓點<span class="t-en" lang="en">Interpreter · turquoise dot</span><span class="t-jp" lang="ja">解説者 · 翠の丸点</span></td></tr>
+            <tr><td><span class="t-strong">L4</span></td><td>體驗設計者 · 銅色圓點<span class="t-en" lang="en">Experience Designer · copper dot</span><span class="t-jp" lang="ja">体験設計者 · 銅の丸点</span></td></tr>
+            <tr><td><span class="t-strong">L5</span></td><td>文化大使 · 黑於銅實心方<span class="t-en" lang="en">Cultural Ambassador · filled square</span><span class="t-jp" lang="ja">文化大使 · 銅地に黒の方形</span></td></tr>
           </tbody>
         </table>
       </div>
 
       <div class="substrate-col">
-        <h3>條件與機會 / Conditions &amp; Opportunities<span class="col-en">— material, restrained</span><span class="col-jp" lang="ja">条件と機会</span></h3>
+        <h3>條件與機會 / Conditions &amp; Opportunities<span class="col-en" lang="en">— material, restrained</span><span class="col-jp" lang="ja">条件と機会</span></h3>
         <table class="substrate-table">
           <thead><tr><th>Progression</th><th>Unlocks</th></tr></thead>
           <tbody>
-            <tr><td><span class="t-strong">L0 → L1</span></td><td>完成 3 日急救入職即進薪等。<span class="t-en">Pay-band step on completion of the 3-day rapid onboarding.</span><span class="t-jp" lang="ja">三日間の集中導入完了で給与等級が一段進む。</span></td></tr>
-            <tr><td><span class="t-strong">L1 → L2</span></td><td>訓練津貼啟動；NAI 入門課程補助。<span class="t-en">Training stipend activates; NAI introductory coursework reimbursable.</span><span class="t-jp" lang="ja">訓練手当開始；NAI入門講座費補助。</span></td></tr>
-            <tr><td><span class="t-strong">L2 → L3</span></td><td>年度進階薪等；WFTGA 區域工作坊。<span class="t-en">Annual progression step; eligible for WFTGA regional workshop.</span><span class="t-jp" lang="ja">年次昇給；WFTGA地域研修参加資格。</span></td></tr>
-            <tr><td><span class="t-strong">L3 → L4</span></td><td>跨區輪調機會（TW → JP / DE）；外部認證全額補助。<span class="t-en">Cross-region rotation option (TW → JP / DE); full external certification reimbursement.</span><span class="t-jp" lang="ja">拠点間ローテーション機会（TW→JP/DE）；外部認証費の全額補助。</span></td></tr>
-            <tr><td><span class="t-strong">L4 → L5</span></td><td>年度策略津貼；參與架構年度修訂會議。<span class="t-en">Annual stewardship stipend; seat at the annual architecture revision.</span><span class="t-jp" lang="ja">年次運営手当；構造年度改訂会議への席。</span></td></tr>
+            <tr><td><span class="t-strong">L0 → L1</span></td><td>完成 3 日急救入職即進薪等。<span class="t-en" lang="en">Pay-band step on completion of the 3-day rapid onboarding.</span><span class="t-jp" lang="ja">三日間の集中導入完了で給与等級が一段進む。</span></td></tr>
+            <tr><td><span class="t-strong">L1 → L2</span></td><td>訓練津貼啟動；NAI 入門課程補助。<span class="t-en" lang="en">Training stipend activates; NAI introductory coursework reimbursable.</span><span class="t-jp" lang="ja">訓練手当開始；NAI入門講座費補助。</span></td></tr>
+            <tr><td><span class="t-strong">L2 → L3</span></td><td>年度進階薪等；WFTGA 區域工作坊。<span class="t-en" lang="en">Annual progression step; eligible for WFTGA regional workshop.</span><span class="t-jp" lang="ja">年次昇給；WFTGA地域研修参加資格。</span></td></tr>
+            <tr><td><span class="t-strong">L3 → L4</span></td><td>跨區輪調機會（TW → JP / DE）；外部認證全額補助。<span class="t-en" lang="en">Cross-region rotation option (TW → JP / DE); full external certification reimbursement.</span><span class="t-jp" lang="ja">拠点間ローテーション機会（TW→JP/DE）；外部認証費の全額補助。</span></td></tr>
+            <tr><td><span class="t-strong">L4 → L5</span></td><td>年度策略津貼；參與架構年度修訂會議。<span class="t-en" lang="en">Annual stewardship stipend; seat at the annual architecture revision.</span><span class="t-jp" lang="ja">年次運営手当；構造年度改訂会議への席。</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -4363,7 +4360,7 @@ details.disclosure[open] > .disclosure-body {
 
     <div class="cadence-note" style="margin-top: 28px;">
       <strong>榮譽不是獎賞；是讓訪客在不認識架構的情況下，仍能感受到同仁的等第。</strong>
-      <span class="strong-en">Recognition is not reward — it is what lets a visitor sense a colleague's level without knowing the framework exists.</span>
+      <span class="strong-en" lang="en">Recognition is not reward — it is what lets a visitor sense a colleague's level without knowing the framework exists.</span>
       <span lang="ja" style="display:block; font-family: var(--serif-jp); color: var(--ink-soft); font-size: 12.5px; margin-top: 4px;">栄誉は報奨ではない — それは、構造をご存じないお客様にも、同僚の段階を感じ取っていただける所以である。</span>
     </div>
   </div>
@@ -4375,8 +4372,8 @@ details.disclosure[open] > .disclosure-body {
 <section id="visitor-ladder" data-anchor="visitor-ladder" class="slide slide-content slide-visitor-ladder" data-priority="visitor">
   <div class="slide-tag">17 · Visitor</div>
   <div class="content-headline">
-    <h2 class="content-headline-tc">同樣的人，同樣的詢問台 — 不同的下午。</h2>
-    <p class="content-headline-en">Same visitor, same desk — a different afternoon.</p>
+    <h2 class="content-headline-tc" lang="zh-Hant">同樣的人，同樣的詢問台 — 不同的下午。</h2>
+    <p class="content-headline-en" lang="en">Same visitor, same desk — a different afternoon.</p>
     <p class="content-headline-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal;">同じお客様、同じご案内所 — 違う午後を。</p>
   </div>
   <div class="visitor-ladder">
@@ -4432,8 +4429,8 @@ details.disclosure[open] > .disclosure-body {
     <div class="layer-bignum">06</div>
     <div class="layer-chapter-meta">
       <span class="layer-rule">Brand Integration · 品牌整合層</span>
-      <h2 class="layer-headline-tc">「體貼的夥伴」的營運化身。</h2>
-      <h2 class="layer-headline-en">The operational embodiment of <em>Considerate Partner</em>.</h2>
+      <h2 class="layer-headline-tc" lang="zh-Hant">「體貼的夥伴」的營運化身。</h2>
+      <h2 class="layer-headline-en" lang="en">The operational embodiment of <em>Considerate Partner</em>.</h2>
     </div>
   </div>
 
@@ -4443,37 +4440,37 @@ details.disclosure[open] > .disclosure-body {
         <div class="brand-anchor-pitch">
           <div class="b-label">BRAND IDEA</div>
           <div class="b-name" lang="zh-Hant">在您需要之前</div>
-          <span class="b-name-en">Before You Need It.</span>
+          <span class="b-name-en" lang="en">Before You Need It.</span>
           <span class="b-name-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal; color:var(--ink-soft);">必要となる、その前に。</span>
           <p class="b-desc">每次微導覽預先準備好，而非被動回應。</p>
-          <span class="b-desc-en">Every micro-tour prepared, not reactive.</span>
+          <span class="b-desc-en" lang="en">Every micro-tour prepared, not reactive.</span>
           <span class="b-desc-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal;">どのミニツアーも、受け身ではなく事前に整っている。</span>
         </div>
         <div class="brand-anchor-pitch">
           <div class="b-label">PILLAR 02</div>
           <div class="b-name" lang="zh-Hant">旅程守護</div>
-          <span class="b-name-en">Journey Protection</span>
+          <span class="b-name-en" lang="en">Journey Protection</span>
           <span class="b-name-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal; color:var(--ink-soft);">旅の守護</span>
           <p class="b-desc">詢問台是訪客旅程的第一守護點。</p>
-          <span class="b-desc-en">First guardianship point of the visitor journey.</span>
+          <span class="b-desc-en" lang="en">First guardianship point of the visitor journey.</span>
           <span class="b-desc-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal;">案内所はお客様の旅路における最初の守護点である。</span>
         </div>
         <div class="brand-anchor-pitch">
           <div class="b-label">POSITIONING</div>
           <div class="b-name" lang="zh-Hant">體貼的夥伴</div>
-          <span class="b-name-en">Considerate Partner</span>
+          <span class="b-name-en" lang="en">Considerate Partner</span>
           <span class="b-name-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal; color:var(--ink-soft);">心づかいの伴侶</span>
           <p class="b-desc">同仁是品牌最高頻次的具體化身。</p>
-          <span class="b-desc-en">Staff are the brand's highest-frequency embodiment.</span>
+          <span class="b-desc-en" lang="en">Staff are the brand's highest-frequency embodiment.</span>
           <span class="b-desc-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal;">同僚こそが、ブランドの最も頻度高き具現である。</span>
         </div>
         <div class="brand-anchor-pitch">
           <div class="b-label">PHILOSOPHY</div>
           <div class="b-name" lang="zh-Hant">環境設計犯罪預防</div>
-          <span class="b-name-en">CPTED</span>
+          <span class="b-name-en" lang="en">CPTED</span>
           <span class="b-name-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal; color:var(--ink-soft);">環境設計による犯罪予防</span>
           <p class="b-desc">櫃台物理設計即 CPTED 在接觸點的實踐。</p>
-          <span class="b-desc-en">Desk design itself is CPTED at the touchpoint.</span>
+          <span class="b-desc-en" lang="en">Desk design itself is CPTED at the touchpoint.</span>
           <span class="b-desc-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal;">カウンターの物理設計そのものが、接点におけるCPTEDの実践である。</span>
         </div>
       </div>
@@ -4520,7 +4517,7 @@ details.disclosure[open] > .disclosure-body {
         </div>
         <div class="cadence-note" style="margin-top: 20px;">
           <strong>訪客不需理解架構，但會感受到等第。</strong>
-          <span class="strong-en">The visitor needn't understand the framework — but feels the tier.</span>
+          <span class="strong-en" lang="en">The visitor needn't understand the framework — but feels the tier.</span>
           <span lang="ja" style="display:block; font-family: var(--serif-jp); color: var(--ink-soft); font-size: 12.5px; margin-top: 4px;">構造をご理解いただく必要はない — それでも、段階は伝わる。</span>
         </div>
       </div>
@@ -4530,17 +4527,17 @@ details.disclosure[open] > .disclosure-body {
         <div>
           <div class="arc-year-pitch">
             <div><span class="y">2026</span><span class="y-name">建立信任</span></div>
-            <span class="y-name-en">Building Trust · L0 → L1</span>
+            <span class="y-name-en" lang="en">Building Trust · L0 → L1</span>
             <span lang="ja" style="display:block; font-family:var(--serif-jp); font-size:10.5px; color:var(--ink-mute);">信頼を築く · L0 → L1</span>
           </div>
           <div class="arc-year-pitch">
             <div><span class="y">2027</span><span class="y-name">守護的延伸</span></div>
-            <span class="y-name-en">Extending Guardianship · L1 → L3</span>
+            <span class="y-name-en" lang="en">Extending Guardianship · L1 → L3</span>
             <span lang="ja" style="display:block; font-family:var(--serif-jp); font-size:10.5px; color:var(--ink-mute);">守護の延長 · L1 → L3</span>
           </div>
           <div class="arc-year-pitch">
             <div><span class="y">2028</span><span class="y-name">事前設計</span></div>
-            <span class="y-name-en">Anticipatory Design · L3 → L5</span>
+            <span class="y-name-en" lang="en">Anticipatory Design · L3 → L5</span>
             <span lang="ja" style="display:block; font-family:var(--serif-jp); font-size:10.5px; color:var(--ink-mute);">事前の設計 · L3 → L5</span>
           </div>
         </div>
@@ -4554,8 +4551,8 @@ details.disclosure[open] > .disclosure-body {
 <!-- ==================== SLIDE 17 — DUAL CALIBRATION ==================== -->
 <section id="slide-19" data-anchor="capacity" class="slide slide-content">
   <div class="slide-tag">19</div>
-  <h2 class="content-headline-tc">雙向校準，讓架構自我演化。</h2>
-  <h2 class="content-headline-en">Dual calibration. A self-evolving architecture.</h2>
+  <h2 class="content-headline-tc" lang="zh-Hant">雙向校準，讓架構自我演化。</h2>
+  <h2 class="content-headline-en" lang="en">Dual calibration. A self-evolving architecture.</h2>
   <h2 class="content-headline-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal; color:var(--ink-soft);">双方向校正による、自己進化する構造。</h2>
 
   <div class="content-body">
@@ -4563,32 +4560,32 @@ details.disclosure[open] > .disclosure-body {
       <div class="cal-loop-pitch a">
         <div class="l-label">LOOP A · INTERNAL</div>
         <div class="l-title">內部校準迴路</div>
-        <span class="l-title-en">Internal Calibration Loop</span>
+        <span class="l-title-en" lang="en">Internal Calibration Loop</span>
         <span lang="ja" style="display:block; font-family:var(--serif-jp); font-size:11.5px; color:var(--ink-soft);">内部校正ループ</span>
         <p>實務與訓練的反證，回頭質疑能力定義與成熟度標準的合理性。
-          <span class="p-en">Evidence from practice and training questions capability definitions and maturity standards.</span>
+          <span class="p-en" lang="en">Evidence from practice and training questions capability definitions and maturity standards.</span>
           <span lang="ja" style="display:block; font-family:var(--serif-jp); font-style:normal; color:var(--ink-soft); font-size:11px;">現場と訓練からの反証が、能力定義と成熟度規範の妥当性を問い直す。</span>
         </p>
         <div class="cal-sources-pitch">
-          <span>場景使用<span class="pill-en">Scenario use</span></span>
-          <span>學習成效<span class="pill-en">Learning outcomes</span></span>
-          <span>BARS<span class="pill-en">BARS</span></span>
+          <span>場景使用<span class="pill-en" lang="en">Scenario use</span></span>
+          <span>學習成效<span class="pill-en" lang="en">Learning outcomes</span></span>
+          <span>BARS<span class="pill-en" lang="en">BARS</span></span>
         </div>
       </div>
       <div class="cal-loop-pitch b">
         <div class="l-label">LOOP B · EXTERNAL</div>
         <div class="l-title">外部校準迴路</div>
-        <span class="l-title-en">External Calibration Loop</span>
+        <span class="l-title-en" lang="en">External Calibration Loop</span>
         <span lang="ja" style="display:block; font-family:var(--serif-jp); font-size:11.5px; color:var(--ink-soft);">外部校正ループ</span>
         <p>訪客的真實聲音。比任何內部回饋更具權威——他們才是體驗的最終裁判。
-          <span class="p-en">The authentic voice of visitors. More authoritative than any internal signal — they are the final arbiters.</span>
+          <span class="p-en" lang="en">The authentic voice of visitors. More authoritative than any internal signal — they are the final arbiters.</span>
           <span lang="ja" style="display:block; font-family:var(--serif-jp); font-style:normal; color:var(--ink-soft); font-size:11px;">お客様の真の声 — いかなる内部信号よりも権威があり、体験の最終的な裁定者である。</span>
         </p>
         <div class="cal-sources-pitch">
-          <span>NPS<span class="pill-en">NPS</span></span>
-          <span>神秘訪客<span class="pill-en">Mystery visitor</span></span>
-          <span>申訴<span class="pill-en">Complaint</span></span>
-          <span>深度訪談<span class="pill-en">Interview</span></span>
+          <span>NPS<span class="pill-en" lang="en">NPS</span></span>
+          <span>神秘訪客<span class="pill-en" lang="en">Mystery visitor</span></span>
+          <span>申訴<span class="pill-en" lang="en">Complaint</span></span>
+          <span>深度訪談<span class="pill-en" lang="en">Interview</span></span>
         </div>
       </div>
     </div>
@@ -4600,8 +4597,8 @@ details.disclosure[open] > .disclosure-body {
 <!-- ==================== SLIDE 18 — DELIVERABLE PATH ==================== -->
 <section id="slide-20" data-anchor="roadmap" class="slide slide-content">
   <div class="slide-tag">20</div>
-  <h2 class="content-headline-tc">從架構，到落地。</h2>
-  <h2 class="content-headline-en">From architecture to ground.</h2>
+  <h2 class="content-headline-tc" lang="zh-Hant">從架構，到落地。</h2>
+  <h2 class="content-headline-en" lang="en">From architecture to ground.</h2>
   <h2 class="content-headline-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal; color:var(--ink-soft);">構造から、現場へ。</h2>
 
   <div class="content-body">
@@ -4610,7 +4607,7 @@ details.disclosure[open] > .disclosure-body {
         <div class="roadmap-v">本季</div>
         <div>
           <div class="roadmap-title">三十秒微導覽腳本庫（二十個高頻情境）<br>＋ 三日急救入職模組（保底訓練）</div>
-          <span class="roadmap-title-en">30-second micro-tour script library + 3-day rapid onboarding sprint</span>
+          <span class="roadmap-title-en" lang="en">30-second micro-tour script library + 3-day rapid onboarding sprint</span>
           <span class="roadmap-title-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal; color:var(--ink-soft);">30秒ミニツアー脚本庫 + 三日間集中導入</span>
           <div class="roadmap-meta">
             <span class="roadmap-tag kpi"><span class="tag-label">KPI</span>20 個腳本 · ≥90% 通過內部試聽</span>
@@ -4624,7 +4621,7 @@ details.disclosure[open] > .disclosure-body {
         <div class="roadmap-v">下季</div>
         <div>
           <div class="roadmap-title">L0—L2 BARS 矩陣（Cluster B、Cluster C 優先）<br>＋ HQ-TW NPS 基線蒐集</div>
-          <span class="roadmap-title-en">L0—L2 BARS rubric (Cluster B+C first) ＋ HQ-TW NPS baseline</span>
+          <span class="roadmap-title-en" lang="en">L0—L2 BARS rubric (Cluster B+C first) ＋ HQ-TW NPS baseline</span>
           <span class="roadmap-title-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal; color:var(--ink-soft);">L0〜L2 BARS規範（クラスタB・C優先）＋ HQ-TW NPS基準値</span>
           <div class="roadmap-meta">
             <span class="roadmap-tag kpi"><span class="tag-label">KPI</span>24 條 L0–L2 描述就緒 · NPS 基線 n≥200</span>
@@ -4638,7 +4635,7 @@ details.disclosure[open] > .disclosure-body {
         <div class="roadmap-v">年底</div>
         <div>
           <div class="roadmap-title">訓練教材包與內部認證流程於 HQ-TW 試點上線</div>
-          <span class="roadmap-title-en">Training pack and internal certification piloted at HQ-TW</span>
+          <span class="roadmap-title-en" lang="en">Training pack and internal certification piloted at HQ-TW</span>
           <span class="roadmap-title-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal; color:var(--ink-soft);">訓練教材一式と内部認証手順を HQ-TW にて試行運用開始</span>
           <div class="roadmap-meta">
             <span class="roadmap-tag kpi"><span class="tag-label">KPI</span>HQ-TW ≥80% 同仁達 L1 · 認證跑完一輪</span>
@@ -4652,7 +4649,7 @@ details.disclosure[open] > .disclosure-body {
         <div class="roadmap-v">明年</div>
         <div>
           <div class="roadmap-title">L3—L5 BARS 開發 ＋ 跨地區文化校準（JP / DE / CN / US-AZ）</div>
-          <span class="roadmap-title-en">L3—L5 BARS development + cross-region calibration (JP / DE / CN / US-AZ)</span>
+          <span class="roadmap-title-en" lang="en">L3—L5 BARS development + cross-region calibration (JP / DE / CN / US-AZ)</span>
           <span class="roadmap-title-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal; color:var(--ink-soft);">L3〜L5 BARS開発と拠点間文化校正（日 / 独 / 中 / 米AZ）</span>
           <div class="roadmap-meta">
             <span class="roadmap-tag kpi"><span class="tag-label">KPI</span>48 條 L3–L5 描述完成 · 跨地區差異 ≤15%</span>
@@ -4666,11 +4663,11 @@ details.disclosure[open] > .disclosure-body {
 
     <div class="cadence-note">
       <div class="cadence-label">節奏設計 · Cadence Design · 拍子の設計</div>
-      <p class="cadence-text-tc">L0—L2 在 2026 完成驗證，L3—L5 留待 2027 跨地區階段。避免 72 個行為描述同時部署造成的稀釋與失準。</p>
-      <p class="cadence-text-en">L0—L2 validated in 2026; L3—L5 deferred to the 2027 cross-region phase. Prevents the dilution risk of building all 72 behavior descriptions simultaneously.</p>
+      <p class="cadence-text-tc" lang="zh-Hant">L0—L2 在 2026 完成驗證，L3—L5 留待 2027 跨地區階段。避免 72 個行為描述同時部署造成的稀釋與失準。</p>
+      <p class="cadence-text-en" lang="en">L0—L2 validated in 2026; L3—L5 deferred to the 2027 cross-region phase. Prevents the dilution risk of building all 72 behavior descriptions simultaneously.</p>
       <p class="cadence-text-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal; color:var(--ink-soft);">L0〜L2は2026年に検証を完了し、L3〜L5は2027年の拠点間段階へ繰り延べる。72指標を同時展開した場合の希薄化と精度低下を避ける。</p>
-      <p class="cadence-text-tc" style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line-soft);">每季迴顧；KPI 落後超過一季即觸發架構層的重新校準。</p>
-      <p class="cadence-text-en">Reviewed quarterly; a KPI slip beyond one quarter triggers architecture-layer recalibration.</p>
+      <p class="cadence-text-tc" lang="zh-Hant" style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line-soft);">每季迴顧；KPI 落後超過一季即觸發架構層的重新校準。</p>
+      <p class="cadence-text-en" lang="en">Reviewed quarterly; a KPI slip beyond one quarter triggers architecture-layer recalibration.</p>
       <p class="cadence-text-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal; color:var(--ink-soft);">四半期ごとに見直す。KPIが一四半期を超えて遅延した場合、構造層の再校正を起動する。</p>
     </div>
   </div>
@@ -4682,38 +4679,38 @@ details.disclosure[open] > .disclosure-body {
 <section id="slide-21" data-anchor="decision" class="slide slide-decision">
   <div class="slide-tag">21</div>
   <div class="decision-content">
-    <h2 class="decision-headline-tc">三項行動。</h2>
-    <h2 class="decision-headline-en">Three actions.</h2>
+    <h2 class="decision-headline-tc" lang="zh-Hant">三項行動。</h2>
+    <h2 class="decision-headline-en" lang="en">Three actions.</h2>
     <h2 class="decision-headline-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal;">三つの行動。</h2>
 
     <div class="decision-actions">
       <div class="action-card">
         <div class="action-num">01</div>
         <div class="action-title">採納能力架構</div>
-        <span class="action-title-en">Endorse the capability architecture</span>
+        <span class="action-title-en" lang="en">Endorse the capability architecture</span>
         <span class="action-title-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal; color:var(--ink-soft);">能力構造を採用する</span>
         <p class="action-desc">核可這份能力架構作為詢問台同仁培訓的官方依據。</p>
-        <span class="action-desc-en">Approve this architecture as the official basis for information desk training.</span>
+        <span class="action-desc-en" lang="en">Approve this architecture as the official basis for information desk training.</span>
         <span class="action-desc-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal; color:var(--ink-soft);">本構造を案内所同僚の訓練における公式の拠り所として認可する。</span>
         <div class="action-meta">本週 · THIS WEEK · 今週</div>
       </div>
       <div class="action-card">
         <div class="action-num">02</div>
         <div class="action-title">啟動腳本庫建置</div>
-        <span class="action-title-en">Launch the script library</span>
+        <span class="action-title-en" lang="en">Launch the script library</span>
         <span class="action-title-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal; color:var(--ink-soft);">脚本庫の構築を起動する</span>
         <p class="action-desc">投入資源建立 20 個高頻情境的三語腳本庫。讓架構在 3 週內取得第一批使用者。</p>
-        <span class="action-desc-en">Resource the 20 high-frequency trilingual script library. Architecture acquires its first hands within 3 weeks.</span>
+        <span class="action-desc-en" lang="en">Resource the 20 high-frequency trilingual script library. Architecture acquires its first hands within 3 weeks.</span>
         <span class="action-desc-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal; color:var(--ink-soft);">高頻度20場面の三言語脚本庫の構築に資源を充当する。構造は3週以内に最初の使い手を得る。</span>
         <div class="action-meta">2-3 週 · 2-3 WEEKS · 2〜3週</div>
       </div>
       <div class="action-card">
         <div class="action-num">03</div>
         <div class="action-title">確認試點據點</div>
-        <span class="action-title-en">Confirm Pilot Site</span>
+        <span class="action-title-en" lang="en">Confirm Pilot Site</span>
         <span class="action-title-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal; color:var(--ink-soft);">試行拠点を定める</span>
         <p class="action-desc">選定一個據點作為內部認證流程的試點。優先建議：HQ-TW 主接待區。</p>
-        <span class="action-desc-en">Select one site to pilot the internal certification flow. Suggested: HQ-TW main reception.</span>
+        <span class="action-desc-en" lang="en">Select one site to pilot the internal certification flow. Suggested: HQ-TW main reception.</span>
         <span class="action-desc-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal; color:var(--ink-soft);">内部認証手順の試行のため一拠点を選ぶ。推奨：HQ-TW 主案内所。</span>
         <div class="action-meta">6 個月內 · WITHIN 6 MONTHS · 6か月以内</div>
       </div>
@@ -4725,8 +4722,8 @@ details.disclosure[open] > .disclosure-body {
 <!-- ==================== CLOSING ==================== -->
 <section id="slide-closing" data-anchor="closing" class="slide slide-closing">
   <div class="closing-mark">GPS</div>
-  <h2 class="closing-quote-tc">在您需要之前<span class="accent">。</span></h2>
-  <h3 class="closing-quote-en">Before you need it.</h3>
+  <h2 class="closing-quote-tc" lang="zh-Hant">在您需要之前<span class="accent">。</span></h2>
+  <h3 class="closing-quote-en" lang="en">Before you need it.</h3>
   <h3 class="closing-quote-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal;">必要となる、その前に。</h3>
   <div class="closing-footer">GPS Strategy &amp; Transformation · 2026.05</div>
 </section>
@@ -4850,7 +4847,7 @@ details.disclosure[open] > .disclosure-body {
     var KEY = 'deck-lang';
     var valid = { all: 1, tc: 1, en: 1, jp: 1 };
     var stored = (function(){ try { return localStorage.getItem(KEY); } catch(_) { return null; } })();
-    var initial = (stored && valid[stored]) ? stored : 'all';
+    var initial = (stored && valid[stored]) ? stored : 'tc';
     document.documentElement.setAttribute('data-lang', initial);
 
     var btns = document.querySelectorAll('[data-lang-set]');
@@ -5158,13 +5155,13 @@ details.disclosure[open] > .disclosure-body {
 </div>
 
 <footer class="deck-footer" role="contentinfo" aria-label="Deck metadata">
-  <span class="lang-toggle" role="group" aria-label="Language">
-    <button type="button" class="lang-btn" data-lang-set="all" aria-pressed="true">ALL</button>
-    <button type="button" class="lang-btn" data-lang-set="tc" aria-pressed="false">中</button>
+  <span class="lang-toggle" role="group" aria-label="Language" lang="en">
+    <button type="button" class="lang-btn" data-lang-set="all" aria-pressed="false">ALL</button>
+    <button type="button" class="lang-btn" data-lang-set="tc" aria-pressed="true">中</button>
     <button type="button" class="lang-btn" data-lang-set="en" aria-pressed="false">EN</button>
     <button type="button" class="lang-btn" data-lang-set="jp" aria-pressed="false">JP</button>
   </span>
-  <span class="lang-toggle" role="group" aria-label="Theme">
+  <span class="lang-toggle" role="group" aria-label="Theme" lang="en">
     <button type="button" class="lang-btn" data-theme-set="auto" aria-pressed="true" title="Auto (follow system)">A</button>
     <button type="button" class="lang-btn" data-theme-set="light" aria-pressed="false" title="Light">☀</button>
     <button type="button" class="lang-btn" data-theme-set="dark" aria-pressed="false" title="Dark">☾</button>
