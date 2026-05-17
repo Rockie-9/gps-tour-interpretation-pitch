@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "version": "0.1.0",
+  "name": "GPS Tour Interpretation · Substrate Audit Event Taxonomy",
+  "description": "Machine-readable companion to Slide 14 of the pitch deck. Defines the audit domains, action types, trigger rules, and evidence schema referenced by /spec/logging.md.",
+  "audit_domains": [
+    { "code": "ASSESS",    "name_tc": "評估稽核", "name_en": "Assessment audit",  "name_jp": "評価監査",   "intent": "BARS observations remain reproducible across observers and across time." },
+    { "code": "RECOGNIZE", "name_tc": "表揚稽核", "name_en": "Recognition audit", "name_jp": "表彰監査",   "intent": "Every promotion and insignia award is backed by a complete evidence chain." },
+    { "code": "TRAIN",     "name_tc": "訓練稽核", "name_en": "Training audit",    "name_jp": "訓練監査",   "intent": "Module completion certificates correspond to actual validated outputs." },
+    { "code": "RECOVER",   "name_tc": "恢復稽核", "name_en": "Recovery audit",    "name_jp": "回復監査",   "intent": "Incidents are recorded, resolved, and aggregated for architectural feedback." }
+  ],
+  "action_types": [
+    { "code": "OBSERVE_BARS",        "domain": "ASSESS",    "needs_chain": true,  "evidence_min": 1, "description": "An observer records one BARS anchor instance.",                "tc": "BARS 觀察",        "jp": "BARS観察" },
+    { "code": "DOUBLE_VERIFY",       "domain": "ASSESS",    "needs_chain": true,  "evidence_min": 1, "description": "A second observer verifies a prior OBSERVE_BARS entry.",      "tc": "雙觀察者校驗",     "jp": "二名照合" },
+    { "code": "CALIBRATE_QUARTERLY", "domain": "ASSESS",    "needs_chain": false, "evidence_min": 1, "description": "Quarterly cross-region calibration session yields a drift metric.", "tc": "季度校準",     "jp": "四半期校正" },
+    { "code": "PROMOTE_TIER",        "domain": "RECOGNIZE", "needs_chain": true,  "evidence_min": 3, "description": "Promote a staff member from tier N to tier N+1.",             "tc": "晉階",             "jp": "段階昇格" },
+    { "code": "AWARD_INSIGNIA",      "domain": "RECOGNIZE", "needs_chain": true,  "evidence_min": 1, "description": "Issue the visible insignia for a tier (follows PROMOTE_TIER).", "tc": "授徽",          "jp": "徽章授与" },
+    { "code": "REVOKE_TIER",         "domain": "RECOGNIZE", "needs_chain": true,  "evidence_min": 2, "description": "Revoke a tier when evidence chain fails on audit.",           "tc": "撤階",             "jp": "段階撤回" },
+    { "code": "ENROLL_MODULE",       "domain": "TRAIN",     "needs_chain": false, "evidence_min": 0, "description": "Staff enrols in a training module (M1–M9).",                  "tc": "登錄模組",         "jp": "講座登録" },
+    { "code": "COMPLETE_MODULE",     "domain": "TRAIN",     "needs_chain": true,  "evidence_min": 1, "description": "Staff submits the validation deliverable for a module.",      "tc": "完成模組",         "jp": "講座完了申請" },
+    { "code": "VALIDATE_MODULE",     "domain": "TRAIN",     "needs_chain": true,  "evidence_min": 1, "description": "Module-rubric validation outcome (pass / fail) is recorded.", "tc": "模組驗收",         "jp": "講座検収" },
+    { "code": "LOG_INCIDENT",        "domain": "RECOVER",   "needs_chain": false, "evidence_min": 0, "description": "A C1 or C2 incident is recorded.",                            "tc": "事案記錄",         "jp": "事案記録" },
+    { "code": "RESOLVE_INCIDENT",    "domain": "RECOVER",   "needs_chain": true,  "evidence_min": 1, "description": "An incident is closed with resolution and D3 loop-back tag.", "tc": "事案結案",         "jp": "事案解決" },
+    { "code": "SCRIPT_UPDATE",       "domain": "ASSESS",    "needs_chain": true,  "evidence_min": 1, "description": "A change is committed to the script library.",                "tc": "腳本更新",         "jp": "脚本更新" },
+    { "code": "SCENARIO_REVISE",     "domain": "ASSESS",    "needs_chain": true,  "evidence_min": 1, "description": "A scenario definition (A1–D4) is revised.",                   "tc": "場景修訂",         "jp": "場面改訂" },
+    { "code": "FEEDBACK_INTAKE",     "domain": "RECOVER",   "needs_chain": false, "evidence_min": 0, "description": "A piece of visitor feedback enters the D3 loop.",             "tc": "回饋蒐集",         "jp": "ご意見受付" }
+  ],
+  "trigger_rules": [
+    {
+      "id": "DRIFT_15",
+      "domain": "ASSESS",
+      "when": "CALIBRATE_QUARTERLY.drift > 0.15",
+      "then": [
+        "schedule next-cycle recalibration session",
+        "freeze affected-tier PROMOTE_TIER decisions until drift returns < 0.15",
+        "log a CALIBRATE_QUARTERLY event with context_tag including the prior drift value"
+      ]
+    },
+    {
+      "id": "CHAIN_MISSING",
+      "domain": "RECOGNIZE",
+      "when": "PROMOTE_TIER.evidence_count < action_types[PROMOTE_TIER].evidence_min",
+      "then": [
+        "freeze the promotion (state: pending_evidence)",
+        "notify the L4+ mentor of record",
+        "require the missing evidence within 30 days or the request expires"
+      ]
+    },
+    {
+      "id": "MODULE_VOID",
+      "domain": "TRAIN",
+      "when": "VALIDATE_MODULE.output_absent OR VALIDATE_MODULE.outcome == 'fail'",
+      "then": [
+        "void the COMPLETE_MODULE record",
+        "if the void cascades to a PROMOTE_TIER, reset tier to prior",
+        "notify the staff member of remediation path"
+      ]
+    },
+    {
+      "id": "RECURRING_INCIDENT",
+      "domain": "RECOVER",
+      "when": "LOG_INCIDENT.class.count_per_quarter > 3",
+      "then": [
+        "raise architecture-layer recall: agenda for the next quarterly review",
+        "tag affected capability numbers in the recall notice",
+        "if the same class recurs >3 times for two consecutive quarters, escalate to Global Training Council"
+      ]
+    }
+  ],
+  "evidence_schema": {
+    "required_fields": ["evidence_id", "ts", "observer_actor_id", "observation_text", "scenario_code"],
+    "min_observers_for_promotion": 2,
+    "min_scenarios_for_promotion": 2,
+    "scenario_code_enum": ["A1", "A2", "B1", "B2", "C1", "C2", "D1", "D2", "D3", "D4"],
+    "note": "An evidence record is valid only if recorded by an actor with tier >= L3 OR if cross-confirmed by a DOUBLE_VERIFY from such an actor."
+  },
+  "retention_alignment": {
+    "hot_days": 90,
+    "warm_days": 365,
+    "cold_days": 1095,
+    "note": "Matches /spec/logging.md § Retention tiers."
+  },
+  "out_of_scope": [
+    "Implementation code",
+    "Database schema or migrations",
+    "API contracts",
+    "Visitor-facing surfaces (staff workflow only in this iteration)",
+    "Cross-organisation data sharing beyond quarterly drift metrics"
+  ]
+}
