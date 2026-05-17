@@ -119,6 +119,58 @@ button:focus-visible, a:focus-visible {
   .slide { scroll-snap-align: none !important; scroll-snap-stop: normal !important; }
 }
 
+/* ==================== F3 · Language toggle (item 9) ====================
+   <html data-lang> values: "all" (default trilingual), "tc", "en", "jp"
+   When tc|en|jp: hide translation-sibling spans + lang-attributed alternates.
+   Known limitation: bare TC text without an explicit -en/-jp class counterpart
+   remains visible in en|jp modes — acceptable as ambient context; documented
+   in /spec/accessibility.md once P12 lands. */
+:root[data-lang="en"] *[class$="-tc"],
+:root[data-lang="en"] *[class$="-jp"],
+:root[data-lang="en"] *[class*="-tc "],
+:root[data-lang="en"] *[class*="-jp "],
+:root[data-lang="en"] *[lang="zh-Hant"],
+:root[data-lang="en"] *[lang="ja"] { display: none !important; }
+
+:root[data-lang="jp"] *[class$="-tc"],
+:root[data-lang="jp"] *[class$="-en"],
+:root[data-lang="jp"] *[class*="-tc "],
+:root[data-lang="jp"] *[class*="-en "],
+:root[data-lang="jp"] *[lang="zh-Hant"],
+:root[data-lang="jp"] *[lang="en"] { display: none !important; }
+
+:root[data-lang="tc"] *[class$="-en"],
+:root[data-lang="tc"] *[class$="-jp"],
+:root[data-lang="tc"] *[class*="-en "],
+:root[data-lang="tc"] *[class*="-jp "],
+:root[data-lang="tc"] *[lang="en"],
+:root[data-lang="tc"] *[lang="ja"] { display: none !important; }
+
+/* The toggle UI itself must NEVER be hidden by the toggle. */
+:root[data-lang] .lang-toggle,
+:root[data-lang] .lang-toggle *,
+:root[data-lang] .deck-footer,
+:root[data-lang] .deck-footer * { display: revert !important; }
+/* deck-footer uses flex, restore: */
+:root[data-lang] .deck-footer { display: flex !important; }
+/* But preserve aria-hidden side-effects */
+:root[data-lang] .lang-toggle [aria-hidden="true"]:not(.lang-btn) { display: none !important; }
+
+/* Inline lang toggle (provisional — R1 entry router replaces with a richer UI) */
+.lang-toggle {
+  display: inline-flex; align-items: center; gap: 2px;
+  margin-right: 6px;
+}
+.lang-btn {
+  appearance: none; background: transparent; border: 1px solid var(--line-soft);
+  font-family: var(--mono); font-size: 9px; color: var(--ink-mute);
+  padding: 2px 6px; cursor: pointer; letter-spacing: 0.06em;
+  border-radius: 2px; line-height: 1;
+}
+.lang-btn[aria-pressed="true"] { color: var(--turquoise-deep); border-color: var(--turquoise-line); background: var(--turquoise-soft); }
+.lang-btn:hover { color: var(--ink-soft); }
+.lang-btn:focus-visible { outline: 2px solid var(--turquoise); outline-offset: 1px; }
+
 /* ==================== F5 · Dark mode (item 23) ==================== */
 /* Auto via prefers-color-scheme, plus manual override via <html data-theme="dark|light"> */
 @media (prefers-color-scheme: dark) {
@@ -4326,6 +4378,77 @@ details.disclosure[open] > .disclosure-body {
     }
   }, true);
 
+  // F3 (item 9): language toggle controller. data-lang on <html>, persisted via localStorage.
+  (function initLangToggle() {
+    var KEY = 'deck-lang';
+    var valid = { all: 1, tc: 1, en: 1, jp: 1 };
+    var stored = (function(){ try { return localStorage.getItem(KEY); } catch(_) { return null; } })();
+    var initial = (stored && valid[stored]) ? stored : 'all';
+    document.documentElement.setAttribute('data-lang', initial);
+
+    var btns = document.querySelectorAll('[data-lang-set]');
+    function applyLang(value) {
+      if (!valid[value]) value = 'all';
+      document.documentElement.setAttribute('data-lang', value);
+      try { localStorage.setItem(KEY, value); } catch(_) {}
+      btns.forEach(function(b) {
+        b.setAttribute('aria-pressed', b.getAttribute('data-lang-set') === value ? 'true' : 'false');
+      });
+      // F3 aria-hidden propagation — language alternates should not be read by AT
+      var allAlt = document.querySelectorAll(
+        '[lang="zh-Hant"], [lang="en"], [lang="ja"], ' +
+        '*[class$="-tc"], *[class$="-en"], *[class$="-jp"], ' +
+        '*[class*="-tc "], *[class*="-en "], *[class*="-jp "]'
+      );
+      allAlt.forEach(function(el) {
+        // Skip the toggle UI itself
+        if (el.closest('.lang-toggle') || el.closest('.deck-footer')) {
+          el.removeAttribute('aria-hidden');
+          return;
+        }
+        if (value === 'all') { el.removeAttribute('aria-hidden'); return; }
+        var langAttr = el.getAttribute('lang');
+        var cls = el.className && el.className.indexOf ? el.className : '';
+        var matchesActive = false;
+        if (value === 'tc') {
+          matchesActive = (langAttr === 'zh-Hant') || (typeof cls === 'string' && /(?:^|\s)[\w-]*-tc(?:\s|$)/.test(cls));
+        } else if (value === 'en') {
+          matchesActive = (langAttr === 'en') || (typeof cls === 'string' && /(?:^|\s)[\w-]*-en(?:\s|$)/.test(cls));
+        } else if (value === 'jp') {
+          matchesActive = (langAttr === 'ja') || (typeof cls === 'string' && /(?:^|\s)[\w-]*-jp(?:\s|$)/.test(cls));
+        }
+        if (matchesActive) el.removeAttribute('aria-hidden');
+        else el.setAttribute('aria-hidden', 'true');
+      });
+    }
+    btns.forEach(function(b) {
+      b.addEventListener('click', function() { applyLang(b.getAttribute('data-lang-set')); });
+    });
+    applyLang(initial);
+  })();
+
+  // F5 (item 23): theme toggle controller. data-theme on <html>, persisted via localStorage.
+  (function initThemeToggle() {
+    var KEY = 'deck-theme';
+    var valid = { auto: 1, light: 1, dark: 1 };
+    var stored = (function(){ try { return localStorage.getItem(KEY); } catch(_) { return null; } })();
+    var initial = (stored && valid[stored]) ? stored : 'auto';
+    applyTheme(initial);
+    var btns = document.querySelectorAll('[data-theme-set]');
+    function applyTheme(value) {
+      if (!valid[value]) value = 'auto';
+      if (value === 'auto') document.documentElement.removeAttribute('data-theme');
+      else document.documentElement.setAttribute('data-theme', value);
+      try { localStorage.setItem(KEY, value); } catch(_) {}
+      document.querySelectorAll('[data-theme-set]').forEach(function(b) {
+        b.setAttribute('aria-pressed', b.getAttribute('data-theme-set') === value ? 'true' : 'false');
+      });
+    }
+    btns.forEach(function(b) {
+      b.addEventListener('click', function() { applyTheme(b.getAttribute('data-theme-set')); });
+    });
+  })();
+
   // F4 v2: open <details> matching URL hash (e.g., #slide-12 opens scenario list, but if
   // a sub-anchor matches a <details> id, force it open and scroll-into-view).
   function openDetailsFromHash() {
@@ -4377,6 +4500,17 @@ details.disclosure[open] > .disclosure-body {
 </script>
 
 <footer class="deck-footer" role="contentinfo" aria-label="Deck metadata">
+  <span class="lang-toggle" role="group" aria-label="Language">
+    <button type="button" class="lang-btn" data-lang-set="all" aria-pressed="true">ALL</button>
+    <button type="button" class="lang-btn" data-lang-set="tc" aria-pressed="false">中</button>
+    <button type="button" class="lang-btn" data-lang-set="en" aria-pressed="false">EN</button>
+    <button type="button" class="lang-btn" data-lang-set="jp" aria-pressed="false">JP</button>
+  </span>
+  <span class="lang-toggle" role="group" aria-label="Theme">
+    <button type="button" class="lang-btn" data-theme-set="auto" aria-pressed="true" title="Auto (follow system)">A</button>
+    <button type="button" class="lang-btn" data-theme-set="light" aria-pressed="false" title="Light">☀</button>
+    <button type="button" class="lang-btn" data-theme-set="dark" aria-pressed="false" title="Dark">☾</button>
+  </span>
   <span class="deck-footer-version" lang="en">v2.0.0 · 2026-05-17</span>
   <span class="deck-footer-sep" aria-hidden="true">·</span>
   <a class="deck-footer-link" href="CHANGELOG.md" target="_blank" rel="noopener" lang="en">changelog</a>
