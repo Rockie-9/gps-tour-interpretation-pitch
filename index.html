@@ -4449,6 +4449,16 @@ details.disclosure[open] > .disclosure-body {
     });
   })();
 
+  // F6 (item 25): service worker for offline support.
+  // Only register when served over http(s) — file:// will skip silently.
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('./sw.js').catch(function() {
+        // Silent — SW is enhancement, not requirement
+      });
+    });
+  }
+
   // F4 v2: open <details> matching URL hash (e.g., #slide-12 opens scenario list, but if
   // a sub-anchor matches a <details> id, force it open and scroll-into-view).
   function openDetailsFromHash() {
