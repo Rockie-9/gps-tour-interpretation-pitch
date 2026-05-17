@@ -1,0 +1,339 @@
+// GPS Issue & Management Center — Prisma schema
+// Backs spec v0.4 sections: §6.2 (ingest queue), §6.7 (correlation), §6.9 (observability),
+// §7 (issue lifecycle + HITL audit), §9.2 (budget), §14.2 (retention).
+// ORM decision recorded in docs/adr/ADR-006-prisma-vs-drizzle.md.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ---------------------------------------------------------------------------
+// §6.2 — Ingest queue
+// Inference worker MUST claim rows with `FOR UPDATE SKIP LOCKED`
+// (see lib/queue/queue.ts — Prisma `$queryRaw`).
+// ---------------------------------------------------------------------------
+
+enum QueueStatus {
+  pending
+  processing
+  done
+  failed
+  suspicious // §14.3.5 — flagged by prompt-injection scan
+}
+
+enum SourceType {
+  newsapi
+  google_news_rss
+  acled
+  manual
+  other
+}
+
+model IngestQueueItem {
+  id             String      @id @default(uuid()) @db.Uuid
+  sourceUrl      String      @map("source_url")
+  sourceType     SourceType  @map("source_type")
+  sourceId       String      @map("source_id") // matches SourceConnector.id
+  rawContent     String?     @map("raw_content") @db.Text // nulled after retention window (§14.2)
+  title          String?
+  publishedAt    DateTime?   @map("published_at")
+  language       String?     @db.VarChar(8)
+  sourceMetadata Json?       @map("source_metadata")
+  status         QueueStatus @default(pending)
+  retryCount     Int         @default(0) @map("retry_count")
+  lastError      String?     @map("last_error") @db.Text
+  createdAt      DateTime    @default(now()) @map("created_at")
+  processedAt    DateTime?   @map("processed_at")
+  issueId        String?     @map("issue_id") @db.Uuid
+
+  issue Issue? @relation(fields: [issueId], references: [id], onDelete: SetNull)
+
+  @@unique([sourceUrl]) // dedup across connectors; reprocessing uses a separate flag
+  @@index([status, createdAt])
+  @@map("ingest_queue")
+}
+
+// ---------------------------------------------------------------------------
+// §7 — Issue model
+// `metadata` is JSONB to absorb future fields without migration (v0.4 §0).
+// ---------------------------------------------------------------------------
+
+enum IssueCategory {
+  geopolitical       // 1. 地緣政治與外交事件
+  physical_security  // 2. 實體安全事件
+  supply_chain       // 3. 供應鏈中斷
+  regulatory         // 4. 監管與制裁
+  hostile_narrative  // 5. 針對 TSMC 的敵意論述
+}
+
+enum IssueStatus {
+  detected
+  triaged
+  assigned
+  investigating
+  resolved
+  monitoring
+}
+
+model Issue {
+  id               String        @id @default(uuid()) @db.Uuid
+  title            String
+  category         IssueCategory
+  geo              Json          // { country, region, lat?, lng? }
+  primaryActors    String[]      @map("primary_actors")
+  urgencyScore     Int           @map("urgency_score") // 1-5
+  triageSummary    String        @map("triage_summary") @db.Text
+  confidenceScore  Decimal       @map("confidence_score") @db.Decimal(3, 2) // 0.00-1.00
+  status           IssueStatus   @default(detected)
+  assignedTo       String?       @map("assigned_to") @db.Uuid
+  metadata         Json          @default("{}") // v0.4 — extension point
+  promptVersion    String        @map("prompt_version")
+  modelVersion     String        @map("model_version")
+  rubricVersion    String        @map("rubric_version")
+  createdAt        DateTime      @default(now()) @map("created_at")
+  updatedAt        DateTime      @updatedAt @map("updated_at")
+
+  assignee     User?              @relation("AssignedIssues", fields: [assignedTo], references: [id], onDelete: SetNull)
+  queueItems   IngestQueueItem[]
+  history      IssueHistory[]
+  correlationsAsSource CorrelationSuggestion[] @relation("CorrelationSource")
+  correlationsAsTarget CorrelationSuggestion[] @relation("CorrelationTarget")
+
+  @@index([status, createdAt])
+  @@index([category, createdAt])
+  @@index([urgencyScore])
+  @@map("issues")
+}
+
+// ---------------------------------------------------------------------------
+// §7 — Audit trail with HITL correction reason (v0.4 new)
+// ---------------------------------------------------------------------------
+
+enum HitlReason {
+  false_positive
+  wrong_category
+  missed_urgency
+  wrong_geo
+  wrong_actors
+  other
+}
+
+enum HistoryAction {
+  detected
+  triaged
+  status_changed
+  reassigned
+  hitl_correction
+  merged
+  linked
+  commented
+}
+
+model IssueHistory {
+  id                   String         @id @default(uuid()) @db.Uuid
+  issueId              String         @map("issue_id") @db.Uuid
+  action               HistoryAction
+  actorId              String?        @map("actor_id") @db.Uuid // null = system
+  payload              Json           // before/after diff or freeform
+  hitlCorrectionReason HitlReason?    @map("hitl_correction_reason") // §7 — required on hitl_correction
+  hitlCorrectionNote   String?        @map("hitl_correction_note") @db.Text
+  promptVersion        String?        @map("prompt_version")
+  modelVersion         String?        @map("model_version")
+  rubricVersion        String?        @map("rubric_version")
+  createdAt            DateTime       @default(now()) @map("created_at")
+
+  issue Issue @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  actor User? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([issueId, createdAt])
+  @@index([action, createdAt])
+  @@map("issue_history")
+}
+
+// ---------------------------------------------------------------------------
+// §6.7 — Correlation suggestions (never auto-merge; HITL only)
+// ---------------------------------------------------------------------------
+
+enum CorrelationKind {
+  merge // geo + actor + event-window all overlap
+  link  // geo + actor overlap; event-window does not
+}
+
+enum CorrelationStatus {
+  pending
+  accepted
+  rejected
+}
+
+model CorrelationSuggestion {
+  id            String            @id @default(uuid()) @db.Uuid
+  sourceIssueId String            @map("source_issue_id") @db.Uuid
+  targetIssueId String            @map("target_issue_id") @db.Uuid
+  kind          CorrelationKind
+  status        CorrelationStatus @default(pending)
+  fingerprint   Json              // diagnostic: which dimensions overlapped
+  decidedBy     String?           @map("decided_by") @db.Uuid
+  decidedAt     DateTime?         @map("decided_at")
+  createdAt     DateTime          @default(now()) @map("created_at")
+
+  sourceIssue Issue @relation("CorrelationSource", fields: [sourceIssueId], references: [id], onDelete: Cascade)
+  targetIssue Issue @relation("CorrelationTarget", fields: [targetIssueId], references: [id], onDelete: Cascade)
+  decider     User? @relation(fields: [decidedBy], references: [id], onDelete: SetNull)
+
+  @@unique([sourceIssueId, targetIssueId])
+  @@index([status, createdAt])
+  @@map("correlation_suggestions")
+}
+
+// ---------------------------------------------------------------------------
+// §6.9 — Observability metrics (no separate platform; lives in Postgres)
+// ---------------------------------------------------------------------------
+
+enum MetricKey {
+  queue_backlog_size
+  ingestion_success_rate
+  inference_parse_failure_rate
+  monthly_token_cost_usd
+}
+
+model SystemMetric {
+  id          BigInt    @id @default(autoincrement())
+  metricKey   MetricKey @map("metric_key")
+  value       Decimal   @db.Decimal(18, 6)
+  dimensions  Json?     // e.g. { source_id, prompt_version }
+  recordedAt  DateTime  @default(now()) @map("recorded_at")
+
+  @@index([metricKey, recordedAt])
+  @@map("system_metrics")
+}
+
+// §6.6 — Source health snapshot (drives degraded-mode policy)
+model SourceHealthSnapshot {
+  id              BigInt    @id @default(autoincrement())
+  sourceId        String    @map("source_id")
+  ok              Boolean
+  consecutiveFailures Int  @map("consecutive_failures")
+  lastSuccessAt   DateTime? @map("last_success_at")
+  message         String?
+  recordedAt      DateTime  @default(now()) @map("recorded_at")
+
+  @@index([sourceId, recordedAt])
+  @@map("source_health_snapshots")
+}
+
+// §6.6 — Per-source pause flag for degraded mode + manual ops kill-switch.
+model SourceState {
+  sourceId     String   @id @map("source_id")
+  paused       Boolean  @default(false)
+  pauseReason  String?  @map("pause_reason")
+  pausedAt     DateTime? @map("paused_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("source_state")
+}
+
+// ---------------------------------------------------------------------------
+// §9.2 — Budget circuit-breaker
+// ---------------------------------------------------------------------------
+
+model CostLogEntry {
+  id              BigInt   @id @default(autoincrement())
+  forDate         DateTime @map("for_date") @db.Date
+  inputTokens     BigInt   @map("input_tokens")
+  outputTokens    BigInt   @map("output_tokens")
+  cacheReadTokens BigInt   @default(0) @map("cache_read_tokens")
+  estimatedUsd    Decimal  @map("estimated_usd") @db.Decimal(10, 4)
+  modelId         String   @map("model_id")
+  recordedAt      DateTime @default(now()) @map("recorded_at")
+
+  @@index([forDate])
+  @@map("cost_log")
+}
+
+// Global kill-switch flipped by budget cron (§9.2). Manual recovery only.
+model SystemFlag {
+  key       String   @id
+  value     Boolean  @default(false)
+  reason    String?
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("system_flags")
+}
+
+// ---------------------------------------------------------------------------
+// §6.5 / §6.8 — Users + role-based authz (matrix lives in lib/auth/authorize.ts)
+// ---------------------------------------------------------------------------
+
+enum UserRole {
+  viewer
+  analyst
+  admin
+}
+
+model User {
+  id            String   @id @default(uuid()) @db.Uuid
+  email         String   @unique
+  name          String?
+  role          UserRole @default(viewer)
+  emailVerified DateTime? @map("email_verified")
+  image         String?
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  // NextAuth relations
+  accounts  Account[]
+  sessions  Session[]
+
+  assignedIssues       Issue[]                 @relation("AssignedIssues")
+  historyActions       IssueHistory[]
+  correlationDecisions CorrelationSuggestion[]
+
+  @@map("users")
+}
+
+// NextAuth adapter tables (Auth.js v5)
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @db.Uuid @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @db.Uuid @map("user_id")
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}

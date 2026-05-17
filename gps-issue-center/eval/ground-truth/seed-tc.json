@@ -1,0 +1,41 @@
+[
+  {
+    "id": "tc-001",
+    "source": "synthetic-phase0",
+    "language": "zh-TW",
+    "title": "新竹科學園區附近發生小規模抗議",
+    "content": "新竹科學園區外圍周邊昨日傍晚出現約三十人之集會,訴求為勞工權益相關議題,警方到場維持秩序,集會兩小時後和平散去,園區內生產作業未受影響。",
+    "expected": {
+      "category": "physical_security",
+      "urgencyScore": 1,
+      "geoCountry": "Taiwan",
+      "rubric": { "threatEscalation": 1, "actorSpecificity": 2, "geoSpecificity": 4, "timeUrgency": 1 }
+    }
+  },
+  {
+    "id": "tc-002",
+    "source": "synthetic-phase0",
+    "language": "zh-TW",
+    "title": "立法院初審通過國家關鍵供應鏈安全法草案",
+    "content": "立法院經濟委員會今(15)日初審通過「國家關鍵供應鏈安全法」草案,授權主管機關得對涉及國家安全之半導體設備、材料出口進行審查。草案尚需三讀通過,預計下會期審議。產業界對審查標準與時程仍待進一步說明。",
+    "expected": {
+      "category": "regulatory",
+      "urgencyScore": 2,
+      "geoCountry": "Taiwan",
+      "rubric": { "threatEscalation": 2, "actorSpecificity": 4, "geoSpecificity": 3, "timeUrgency": 2 }
+    }
+  },
+  {
+    "id": "tc-003",
+    "source": "synthetic-phase0",
+    "language": "zh-TW",
+    "title": "高雄港部分泊位因颱風暫停作業",
+    "content": "受熱帶低壓影響,高雄港務分公司宣布部分泊位明日凌晨起暫停作業,預計影響工時 18 至 24 小時。半導體相關進出口貨物已協調改靠其他泊位,業者表示對供應鏈影響有限。",
+    "expected": {
+      "category": "supply_chain",
+      "urgencyScore": 2,
+      "geoCountry": "Taiwan",
+      "rubric": { "threatEscalation": 2, "actorSpecificity": 4, "geoSpecificity": 4, "timeUrgency": 4 }
+    }
+  }
+]

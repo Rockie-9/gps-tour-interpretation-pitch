@@ -1,0 +1,44 @@
+{
+  "name": "gps-issue-center",
+  "version": "0.4.0-phase0",
+  "private": true,
+  "description": "GPS Issue & Management Center — OSINT-driven issue detection and case management for TSMC GPS team (spec v0.4)",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:studio": "prisma studio",
+    "eval": "tsx eval/run-eval.ts",
+    "eval:report": "tsx eval/run-eval.ts --report"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.30.0",
+    "@auth/prisma-adapter": "^2.7.0",
+    "@prisma/client": "^5.22.0",
+    "next": "^14.2.0",
+    "next-auth": "^5.0.0-beta.20",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "resend": "^4.0.0",
+    "rss-parser": "^3.13.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^14.2.0",
+    "prisma": "^5.22.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
