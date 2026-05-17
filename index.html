@@ -2792,6 +2792,229 @@ details.disclosure[open] > .disclosure-body {
   .deck-footer { font-size: 8.5px; padding: 4px 9px; gap: 6px; bottom: 6px; }
 }
 @media print { .deck-footer { display: none; } }
+
+/* ==================== R1 · Entry router (items 1, 2, 37) ====================
+   Lives inside the cover slide; offers six entry routes without forcing them. */
+.entry-router {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border: 1px solid var(--line-soft);
+  background: rgba(31, 156, 165, 0.03);
+  border-radius: 4px;
+  max-width: 640px;
+}
+.entry-router-label {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.14em;
+  color: var(--ink-mute); text-transform: uppercase; margin-bottom: 10px;
+}
+.entry-router-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+}
+.entry-router-btn {
+  appearance: none;
+  background: var(--paper); border: 1px solid var(--line);
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em;
+  color: var(--ink-soft); padding: 8px 10px;
+  cursor: pointer; text-align: left;
+  text-decoration: none; display: block;
+  line-height: 1.4;
+  transition: background var(--t-quick), border-color var(--t-quick), color var(--t-quick);
+}
+.entry-router-btn:hover, .entry-router-btn:focus-visible {
+  background: var(--turquoise-soft);
+  border-color: var(--turquoise-line);
+  color: var(--turquoise-deep);
+}
+.entry-router-btn:focus-visible { outline: 2px solid var(--turquoise); outline-offset: 1px; }
+.entry-router-btn .erb-role {
+  display: block; font-family: var(--serif-tc); font-size: 12px; color: var(--brand-black);
+  font-weight: 500; letter-spacing: 0; margin-bottom: 2px;
+}
+.entry-router-btn[data-route="order"] {
+  grid-column: 1 / -1;
+  background: var(--turquoise-soft); border-color: var(--turquoise-line);
+  color: var(--turquoise-deep);
+}
+.entry-router-btn[data-route="order"] .erb-role { color: var(--turquoise-deep); }
+@media (max-width: 768px) {
+  .entry-router-grid { grid-template-columns: 1fr 1fr; }
+  .entry-router { padding: 12px; }
+}
+
+/* ==================== R2 · Executive one-pager slide ==================== */
+.exec-pager {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+  gap: 48px;
+  align-items: start;
+  padding-top: 4vh;
+}
+.exec-pager-left .exec-eyebrow {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em;
+  color: var(--turquoise-deep); text-transform: uppercase; margin-bottom: 14px;
+}
+.exec-pager-left h2 {
+  font-family: var(--serif-tc); font-size: 36px; line-height: 1.25; color: var(--brand-black);
+  font-weight: 500; margin-bottom: 8px;
+}
+.exec-pager-left .exec-h-en {
+  font-family: var(--serif-en), 'Lato', sans-serif; font-style: italic;
+  font-size: 18px; color: var(--ink-soft); line-height: 1.4; margin-bottom: 6px;
+}
+.exec-pager-left .exec-h-jp {
+  font-family: var(--serif-jp); font-size: 20px; color: var(--ink-soft); line-height: 1.45;
+}
+.exec-pager-left .exec-ask {
+  margin-top: 24px; padding: 14px 16px;
+  background: var(--paper-deep); border-left: 3px solid var(--turquoise);
+  font-family: var(--serif-tc); font-size: 14px; color: var(--ink); line-height: 1.6;
+}
+.exec-pager-left .exec-ask .ea-en { display: block; font-family: var(--serif-en), 'Lato', sans-serif; font-style: italic; font-size: 12px; color: var(--ink-soft); margin-top: 4px; }
+.exec-pager-left .exec-ask .ea-jp { display: block; font-family: var(--serif-jp); font-size: 13px; color: var(--ink-soft); margin-top: 2px; }
+.exec-numbers {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;
+}
+.exec-number {
+  padding: 16px;
+  border: 1px solid var(--line-soft); background: var(--paper);
+}
+.exec-number .en-label {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em;
+  color: var(--ink-mute); text-transform: uppercase; margin-bottom: 8px;
+}
+.exec-number .en-value {
+  font-family: var(--serif-en), 'Lato', sans-serif; font-size: 28px;
+  color: var(--brand-black); font-weight: 400; margin-bottom: 4px; letter-spacing: -0.01em;
+}
+.exec-number .en-value.placeholder { color: var(--ink-mute); font-style: italic; font-size: 18px; }
+.exec-number .en-note {
+  font-family: var(--serif-tc); font-size: 11px; color: var(--ink-soft); line-height: 1.5;
+}
+.exec-number .en-note .nn-en { display: block; font-family: var(--serif-en), 'Lato', sans-serif; font-style: italic; font-size: 10px; color: var(--ink-mute); margin-top: 2px; }
+.exec-number .en-note .nn-jp { display: block; font-family: var(--serif-jp); font-size: 10.5px; color: var(--ink-mute); margin-top: 1px; }
+.exec-pager-bottom {
+  grid-column: 1 / -1;
+  margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--line-soft);
+  display: flex; flex-wrap: wrap; gap: 16px 28px;
+  font-family: var(--mono); font-size: 10px; color: var(--ink-soft); letter-spacing: 0.06em;
+}
+.exec-pager-bottom a {
+  color: var(--turquoise-deep); text-decoration: none;
+  border-bottom: 1px dashed var(--turquoise-line); padding-bottom: 1px;
+}
+.exec-pager-bottom a:hover, .exec-pager-bottom a:focus-visible { color: var(--turquoise); border-bottom-style: solid; }
+.fin-input-flag {
+  display: inline-block; font-family: var(--mono); font-size: 8.5px;
+  background: rgba(232, 155, 126, 0.14); color: #B86E50;
+  padding: 1px 6px; margin-left: 6px; border-radius: 2px; letter-spacing: 0.08em;
+  vertical-align: middle;
+}
+@media (max-width: 1024px) {
+  .exec-pager { grid-template-columns: 1fr; gap: 28px; }
+}
+@media (max-width: 768px) {
+  .exec-pager-left h2 { font-size: 26px; }
+  .exec-pager-left .exec-h-en { font-size: 14px; }
+  .exec-pager-left .exec-h-jp { font-size: 15px; }
+  .exec-numbers { grid-template-columns: 1fr; }
+  .exec-number .en-value { font-size: 22px; }
+}
+
+/* ==================== R3 · Visitor ladder slide ==================== */
+.visitor-ladder {
+  display: flex; flex-direction: column; gap: 12px;
+  padding-top: 2vh;
+}
+.visitor-ladder-intro {
+  max-width: 720px; margin-bottom: 14px;
+  font-family: var(--serif-tc); font-size: 14px; line-height: 1.65; color: var(--ink);
+}
+.visitor-ladder-intro .vli-en { display: block; font-family: var(--serif-en), 'Lato', sans-serif; font-style: italic; font-size: 12px; color: var(--ink-soft); margin-top: 4px; }
+.visitor-ladder-intro .vli-jp { display: block; font-family: var(--serif-jp); font-size: 13px; color: var(--ink-soft); margin-top: 2px; }
+.visitor-ladder-rung {
+  display: grid; grid-template-columns: 56px minmax(180px, 1fr) minmax(0, 2fr);
+  gap: 16px;
+  padding: 12px 14px;
+  background: var(--paper); border: 1px solid var(--line-soft);
+  border-left: 3px solid var(--turquoise-line);
+  align-items: start;
+}
+.visitor-ladder-rung[data-rung="L5"] { border-left-color: var(--turquoise); background: var(--turquoise-soft); }
+.visitor-ladder-rung[data-rung="L4"] { border-left-color: var(--turquoise); }
+.vlr-level {
+  font-family: var(--mono); font-size: 16px; color: var(--turquoise-deep); letter-spacing: 0.05em; font-weight: 500;
+}
+.vlr-staff {
+  font-family: var(--serif-tc); font-size: 12px; color: var(--ink-soft); line-height: 1.55;
+}
+.vlr-staff .vlrs-label { display: block; font-family: var(--mono); font-size: 8.5px; color: var(--ink-mute); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 4px; }
+.vlr-staff .vlrs-en { display: block; font-family: var(--serif-en), 'Lato', sans-serif; font-style: italic; font-size: 10.5px; color: var(--ink-mute); margin-top: 2px; }
+.vlr-staff .vlrs-jp { display: block; font-family: var(--serif-jp); font-size: 11px; color: var(--ink-mute); margin-top: 1px; }
+.vlr-visitor {
+  font-family: var(--serif-tc); font-size: 13px; color: var(--brand-black); line-height: 1.65;
+}
+.vlr-visitor .vlrv-label { display: block; font-family: var(--mono); font-size: 8.5px; color: var(--turquoise-deep); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 4px; }
+.vlr-visitor .vlrv-en { display: block; font-family: var(--serif-en), 'Lato', sans-serif; font-style: italic; font-size: 11.5px; color: var(--ink-soft); margin-top: 4px; }
+.vlr-visitor .vlrv-jp { display: block; font-family: var(--serif-jp); font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+.visitor-ladder-foot {
+  margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line-soft);
+  font-family: var(--serif-tc); font-size: 13px; color: var(--ink); font-style: italic; line-height: 1.6;
+}
+.visitor-ladder-foot .vlf-en { display: block; font-family: var(--serif-en), 'Lato', sans-serif; font-style: italic; font-size: 11px; color: var(--ink-soft); margin-top: 4px; }
+.visitor-ladder-foot .vlf-jp { display: block; font-family: var(--serif-jp); font-size: 12px; color: var(--ink-soft); margin-top: 2px; font-style: normal; }
+@media (max-width: 1024px) {
+  .visitor-ladder-rung { grid-template-columns: 50px 1fr; }
+  .vlr-visitor { grid-column: 1 / -1; padding-top: 6px; border-top: 1px dashed var(--line-soft); margin-top: 6px; }
+}
+@media (max-width: 768px) {
+  .visitor-ladder-rung { padding: 10px 12px; gap: 10px; }
+  .vlr-level { font-size: 14px; }
+  .vlr-staff { font-size: 11px; }
+  .vlr-visitor { font-size: 12px; }
+}
+
+/* ==================== R5 · Today's three (item 15) ==================== */
+.todays-three {
+  margin: 16px 0 24px;
+  padding: 14px 18px;
+  background: var(--turquoise-soft);
+  border-left: 3px solid var(--turquoise);
+}
+.todays-three-head {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px;
+  margin-bottom: 10px;
+}
+.todays-three-label {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em;
+  color: var(--turquoise-deep); text-transform: uppercase;
+}
+.todays-three-phase-select {
+  appearance: none; background: var(--paper); border: 1px solid var(--turquoise-line);
+  font-family: var(--mono); font-size: 10px; color: var(--ink); padding: 3px 8px;
+  cursor: pointer; letter-spacing: 0.05em;
+}
+.todays-three-list {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+  list-style: none; padding: 0;
+}
+.todays-three-list li {
+  padding: 10px 12px; background: var(--paper); border: 1px solid var(--turquoise-line);
+  font-family: var(--serif-tc); font-size: 12px; color: var(--brand-black); line-height: 1.5;
+}
+.todays-three-list li .tt-num { display: block; font-family: var(--mono); font-size: 9px; color: var(--turquoise-deep); letter-spacing: 0.1em; margin-bottom: 4px; }
+.todays-three-list li .tt-en { display: block; font-family: var(--serif-en), 'Lato', sans-serif; font-style: italic; font-size: 10.5px; color: var(--ink-soft); margin-top: 2px; }
+.todays-three-list li .tt-jp { display: block; font-family: var(--serif-jp); font-size: 11px; color: var(--ink-soft); margin-top: 1px; }
+@media (max-width: 768px) {
+  .todays-three-list { grid-template-columns: 1fr; }
+}
+
+/* ==================== R6 · Within-language priority inversion (item 7) ====================
+   On visitor-facing slides (data-priority="visitor"), when data-lang="jp" or "tc",
+   the visitor-language flavor surfaces first via flex order. CSS-only. */
+:root[data-lang="jp"] .vlr-visitor .vlrv-jp,
+:root[data-lang="jp"] .visitor-ladder-foot .vlf-jp,
+:root[data-lang="jp"] .exec-ask .ea-jp { order: -1; display: block; margin-bottom: 4px; }
+:root[data-lang="tc"] .vlr-visitor *, :root[data-lang="tc"] .visitor-ladder-foot * { display: revert; }
 </style>
 </head>
 <body>
@@ -2803,7 +3026,7 @@ details.disclosure[open] > .disclosure-body {
 </div>
 
 <!-- ==================== SLIDE 01 — COVER ==================== -->
-<section id="slide-01-cover" class="slide slide-cover">
+<section id="slide-01-cover" data-anchor="cover" class="slide slide-cover">
   <div class="cover-top">
     <div class="cover-eyebrow">GPS · Capability Architecture</div>
     <div class="cover-mark">GPS</div>
@@ -2818,23 +3041,103 @@ details.disclosure[open] > .disclosure-body {
     <div>GPS STRATEGY &amp; TRANSFORMATION · 2026.05</div>
     
   </div>
-  <div class="slide-num">01 / 19</div>
+  <div class="entry-router" role="navigation" aria-label="Choose your view">
+    <div class="entry-router-label">Choose your view · 選擇閱讀路徑 · ご覧の視点</div>
+    <div class="entry-router-grid">
+      <a class="entry-router-btn" data-route="order" href="#setup"><span class="erb-role">Read in order · 從頭讀起 · 順番に読む</span>Start with the cover and go forward.</a>
+      <a class="entry-router-btn" data-route="exec" href="#exec"><span class="erb-role">Executive · 決策者</span>One slide. Cost · scope · ask.</a>
+      <a class="entry-router-btn" data-route="staff" href="#layer-02-capabilities"><span class="erb-role">Staff · 同仁</span>Capabilities + today's three.</a>
+      <a class="entry-router-btn" data-route="board" href="#visitor-ladder"><span class="erb-role">Board · 董事</span>What changes for the visitor.</a>
+      <a class="entry-router-btn" data-route="engineer" href="spec/" target="_blank" rel="noopener"><span class="erb-role">Engineer · 工程</span>/spec/ — logs, audit, schema.</a>
+      <a class="entry-router-btn" data-route="calibration" href="#substrate"><span class="erb-role">Calibration · 校準</span>Substrate + roadmap KPIs.</a>
+    </div>
+  </div>
+  <div class="slide-num">01 / 21</div>
 </section>
 
-<!-- ==================== SLIDE 02 — THE SETUP ==================== -->
-<section id="slide-02" class="slide slide-setup">
+<!-- ==================== SLIDE 02 — EXECUTIVE ONE-PAGER (V2 R2) ==================== -->
+<section id="exec" data-anchor="exec" class="slide slide-content slide-exec">
   <div class="slide-tag">02</div>
+  <div class="content-headline">
+    <h2 class="content-headline-tc">如果只能看一張，這一張。</h2>
+    <p class="content-headline-en">If only one slide, this one.</p>
+    <p class="content-headline-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal;">一枚だけご覧になるなら、この一枚を。</p>
+  </div>
+  <div class="exec-pager">
+    <div class="exec-pager-left">
+      <div class="exec-eyebrow">For the decision-maker · 決策者用</div>
+      <h2>從清單式接待，到署名式接待。</h2>
+      <p class="exec-h-en">From checklist reception to named-by reception.</p>
+      <p class="exec-h-jp" lang="ja">手順表の応対から、署名のある応対へ。</p>
+      <div class="exec-ask">
+        我們請求授權啟動三年制能力架構：第一年內 80% 同仁達 L1、首年度建立 BARS 基線、跨地區校準在 2027 上線。
+        <span class="ea-en" lang="en">We request authorization to begin the three-year capability architecture: 80% of staff certified at L1 within year one, BARS baseline established, cross-region calibration live by 2027.</span>
+        <span class="ea-jp" lang="ja">三年制能力アーキテクチャの始動をご承認いただきたい。一年目で同仁の八割がL1認証、BARS基線確立、二〇二七年に地域横断校正を稼働させる。</span>
+      </div>
+    </div>
+    <div class="exec-pager-right">
+      <div class="exec-numbers">
+        <div class="exec-number">
+          <div class="en-label">Scope · 範囲</div>
+          <div class="en-value">~200<span style="font-size:14px; color:var(--ink-mute); margin-left:4px;">desks</span></div>
+          <div class="en-note">HQ-TW + 4 cross-region pilot sites (JP, DE; CN, US-AZ from year 2).
+            <span class="nn-en" lang="en">HQ-TW + 4 pilot regions.</span>
+            <span class="nn-jp" lang="ja">本社台湾＋4つの先行地域。</span>
+          </div>
+        </div>
+        <div class="exec-number">
+          <div class="en-label">Cost / desk · 単価</div>
+          <div class="en-value placeholder">[FIN-INPUT]<span class="fin-input-flag">FIN</span></div>
+          <div class="en-note">Training + BARS infra + tooling, amortised per desk per year. Placeholder pending finance scoping.
+            <span class="nn-en" lang="en">Training + infra + tooling, per desk per year.</span>
+            <span class="nn-jp" lang="ja">訓練＋基盤＋ツール、デスク年単価。</span>
+          </div>
+        </div>
+        <div class="exec-number">
+          <div class="en-label">Timeline · 期間</div>
+          <div class="en-value">36<span style="font-size:14px; color:var(--ink-mute); margin-left:4px;">months</span></div>
+          <div class="en-note">Q2 2026 → 2028 Q4. Q4 2026 = first L1 cohort; 2027 = L3-L5 anchors live.
+            <span class="nn-en" lang="en">3 years; first L1 cohort at year-end 2026.</span>
+            <span class="nn-jp" lang="ja">三年間。最初のL1認証は二〇二六年末。</span>
+          </div>
+        </div>
+        <div class="exec-number">
+          <div class="en-label">Payback · 投資回収</div>
+          <div class="en-value placeholder">[FIN-INPUT]<span class="fin-input-flag">FIN</span></div>
+          <div class="en-note">Modeled via NPS uplift + return-visit lift + service-recovery cost reduction. Placeholder pending CFO model.
+            <span class="nn-en" lang="en">NPS uplift + return-visit lift + recovery cost reduction.</span>
+            <span class="nn-jp" lang="ja">NPS向上＋再来訪率＋復旧コスト削減で計算。</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="exec-pager-bottom">
+      <span>Read deeper →</span>
+      <a href="#layer-02-capabilities">Capabilities (slide 11)</a>
+      <a href="#recognition">Recognition (slide 16)</a>
+      <a href="#substrate">Substrate &amp; audit (slide 15)</a>
+      <a href="#roadmap">Roadmap &amp; KPIs (slide 20)</a>
+      <a href="#visitor-ladder">What changes for visitors (slide 17)</a>
+    </div>
+  </div>
+  <div class="slide-num">03 / 21</div>
+</section>
+
+
+<!-- ==================== SLIDE 02 — THE SETUP ==================== -->
+<section id="slide-03" data-anchor="setup" class="slide slide-setup">
+  <div class="slide-tag">03</div>
   <div class="setup-hero-stat">50–200</div>
   <p class="setup-label-tc">詢問台同仁每天接觸訪客的次數。</p>
   <p class="setup-label-en">Daily visitor contacts per information desk staff member.</p>
   <p class="setup-punchline-tc">每一次接觸，都是品牌的具體實踐。</p>
   <p class="setup-punchline-en">Every contact, a concrete practice of the brand.</p>
-  <div class="slide-num">02 / 19</div>
+  <div class="slide-num">03 / 21</div>
 </section>
 
 <!-- ==================== SLIDE 03 — THE TENSION ==================== -->
-<section id="slide-03" class="slide slide-tension">
-  <div class="slide-tag">03</div>
+<section id="slide-04" data-anchor="tension" class="slide slide-tension">
+  <div class="slide-tag">04</div>
   <h2 class="tension-headline-tc">最高頻的接觸點，<br>尚未有對應的能力架構。</h2>
   <h2 class="tension-headline-en">The highest-frequency touchpoint<br>awaits a matching capability architecture.</h2>
 
@@ -2865,11 +3168,11 @@ details.disclosure[open] > .disclosure-body {
     <p class="tension-conclusion-en">Between the two, no architecture yet.</p>
   </div>
 
-  <div class="slide-num">03 / 19</div>
+  <div class="slide-num">04 / 21</div>
 </section>
 
 <!-- ==================== SLIDE 04 — PART I DIVIDER ==================== -->
-<section id="slide-04" class="slide slide-divider">
+<section id="slide-05" data-anchor="divider-1" class="slide slide-divider">
   <div></div>
   <div class="divider-content">
     <div class="divider-top-meta">
@@ -2886,12 +3189,12 @@ details.disclosure[open] > .disclosure-body {
     </div>
   </div>
   <div></div>
-  <div class="slide-num">04 / 19</div>
+  <div class="slide-num">05 / 21</div>
 </section>
 
 <!-- ==================== SLIDE 05 — INTERNATIONAL BENCHMARKS ==================== -->
-<section id="slide-05" class="slide slide-content">
-  <div class="slide-tag">05</div>
+<section id="slide-06" data-anchor="gap-detail" class="slide slide-content">
+  <div class="slide-tag">06</div>
   <h2 class="content-headline-tc">建立在已驗證的方法學上。</h2>
   <h2 class="content-headline-en">Built on established interpretive practice.</h2>
 
@@ -2948,12 +3251,12 @@ details.disclosure[open] > .disclosure-body {
     </div>
   </div>
 
-  <div class="slide-num">05 / 19</div>
+  <div class="slide-num">06 / 21</div>
 </section>
 
 <!-- ==================== SLIDE 06 — 8 → 12 ==================== -->
-<section id="slide-06" class="slide slide-gap">
-  <div class="slide-tag">06</div>
+<section id="slide-07" data-anchor="gap-now" class="slide slide-gap">
+  <div class="slide-tag">07</div>
 
   <h2 class="content-headline-tc" style="text-align: left;">四項常被忽略的關鍵能力。</h2>
   <h2 class="content-headline-en" style="margin-bottom: 8px;">Four capabilities often overlooked.</h2>
@@ -2990,11 +3293,11 @@ details.disclosure[open] > .disclosure-body {
     </div>
   </div>
 
-  <div class="slide-num">06 / 19</div>
+  <div class="slide-num">07 / 21</div>
 </section>
 
 <!-- ==================== SLIDE 08 — PART II DIVIDER ==================== -->
-<section id="slide-07" class="slide slide-divider">
+<section id="slide-08" data-anchor="divider-2" class="slide slide-divider">
   <div></div>
   <div class="divider-content">
     <div class="divider-top-meta">
@@ -3011,12 +3314,12 @@ details.disclosure[open] > .disclosure-body {
     </div>
   </div>
   <div></div>
-  <div class="slide-num">07 / 19</div>
+  <div class="slide-num">08 / 21</div>
 </section>
 
 <!-- ==================== SLIDE 09 — SIX-LAYER STACK ==================== -->
-<section id="slide-08" class="slide slide-arch">
-  <div class="slide-tag">08</div>
+<section id="slide-09" data-anchor="premise" class="slide slide-arch">
+  <div class="slide-tag">09</div>
   <h2 class="content-headline-tc">每一層回答一個不同的問題，<br>下層支撐上層。</h2>
   <h2 class="content-headline-en">Each layer answers a different question.<br>Lower supports upper.</h2>
 
@@ -3076,12 +3379,12 @@ details.disclosure[open] > .disclosure-body {
     </div>
   </div>
 
-  <div class="slide-num">08 / 19</div>
+  <div class="slide-num">09 / 21</div>
 </section>
 
 <!-- ==================== SLIDE 10 — LAYER 1 PHILOSOPHY ==================== -->
-<section id="slide-09" class="slide slide-content">
-  <div class="slide-tag">09 · Layer 01</div>
+<section id="slide-10" data-anchor="layer-01" class="slide slide-content">
+  <div class="slide-tag">10 · Layer 01</div>
   <div class="layer-chapter">
     <div class="layer-bignum">01</div>
     <div class="layer-chapter-meta">
@@ -3127,12 +3430,12 @@ details.disclosure[open] > .disclosure-body {
     </div>
   </div>
 
-  <div class="slide-num">09 / 19</div>
+  <div class="slide-num">10 / 21</div>
 </section>
 
 <!-- ==================== SLIDE 11 — LAYER 2 CAPABILITY ==================== -->
-<section id="slide-10" class="slide slide-content">
-  <div class="slide-tag">10 · Layer 02</div>
+<section id="slide-11" data-anchor="layer-02-capabilities" class="slide slide-content">
+  <div class="slide-tag">11 · Layer 02</div>
   <div class="layer-chapter">
     <div class="layer-bignum">02</div>
     <div class="layer-chapter-meta">
@@ -3143,6 +3446,31 @@ details.disclosure[open] > .disclosure-body {
   </div>
 
   <div class="content-body">
+    <div class="todays-three" id="todays-three">
+      <div class="todays-three-head">
+        <span class="todays-three-label">Today's three · 今日的三件</span>
+        <select class="todays-three-phase-select" aria-label="Select phase">
+          <option value="explorer">Explorer · 探索期 (4w)</option>
+          <option value="builder">Builder · 建構期 (8w)</option>
+          <option value="architect">Architect · 構築期 (ongoing)</option>
+        </select>
+        <span style="font-family:var(--mono); font-size:9.5px; color:var(--ink-mute); letter-spacing:0.08em;">If you remember only three this week, remember these.</span>
+      </div>
+      <ul class="todays-three-list" data-phase-active="explorer">
+        <!-- Explorer: 01 Content Mastery, 03 Voice & Stamina, 05 Audience Reading -->
+        <li data-phase="explorer"><span class="tt-num">01</span>內容理解力<span class="tt-en" lang="en">Content Mastery</span><span class="tt-jp" lang="ja">内容理解力</span></li>
+        <li data-phase="explorer"><span class="tt-num">03</span>嗓音與體能管理<span class="tt-en" lang="en">Voice &amp; Stamina</span><span class="tt-jp" lang="ja">声と体力管理</span></li>
+        <li data-phase="explorer"><span class="tt-num">05</span>觀眾判讀力<span class="tt-en" lang="en">Audience Reading</span><span class="tt-jp" lang="ja">観客読解力</span></li>
+        <!-- Builder: 02 Theme Crafting, 05 Audience Reading, 08 Cross-cultural Sensitivity -->
+        <li data-phase="builder" hidden><span class="tt-num">02</span>主題提煉力<span class="tt-en" lang="en">Theme Crafting</span><span class="tt-jp" lang="ja">テーマ抽出力</span></li>
+        <li data-phase="builder" hidden><span class="tt-num">05</span>觀眾判讀力<span class="tt-en" lang="en">Audience Reading</span><span class="tt-jp" lang="ja">観客読解力</span></li>
+        <li data-phase="builder" hidden><span class="tt-num">08</span>跨文化敏感度<span class="tt-en" lang="en">Cross-cultural Sensitivity</span><span class="tt-jp" lang="ja">異文化への感受性</span></li>
+        <!-- Architect: 04 Narrative Design, 10 Touchpoint Design, 12 Experience Closure -->
+        <li data-phase="architect" hidden><span class="tt-num">04</span>敘事設計力<span class="tt-en" lang="en">Narrative Design</span><span class="tt-jp" lang="ja">叙述設計力</span></li>
+        <li data-phase="architect" hidden><span class="tt-num">10</span>接觸點設計力<span class="tt-en" lang="en">Touchpoint Design</span><span class="tt-jp" lang="ja">接点設計力</span></li>
+        <li data-phase="architect" hidden><span class="tt-num">12</span>體驗收束力<span class="tt-en" lang="en">Experience Closure</span><span class="tt-jp" lang="ja">体験収束力</span></li>
+      </ul>
+    </div>
     <div class="clusters-display">
       <div class="cluster self">
         <div class="cluster-label">CLUSTER A · SELF-READINESS</div>
@@ -3267,12 +3595,12 @@ details.disclosure[open] > .disclosure-body {
     </div>
   </div>
 
-  <div class="slide-num">10 / 19</div>
+  <div class="slide-num">11 / 21</div>
 </section>
 
 <!-- ==================== SLIDE 12 — LAYER 3 MATURITY ==================== -->
-<section id="slide-11" class="slide slide-content">
-  <div class="slide-tag">11 · Layer 03</div>
+<section id="slide-12" data-anchor="layer-03-bars" class="slide slide-content">
+  <div class="slide-tag">12 · Layer 03</div>
   <div class="layer-chapter">
     <div class="layer-bignum">03</div>
     <div class="layer-chapter-meta">
@@ -3431,12 +3759,12 @@ details.disclosure[open] > .disclosure-body {
     </div>
   </div>
 
-  <div class="slide-num">11 / 19</div>
+  <div class="slide-num">12 / 21</div>
 </section>
 
 <!-- ==================== SLIDE 13 — LAYER 4 APPLICATION ==================== -->
-<section id="slide-12" class="slide slide-content">
-  <div class="slide-tag">12 · Layer 04</div>
+<section id="slide-13" data-anchor="layer-04-scenarios" class="slide slide-content">
+  <div class="slide-tag">13 · Layer 04</div>
   <div class="layer-chapter">
     <div class="layer-bignum">04</div>
     <div class="layer-chapter-meta">
@@ -3572,12 +3900,12 @@ details.disclosure[open] > .disclosure-body {
     </div>
   </div>
 
-  <div class="slide-num">12 / 19</div>
+  <div class="slide-num">13 / 21</div>
 </section>
 
 <!-- ==================== SLIDE 14 — LAYER 5 OPERATIONS ==================== -->
-<section id="slide-13" class="slide slide-content">
-  <div class="slide-tag">13 · Layer 05</div>
+<section id="slide-14" data-anchor="layer-05-ops" class="slide slide-content">
+  <div class="slide-tag">14 · Layer 05</div>
   <div class="layer-chapter">
     <div class="layer-bignum">05</div>
     <div class="layer-chapter-meta">
@@ -3764,12 +4092,12 @@ details.disclosure[open] > .disclosure-body {
     </div>
   </div>
 
-  <div class="slide-num">13 / 19</div>
+  <div class="slide-num">14 / 21</div>
 </section>
 
 <!-- ==================== SLIDE 14 — SUBSTRATE (Tooling · Logs · Audit) ==================== -->
-<section id="slide-14" class="slide slide-content">
-  <div class="slide-tag">14 · Substrate</div>
+<section id="slide-15" data-anchor="substrate" class="slide slide-content">
+  <div class="slide-tag">15 · Substrate</div>
   <div class="layer-chapter">
     <div class="layer-bignum">—</div>
     <div class="layer-chapter-meta">
@@ -3876,12 +4204,12 @@ details.disclosure[open] > .disclosure-body {
     </div>
   </div>
 
-  <div class="slide-num">14 / 19</div>
+  <div class="slide-num">15 / 21</div>
 </section>
 
 <!-- ==================== SLIDE 15 — RECOGNITION ==================== -->
-<section id="slide-15" class="slide slide-content">
-  <div class="slide-tag">15 · Recognition</div>
+<section id="slide-16" data-anchor="recognition" class="slide slide-content">
+  <div class="slide-tag">16 · Recognition</div>
   <div class="layer-chapter">
     <div class="layer-bignum">—</div>
     <div class="layer-chapter-meta">
@@ -3955,12 +4283,66 @@ details.disclosure[open] > .disclosure-body {
     </div>
   </div>
 
-  <div class="slide-num">15 / 19</div>
+  <div class="slide-num">16 / 21</div>
 </section>
 
+<!-- ==================== SLIDE 17 — VISITOR EXPERIENCE LADDER (V2 R3) ==================== -->
+<section id="visitor-ladder" data-anchor="visitor-ladder" class="slide slide-content slide-visitor-ladder" data-priority="visitor">
+  <div class="slide-tag">17 · Visitor</div>
+  <div class="content-headline">
+    <h2 class="content-headline-tc">同樣的人，同樣的詢問台 — 不同的下午。</h2>
+    <p class="content-headline-en">Same visitor, same desk — a different afternoon.</p>
+    <p class="content-headline-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal;">同じお客様、同じご案内所 — 違う午後を。</p>
+  </div>
+  <div class="visitor-ladder">
+    <div class="visitor-ladder-intro">
+      下方為訪客視角的能力階梯：當接待您的同仁是 L0、L2、L4、L5 時，您感受到的差異是什麼。同一個架構，從訪客的角度重新看一次。
+      <span class="vli-en" lang="en">Below is the capability ladder from the visitor side: what differs in the experience when the colleague welcoming you is at L0, L2, L4, or L5. The same architecture, re-read from the visitor's seat.</span>
+      <span class="vli-jp" lang="ja">下記はお客様の視点から見た能力階梯です。応対する同仁がL0・L2・L4・L5のとき、お客様が感じる違いをまとめました。同じ枠組みを、お客様の側から見直しています。</span>
+    </div>
+    <div class="visitor-ladder-rung" data-rung="L0">
+      <div class="vlr-level">L0</div>
+      <div class="vlr-staff"><span class="vlrs-label">Staff side · 同仁側</span>應對者：照標準流程回答。<span class="vlrs-en" lang="en">Clerk: answers per checklist.</span><span class="vlrs-jp" lang="ja">応対者：手順表通りに答える。</span></div>
+      <div class="vlr-visitor"><span class="vlrv-label">Visitor experience · 訪客感受</span>您得到了正確的答案。一切照規矩來。<span class="vlrv-en" lang="en">You got the right answer. Everything by the book.</span><span class="vlrv-jp" lang="ja">正しいご回答をいただきました。すべて規程通りでした。</span></div>
+    </div>
+    <div class="visitor-ladder-rung" data-rung="L1">
+      <div class="vlr-level">L1</div>
+      <div class="vlr-staff"><span class="vlrs-label">Staff side · 同仁側</span>說明者：能用您聽得懂的話再說一次。<span class="vlrs-en" lang="en">Explainer: can re-say it in your register.</span><span class="vlrs-jp" lang="ja">説明者：お客様の言葉でもう一度伝える。</span></div>
+      <div class="vlr-visitor"><span class="vlrv-label">Visitor experience · 訪客感受</span>您不只得到答案，您理解了答案。<span class="vlrv-en" lang="en">You did not just receive the answer; you understood it.</span><span class="vlrv-jp" lang="ja">お答えをいただくだけでなく、しっかりと納得できました。</span></div>
+    </div>
+    <div class="visitor-ladder-rung" data-rung="L2">
+      <div class="vlr-level">L2</div>
+      <div class="vlr-staff"><span class="vlrs-label">Staff side · 同仁側</span>導覽者：為您挑三件最相關的，刪掉兩件不相關的。<span class="vlrs-en" lang="en">Guide: selects three relevant for you, drops two unrelated.</span><span class="vlrs-jp" lang="ja">案内者：お客様に最も関わる三点を選び、不要な二点を省く。</span></div>
+      <div class="vlr-visitor"><span class="vlrv-label">Visitor experience · 訪客感受</span>您感覺今天的路是為您安排的，而不是別人剩下的。<span class="vlrv-en" lang="en">Today's path felt arranged for you — not leftovers from someone else's.</span><span class="vlrv-jp" lang="ja">本日のご動線が、ご自分のために整えられていると感じられた。</span></div>
+    </div>
+    <div class="visitor-ladder-rung" data-rung="L3">
+      <div class="vlr-level">L3</div>
+      <div class="vlr-staff"><span class="vlrs-label">Staff side · 同仁側</span>解說者：用一句主題串起十分鐘，留白給您提問。<span class="vlrs-en" lang="en">Interpreter: threads ten minutes with one theme; leaves room for your question.</span><span class="vlrs-jp" lang="ja">解説者：一文の主題で十分間を貫き、ご質問の余白を残す。</span></div>
+      <div class="vlr-visitor"><span class="vlrv-label">Visitor experience · 訪客感受</span>您離開時，能用自己的話說出一句主題 — 並且想再回來。<span class="vlrv-en" lang="en">When you left, you could re-state the theme in your own words — and wanted to return.</span><span class="vlrv-jp" lang="ja">お帰りの際、ご自身の言葉で主題を一文に語れ、また訪れたいと思っていただけた。</span></div>
+    </div>
+    <div class="visitor-ladder-rung" data-rung="L4">
+      <div class="vlr-level">L4</div>
+      <div class="vlr-staff"><span class="vlrs-label">Staff side · 同仁側</span>體驗設計者：今天的接待是事先策展，動線、座位、道具皆已就位。<span class="vlrs-en" lang="en">Designer: today's reception was pre-curated; flow, seating, props in place.</span><span class="vlrs-jp" lang="ja">体験設計者：本日のご接待は事前に設えられ、動線・席・道具がすでに整っている。</span></div>
+      <div class="vlr-visitor"><span class="vlrv-label">Visitor experience · 訪客感受</span>您沒注意到場景的安排 — 那正是您注意到它好的證據。<span class="vlrv-en" lang="en">You didn't notice the choreography — which is exactly the evidence that it worked.</span><span class="vlrv-jp" lang="ja">場面の段取りに気づかずに過ごされた — それこそが、巧みに整えられていた証でございます。</span></div>
+    </div>
+    <div class="visitor-ladder-rung" data-rung="L5">
+      <div class="vlr-level">L5</div>
+      <div class="vlr-staff"><span class="vlrs-label">Staff side · 同仁側</span>文化大使：在分別之後，您仍會收到一句署名的線索。<span class="vlrs-en" lang="en">Ambassador: after parting, you still receive one signed line.</span><span class="vlrs-jp" lang="ja">文化大使：お別れの後にも、署名入りの一文が届く。</span></div>
+      <div class="vlr-visitor"><span class="vlrv-label">Visitor experience · 訪客感受</span>次日，您在飯店收到一張手寫卡 — 同樣的名字，繼續中的故事。<span class="vlrv-en" lang="en">The next day, a handwritten card arrives at your hotel — the same name, a story still in motion.</span><span class="vlrv-jp" lang="ja">翌日、ご宿泊先に手書きの一枚が届く — 同じお名前、続いている物語。</span></div>
+    </div>
+    <div class="visitor-ladder-foot">
+      訪客不需理解架構，但會感受到等第 — 而下次他會回來找同一個名字。
+      <span class="vlf-en" lang="en">The visitor needn't understand the framework — but feels the tier; and next time, returns to look for the same name.</span>
+      <span class="vlf-jp" lang="ja">お客様は枠組みをご理解いただく必要はございませんが、その段階を感じ取られます — そして次回、同じお名前を訪ねていらっしゃいます。</span>
+    </div>
+  </div>
+  <div class="slide-num">19 / 21</div>
+</section>
+
+
 <!-- ==================== SLIDE 16 — LAYER 6 BRAND ==================== -->
-<section id="slide-16" class="slide slide-content">
-  <div class="slide-tag">16 · Layer 06</div>
+<section id="slide-18" data-anchor="brand" class="slide slide-content">
+  <div class="slide-tag">18 · Layer 06</div>
   <div class="layer-chapter">
     <div class="layer-bignum">06</div>
     <div class="layer-chapter-meta">
@@ -4081,12 +4463,12 @@ details.disclosure[open] > .disclosure-body {
     </div>
   </div>
 
-  <div class="slide-num">16 / 19</div>
+  <div class="slide-num">18 / 21</div>
 </section>
 
 <!-- ==================== SLIDE 17 — DUAL CALIBRATION ==================== -->
-<section id="slide-17" class="slide slide-content">
-  <div class="slide-tag">17</div>
+<section id="slide-19" data-anchor="capacity" class="slide slide-content">
+  <div class="slide-tag">19</div>
   <h2 class="content-headline-tc">雙向校準，讓架構自我演化。</h2>
   <h2 class="content-headline-en">Dual calibration. A self-evolving architecture.</h2>
   <h2 class="content-headline-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal; color:var(--ink-soft);">双方向校正による、自己進化する構造。</h2>
@@ -4127,12 +4509,12 @@ details.disclosure[open] > .disclosure-body {
     </div>
   </div>
 
-  <div class="slide-num">17 / 19</div>
+  <div class="slide-num">19 / 21</div>
 </section>
 
 <!-- ==================== SLIDE 18 — DELIVERABLE PATH ==================== -->
-<section id="slide-18" class="slide slide-content">
-  <div class="slide-tag">18</div>
+<section id="slide-20" data-anchor="roadmap" class="slide slide-content">
+  <div class="slide-tag">20</div>
   <h2 class="content-headline-tc">從架構，到落地。</h2>
   <h2 class="content-headline-en">From architecture to ground.</h2>
   <h2 class="content-headline-en" lang="ja" style="font-family:var(--serif-jp); font-style:normal; color:var(--ink-soft);">構造から、現場へ。</h2>
@@ -4208,12 +4590,12 @@ details.disclosure[open] > .disclosure-body {
     </div>
   </div>
 
-  <div class="slide-num">18 / 19</div>
+  <div class="slide-num">20 / 21</div>
 </section>
 
 <!-- ==================== SLIDE 19 — THE DECISION ==================== -->
-<section id="slide-19" class="slide slide-decision">
-  <div class="slide-tag">19</div>
+<section id="slide-21" data-anchor="decision" class="slide slide-decision">
+  <div class="slide-tag">21</div>
   <div class="decision-content">
     <h2 class="decision-headline-tc">三項行動。</h2>
     <h2 class="decision-headline-en">Three actions.</h2>
@@ -4252,11 +4634,11 @@ details.disclosure[open] > .disclosure-body {
       </div>
     </div>
   </div>
-  <div class="slide-num">19 / 19</div>
+  <div class="slide-num">21 / 21</div>
 </section>
 
 <!-- ==================== CLOSING ==================== -->
-<section id="slide-closing" class="slide slide-closing">
+<section id="slide-closing" data-anchor="closing" class="slide slide-closing">
   <div class="closing-mark">GPS</div>
   <h2 class="closing-quote-tc">在您需要之前<span class="accent">。</span></h2>
   <h3 class="closing-quote-en">Before you need it.</h3>
@@ -4449,6 +4831,25 @@ details.disclosure[open] > .disclosure-body {
     });
   })();
 
+  // R5 (item 15): Today's three phase selector
+  (function initTodaysThree() {
+    var sel = document.querySelector('.todays-three-phase-select');
+    var list = document.querySelector('.todays-three-list');
+    if (!sel || !list) return;
+    function show(phase) {
+      list.setAttribute('data-phase-active', phase);
+      list.querySelectorAll('li').forEach(function(li) {
+        li.hidden = (li.getAttribute('data-phase') !== phase);
+      });
+    }
+    sel.addEventListener('change', function() { show(sel.value); });
+    // Route from R1 staff button: deep-link via #layer-02-capabilities?phase=builder is too clever;
+    // simpler: detect ?phase= in hash
+    var hash = window.location.hash;
+    var m = hash.match(/[?&]phase=(explorer|builder|architect)/);
+    if (m) { sel.value = m[1]; show(m[1]); }
+  })();
+
   // F6 (item 25): service worker for offline support.
   // Only register when served over http(s) — file:// will skip silently.
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
@@ -4459,12 +4860,16 @@ details.disclosure[open] > .disclosure-body {
     });
   }
 
-  // F4 v2: open <details> matching URL hash (e.g., #slide-12 opens scenario list, but if
-  // a sub-anchor matches a <details> id, force it open and scroll-into-view).
+  // F4 v2 + R1: hash resolves to either #id OR #data-anchor (semantic).
+  // Opens ancestor <details> chain + scrolls into view.
   function openDetailsFromHash() {
     var hash = window.location.hash.slice(1);
     if (!hash) return;
     var target = document.getElementById(hash);
+    if (!target) {
+      try { target = document.querySelector('[data-anchor="' + CSS.escape(hash) + '"]'); }
+      catch (e) { target = document.querySelector('[data-anchor="' + hash + '"]'); }
+    }
     if (!target) return;
     // If target is or contains a details, open ancestor details up the chain
     var d = target.closest ? target.closest('details') : null;
