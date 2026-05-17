@@ -34,7 +34,7 @@ p.feed(open('index.html').read())
 "
 
 # 3. Slide count >= 19 (iteration-2 baseline; V2 routing adds 2 more = 21)
-SLIDES=$(grep -cE '<section class="slide' index.html || true)
+SLIDES=$(grep -cE '<section[^>]*class="slide' index.html || true)
 if [ "$SLIDES" -ge 19 ]; then
   printf "  ok    slide count: %s (>= 19)\n" "$SLIDES"
   PASS=$((PASS + 1))
