@@ -1,0 +1,34 @@
+version: 2
+
+# Weekly cadence is sufficient for an internal tool with one maintainer.
+# Group all minor/patch updates into one PR each week to reduce review load.
+# Major-version bumps come as separate PRs because they usually need ADR
+# updates (especially Prisma, NextAuth, Anthropic SDK).
+
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
+    # Anthropic SDK + Prisma + NextAuth: human-review only.
+    ignore:
+      - dependency-name: "@anthropic-ai/sdk"
+        update-types: [version-update:semver-major]
+      - dependency-name: "prisma"
+        update-types: [version-update:semver-major]
+      - dependency-name: "@prisma/client"
+        update-types: [version-update:semver-major]
+      - dependency-name: "next-auth"
+        update-types: [version-update:semver-major]
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 3

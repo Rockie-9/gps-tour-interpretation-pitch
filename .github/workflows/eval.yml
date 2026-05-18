@@ -1,0 +1,48 @@
+name: eval
+
+# Eval regression on demand. Triggering this workflow incurs Anthropic
+# API spend (the ground-truth seed set is small but non-zero). Set
+# the ANTHROPIC_API_KEY secret on the repo before first run.
+#
+# When to trigger:
+#   - before merging a PR that touches prompts/, lib/llm/, or rubric
+#   - after bumping LLM_MODEL_ID (per ADR-007)
+#   - weekly as a drift check (Phase 1+)
+#
+# The artifact produced is uploaded as a workflow artifact AND can be
+# promoted to eval/audit-runs/ via `scripts/promote-eval-run.sh`.
+
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Why are you running this? (e.g. 'prompt bump v2', 'drift check 2026-W21')"
+        required: true
+        type: string
+
+jobs:
+  run-eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: install
+        run: npm install --no-audit --no-fund --loglevel=error
+
+      - name: run eval
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          LLM_MODEL_ID: ${{ vars.LLM_MODEL_ID || 'claude-sonnet-4-20250514' }}
+        run: npm run eval
+
+      - name: upload run
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-run-${{ github.sha }}
+          path: eval/runs/
+          retention-days: 90

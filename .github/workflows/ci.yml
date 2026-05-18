@@ -1,0 +1,77 @@
+name: ci
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# Concurrency: cancel old runs when a new commit is pushed to the same ref.
+# Saves Actions minutes; safe because we don't deploy from this workflow.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  typecheck-lint:
+    name: type-check + lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          # We don't commit package-lock.json yet (audit item: TODO).
+          # Once committed, set cache: "npm" here.
+
+      - name: install
+        run: npm install --no-audit --no-fund --loglevel=error
+
+      - name: prisma generate
+        # Needed for `@prisma/client` types to exist before tsc runs.
+        run: npx prisma generate
+
+      - name: type check
+        run: npm run typecheck
+
+      - name: lint
+        run: npm run lint -- --max-warnings 0
+        # Soft-failing for now: Next.js auto-init creates .eslintrc.json on first
+        # run locally. If a contributor hasn't run lint locally yet, the file
+        # may be missing. Switch `continue-on-error` to false once the config is
+        # committed.
+        continue-on-error: true
+
+  dependency-audit:
+    name: npm audit (high+)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: install
+        run: npm install --no-audit --no-fund --loglevel=error
+
+      - name: audit
+        # Fail only on high+severity. Moderate findings are recorded in the
+        # workflow log for review without blocking merges.
+        run: npm audit --omit=dev --audit-level=high
+
+  secret-scan:
+    name: gitleaks (secrets)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

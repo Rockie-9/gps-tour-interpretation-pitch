@@ -1,0 +1,31 @@
+# gitleaks config — see https://github.com/gitleaks/gitleaks
+# Run locally: `gitleaks detect --config .gitleaks.toml`
+# CI runs this via .github/workflows/ci.yml (`secret-scan` job).
+
+title = "gps-issue-center"
+
+# Use the upstream default ruleset; override only where this repo needs it.
+[extend]
+useDefault = true
+
+# Ground-truth seed articles contain words like "API key" inside synthetic
+# news text. Don't false-positive on the eval fixtures.
+[[allowlist]]
+description = "ground-truth fixtures are synthetic test data"
+paths = [
+  '''eval/ground-truth/.+\.json''',
+]
+
+# .env.example contains placeholder values only; never real secrets.
+[[allowlist]]
+description = "env example contains placeholders"
+paths = [
+  '''\.env\.example''',
+]
+
+# ADR-007 mentions the model identifier; not a secret.
+[[allowlist]]
+description = "ADR text references model identifier"
+paths = [
+  '''docs/adr/.+\.md''',
+]

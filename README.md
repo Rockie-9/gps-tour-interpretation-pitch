@@ -112,6 +112,10 @@ The spec calls Prisma Studio out as a real solo-dev productivity tool
 | `docs/data-retention.md` | §14.2 retention policy. |
 | `docs/prompt-injection-policy.md` | §14.3 five policies. |
 | `docs/slo.md` | §14.1 service-level objectives. |
+| `compliance/` | TSMC three-party-review packet (§10). `STATUS.md` is the cover. |
+| `.github/workflows/ci.yml` | type-check, lint, npm audit, secret scan on every PR. |
+| `.github/workflows/eval.yml` | manual eval-regression run (workflow_dispatch). |
+| `eval/audit-runs/` | committed eval-result snapshots (deploy / prompt-bump / model-bump / quarterly). |
 
 ## Hard rules (don't trip over these)
 
@@ -122,6 +126,7 @@ The spec calls Prisma Studio out as a real solo-dev productivity tool
 5. **Architectural changes require a new ADR before the PR lands.** §14.5.2.
 6. **`LLM_MODEL_ID` is a pinned dated identifier.** Never `-latest`. ADR-007.
 7. **Suspicious-flagged inferences (§14.3.5) never auto-promote to Issues.** They go to a HITL review queue.
+8. **Any change touching `prompts/`, `lib/llm/`, or `LLM_MODEL_ID` requires an eval-regression workflow run and a promotion of the result to `eval/audit-runs/` before merge.**
 
 ## When things break
 
